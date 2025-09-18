@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 class AppTextStyle {
   static const TextStyle _commonStyle = TextStyle(fontFamily: 'Inter');
 
-   /// displayLarge Text Style
+  /// displayLarge Text Style
   static TextStyle displayLarge = _commonStyle.copyWith(
     fontSize: 57,
     fontWeight: FontWeight.w600,
