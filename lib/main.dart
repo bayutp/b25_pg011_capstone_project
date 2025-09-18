@@ -23,11 +23,11 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       initialRoute: NavigationRoute.onboardingRoute.name,
       routes: {
-        NavigationRoute.onboardingRoute.name : (context) => const OnboardingScreen(),
-        NavigationRoute.loginRoute.name : (context) => const LoginScreen(),
-        NavigationRoute.registerRoute.name : (context) => const RegisterScreen(),
-        NavigationRoute.mainRoute.name : (context) => const MainScreen(),
-      },     
+        NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),
+        NavigationRoute.loginRoute.name: (context) => const LoginScreen(),
+        NavigationRoute.registerRoute.name: (context) => const RegisterScreen(),
+        NavigationRoute.homeRoute.name: (context) => const MainScreen(),
+      },
     );
   }
 }

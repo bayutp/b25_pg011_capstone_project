@@ -1,6 +1,6 @@
 enum NavigationRoute {
 
-  mainRoute("/"),
+  homeRoute("/home"),
   onboardingRoute("/onboarding"),
   loginRoute("/login"),
   registerRoute("/register"),
