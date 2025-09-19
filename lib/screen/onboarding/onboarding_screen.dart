@@ -1,9 +1,7 @@
-import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
-import 'package:b25_pg011_capstone_project/widget/banner_cashflow_widget.dart';
-import 'package:b25_pg011_capstone_project/widget/banner_dashboard_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   // final _formKey = GlobalKey<FormState>();
   // final _emailController = TextEditingController();
   // final _passwordController = TextEditingController();
@@ -11,12 +9,41 @@ class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
   @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  List<Map<String, dynamic>> plans = [
+    {
+      "category": "Marketing",
+      "task": "Making 3 Post For Social Media",
+      "done": false,
+    },
+    {"category": "Production", "task": "Evaluasi Produk", "done": false},
+  ];
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: BannerDashboardWidget(finishedTask: 0, allTask: 0),
+        child: ListView.builder(
+          itemCount: plans.length,
+          itemBuilder: (context, index) {
+            final plan = plans[index];
+            return ItemPlanWidget(
+              category: plan["category"],
+              task: plan["task"],
+              isChecked: plan["done"],
+              onChange: (value) {
+                setState(() {
+                  plans[index]["done"] = value ?? false;
+                });
+              },
+            );
+          },
+        ),
         // Row(
         //   mainAxisAlignment: MainAxisAlignment.center,
         //   children: [
