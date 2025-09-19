@@ -13,14 +13,16 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  // List<Map<String, dynamic>> plans = [
-  //   {
-  //     "category": "Marketing",
-  //     "task": "Making 3 Post For Social Media",
-  //     "done": false,
-  //   },
-  //   {"category": "Production", "task": "Evaluasi Produk", "done": false},
-  // ];
+  List<Map<String, dynamic>> plans = [
+    {
+      "category": "Marketing",
+      "task": "Making 3 Post For Social Media",
+      "done": false,
+    },
+    {"category": "Production", "task": "Evaluasi Produk", "done": false},
+    {"category": "Finance", "task": "Evaluasi Produk", "done": false},
+    {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -28,27 +30,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: BannerPlanWidget(
-          category: "Marketing",
-          finishedTask: 12,
-          allTask: 28,
-        ),
-        // ListView.builder(
-        //   itemCount: plans.length,
-        //   itemBuilder: (context, index) {
-        //     final plan = plans[index];
-        //     return ItemPlanWidget(
-        //       category: plan["category"],
-        //       task: plan["task"],
-        //       isChecked: plan["done"],
-        //       onChange: (value) {
-        //         setState(() {
-        //           plans[index]["done"] = value ?? false;
-        //         });
-        //       },
-        //     );
-        //   },
+        // child: BannerPlanWidget(
+        //   category: "Marketing",
+        //   finishedTask: 12,
+        //   allTask: 28,
         // ),
+        child: SizedBox(
+          height: 156,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: plans.length,
+            itemBuilder: (context, index) {
+              final plan = plans[index];
+              return BannerPlanWidget(
+                category: plan["category"],
+                finishedTask: 0,
+                allTask: 0,
+                onTap: () {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(plan["category"])));
+                },
+              );
+            },
+          ),
+        ),
         // Row(
         //   mainAxisAlignment: MainAxisAlignment.center,
         //   children: [

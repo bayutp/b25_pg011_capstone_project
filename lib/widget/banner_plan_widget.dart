@@ -6,12 +6,14 @@ class BannerPlanWidget extends StatelessWidget {
   final int finishedTask;
   final int allTask;
   final String category;
+  final Function() onTap;
 
   const BannerPlanWidget({
     super.key,
     required this.category,
     required this.finishedTask,
     required this.allTask,
+    required this.onTap,
   });
 
   @override
@@ -24,13 +26,18 @@ class BannerPlanWidget extends StatelessWidget {
           borderRadius: BorderRadiusGeometry.circular(24),
         ),
         elevation: 0,
-        child: IntrinsicHeight(
+        child: InkWell(
+          onTap: onTap,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 52, left: 15, top: 34),
+                  padding: const EdgeInsets.only(
+                    bottom: 52,
+                    left: 15,
+                    top: 34,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
