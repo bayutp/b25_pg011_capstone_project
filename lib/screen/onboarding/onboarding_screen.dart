@@ -1,4 +1,4 @@
-import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/item_cashflotw_widget.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -24,6 +24,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
   ];
 
+  List<Map<String, dynamic>> cashflows = [
+    {"title": "Pengeluaran", "money": 10000},
+    {"title": "Pemasukan", "money": 10000},
+    {"title": "Pengeluaran", "money": 10000},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,27 +41,42 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         //   finishedTask: 12,
         //   allTask: 28,
         // ),
-        child: SizedBox(
-          height: 156,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: plans.length,
-            itemBuilder: (context, index) {
-              final plan = plans[index];
-              return BannerPlanWidget(
-                category: plan["category"],
-                finishedTask: 0,
-                allTask: 0,
-                onTap: () {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(plan["category"])));
-                },
-              );
-            },
-          ),
+        child: ListView.builder(
+          itemCount: cashflows.length,
+          itemBuilder: (context, index) {
+            final cashflow = cashflows[index];
+            return ItemCashflotwWidget(
+              money: cashflow["money"],
+              title: cashflow["title"],
+              onTap: () {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(cashflow["title"])));
+              },
+            );
+          },
         ),
+        // SizedBox(
+        //   height: 156,
+        //   child: ListView.builder(
+        //     scrollDirection: Axis.horizontal,
+        //     shrinkWrap: true,
+        //     itemCount: plans.length,
+        //     itemBuilder: (context, index) {
+        //       final plan = plans[index];
+        //       return BannerPlanWidget(
+        //         category: plan["category"],
+        //         finishedTask: 0,
+        //         allTask: 0,
+        //         onTap: () {
+        //           ScaffoldMessenger.of(
+        //             context,
+        //           ).showSnackBar(SnackBar(content: Text(plan["category"])));
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ),
         // Row(
         //   mainAxisAlignment: MainAxisAlignment.center,
         //   children: [
