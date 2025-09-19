@@ -1,7 +1,7 @@
 import 'package:b25_pg011_capstone_project/auth_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; // File yang dibuat oleh flutterfire configure
+import 'firebase_options.dart';
 
 void main() async {
   

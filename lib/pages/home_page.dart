@@ -27,7 +27,6 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Gunakan FutureBuilder untuk mendapatkan username dari Firestore
             FutureBuilder<DocumentSnapshot>(
               future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
               builder: (context, snapshot) {
@@ -45,7 +44,7 @@ class HomePage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
-            if (user != null && user.email != null)
+            if (user.email != null)
               Text(
                 'Anda masuk sebagai: ${user.email}',
                 style: const TextStyle(fontSize: 16),
