@@ -1,4 +1,4 @@
-import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -13,14 +13,14 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  List<Map<String, dynamic>> plans = [
-    {
-      "category": "Marketing",
-      "task": "Making 3 Post For Social Media",
-      "done": false,
-    },
-    {"category": "Production", "task": "Evaluasi Produk", "done": false},
-  ];
+  // List<Map<String, dynamic>> plans = [
+  //   {
+  //     "category": "Marketing",
+  //     "task": "Making 3 Post For Social Media",
+  //     "done": false,
+  //   },
+  //   {"category": "Production", "task": "Evaluasi Produk", "done": false},
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -28,22 +28,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ListView.builder(
-          itemCount: plans.length,
-          itemBuilder: (context, index) {
-            final plan = plans[index];
-            return ItemPlanWidget(
-              category: plan["category"],
-              task: plan["task"],
-              isChecked: plan["done"],
-              onChange: (value) {
-                setState(() {
-                  plans[index]["done"] = value ?? false;
-                });
-              },
-            );
-          },
+        child: BannerPlanWidget(
+          category: "Marketing",
+          finishedTask: 12,
+          allTask: 28,
         ),
+        // ListView.builder(
+        //   itemCount: plans.length,
+        //   itemBuilder: (context, index) {
+        //     final plan = plans[index];
+        //     return ItemPlanWidget(
+        //       category: plan["category"],
+        //       task: plan["task"],
+        //       isChecked: plan["done"],
+        //       onChange: (value) {
+        //         setState(() {
+        //           plans[index]["done"] = value ?? false;
+        //         });
+        //       },
+        //     );
+        //   },
+        // ),
         // Row(
         //   mainAxisAlignment: MainAxisAlignment.center,
         //   children: [

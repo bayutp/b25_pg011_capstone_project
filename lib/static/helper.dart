@@ -13,4 +13,13 @@ class Helper {
   );
 
   static String formatCurrency(num value) => _formatter.format(value);
+
+  static String progressText(int finishedTask, int allTask) {
+    if (allTask == 0) {
+      return "0/0 Tasks - 0%";
+    }
+
+    final percent = (finishedTask / allTask) * 100;
+    return "$finishedTask/$allTask Tasks - ${percent.toStringAsFixed(0)}%";
+  }
 }
