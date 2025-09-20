@@ -20,7 +20,10 @@ enum AppColors {
   textGreen("TextGreen", Color(0xFF556B2F)),
 
   textTaskBlack("TextTaskBlack", Color(0xFF383838)),
-  textTaskRed("TextTaskRed", Color(0xFFF2656F));
+  textTaskRed("TextTaskRed", Color(0xFFF2656F)),
+
+  snackbarFailed("TextTaskRed", Color(0xFFF44336)),
+  snackbarSuccess("SnackbarSuccess", Color(0xFF4CAF50));
 
   const AppColors(this.name, this.colors);
   final String name;

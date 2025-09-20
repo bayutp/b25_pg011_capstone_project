@@ -1,5 +1,6 @@
 import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:b25_pg011_capstone_project/widget/date_picker_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -45,8 +46,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: DatePickerWidget(
           onDateChange: (date) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Selected date: ${Helper.formatDate(date)}"),
+              SnackbarWidget(
+                message: "Selected date: ${Helper.formatDate(date)}",
+                success: false,
+                icon: Icons.cancel,
               ),
             );
           },
