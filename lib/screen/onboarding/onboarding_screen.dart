@@ -1,7 +1,10 @@
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../static/navigation_route.dart';
 import '../../widget/button_widget.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -28,13 +31,17 @@ class OnboardingScreen extends StatelessWidget {
                   Text(
                     "Cerdas Catat, Cerdas Rencana",
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.displayMedium,
+                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      color: AppColors.textWhite.colors,
+                    ),
                   ),
                   SizedBox.square(dimension: 20),
                   Text(
                     "Catat penjualan dan atur keuangan usaha agar berkembang lebih berkelanjutan.",
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textWhite.colors,
+                    ),
                   ),
                   SizedBox.square(dimension: 60),
                   ButtonWidget(
@@ -42,12 +49,23 @@ class OnboardingScreen extends StatelessWidget {
                     textColor: AppColors.bgGreen.colors,
                     foregroundColor: AppColors.btnGreen.colors,
                     backgroundColor: AppColors.btnWhite.colors,
-                    onPressed: () {
+                    onPressed: () async {
                       //todo: perlu ada pengecekan firts launch jika memang diperlukan muncul sekali saja
-                      Navigator.pushReplacementNamed(
-                        context,
-                        NavigationRoute.loginRoute.name,
+                      final provider = context.read<UserLocalProvider>();
+                      final user = provider.userLocal;
+                      final isLogin = user?.statusLogin ?? false;
+                      await provider.setStatusUser(
+                        UserLocal(
+                          statusLogin: isLogin,
+                          statusFirstLaunch: false,
+                        ),
                       );
+                      if (context.mounted) {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          NavigationRoute.loginRoute.name,
+                        );
+                      }
                     },
                   ),
                 ],
