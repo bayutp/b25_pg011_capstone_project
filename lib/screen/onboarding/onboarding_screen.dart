@@ -1,4 +1,5 @@
-import 'package:b25_pg011_capstone_project/widget/item_cashflotw_widget.dart';
+import 'package:b25_pg011_capstone_project/static/helper.dart';
+import 'package:b25_pg011_capstone_project/widget/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -13,27 +14,27 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  List<Map<String, dynamic>> plans = [
-    {
-      "category": "Marketing",
-      "task": "Making 3 Post For Social Media",
-      "done": false,
-    },
-    {"category": "Production", "task": "Evaluasi Produk", "done": false},
-    {"category": "Finance", "task": "Evaluasi Produk", "done": false},
-    {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
-  ];
+  // List<Map<String, dynamic>> plans = [
+  //   {
+  //     "category": "Marketing",
+  //     "task": "Making 3 Post For Social Media",
+  //     "done": false,
+  //   },
+  //   {"category": "Production", "task": "Evaluasi Produk", "done": false},
+  //   {"category": "Finance", "task": "Evaluasi Produk", "done": false},
+  //   {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
+  // ];
 
-  List<Map<String, dynamic>> cashflows = [
-    {"title": "Pengeluaran", "money": 10000},
-    {"title": "Pemasukan", "money": 10000},
-    {"title": "Pengeluaran", "money": 10000},
-  ];
+  // List<Map<String, dynamic>> cashflows = [
+  //   {"title": "Pengeluaran", "money": 10000},
+  //   {"title": "Pemasukan", "money": 10000},
+  //   {"title": "Pengeluaran", "money": 10000},
+  // ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      // backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         // child: BannerPlanWidget(
@@ -41,21 +42,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         //   finishedTask: 12,
         //   allTask: 28,
         // ),
-        child: ListView.builder(
-          itemCount: cashflows.length,
-          itemBuilder: (context, index) {
-            final cashflow = cashflows[index];
-            return ItemCashflotwWidget(
-              money: cashflow["money"],
-              title: cashflow["title"],
-              onTap: () {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(cashflow["title"])));
-              },
+        child: DatePickerWidget(
+          onDateChange: (date) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Selected date: ${Helper.formatDate(date)}"),
+              ),
             );
           },
         ),
+        // ListView.builder(
+        //   itemCount: cashflows.length,
+        //   itemBuilder: (context, index) {
+        //     final cashflow = cashflows[index];
+        //     return ItemCashflotwWidget(
+        //       money: cashflow["money"],
+        //       title: cashflow["title"],
+        //       onTap: () {
+        //         ScaffoldMessenger.of(
+        //           context,
+        //         ).showSnackBar(SnackBar(content: Text(cashflow["title"])));
+        //       },
+        //     );
+        //   },
+        // ),
         // SizedBox(
         //   height: 156,
         //   child: ListView.builder(

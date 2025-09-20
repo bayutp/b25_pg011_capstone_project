@@ -22,4 +22,8 @@ class Helper {
     final percent = (finishedTask / allTask) * 100;
     return "$finishedTask/$allTask Tasks - ${percent.toStringAsFixed(0)}%";
   }
+
+  static String formatDate(DateTime date) {
+    return DateFormat('dd MMMM yyyy').format(date);
+  }
 }

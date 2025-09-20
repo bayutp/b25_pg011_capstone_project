@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  date_picker_timeline:
+    dependency: "direct main"
+    description:
+      name: date_picker_timeline
+      sha256: b99308cd224ca42900aa3ba2a75213c8deff6edee35fc18905a7834e8b0d7e70
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.7"
   dbus:
     dependency: transitive
     description:
