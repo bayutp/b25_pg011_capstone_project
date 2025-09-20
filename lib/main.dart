@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
@@ -15,33 +16,47 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
+  final service = SharedpreferencesService(prefs);
+  final user = service.getStatusUser();
   runApp(
     MultiProvider(
       providers: [
-        Provider(create: (context) => SharedpreferencesService(prefs)),
+        Provider(create: (context) => service),
         ChangeNotifierProvider(create: (context) => BottomnavProvider()),
-        ChangeNotifierProvider(
-          create: (context) =>
-              UserLocalProvider(context.read<SharedpreferencesService>()),
-        ),
+        ChangeNotifierProvider(create: (context) => UserLocalProvider(service)),
       ],
-      child: const MyApp(),
+      child: MyApp(user: user),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final UserLocal user;
+  const MyApp({super.key, required this.user});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final String startRoute;
+    final isLoggedIn = user.statusLogin;
+    final isFirstLaunch = user.statusFirstLaunch;
+
+    debugPrint("login: $isLoggedIn app launch: $isFirstLaunch");
+
+    if (isLoggedIn) {
+      startRoute = NavigationRoute.homeRoute.name;
+    } else if (!isLoggedIn && !isFirstLaunch) {
+      startRoute = NavigationRoute.loginRoute.name;
+    } else {
+      startRoute = NavigationRoute.onboardingRoute.name;
+    }
+
     return MaterialApp(
       title: 'Capstone Project',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      initialRoute: NavigationRoute.onboardingRoute.name,
+      initialRoute: startRoute,
       routes: {
         NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),
         NavigationRoute.loginRoute.name: (context) => const LoginScreen(),
