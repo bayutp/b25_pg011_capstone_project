@@ -1,5 +1,5 @@
-import 'package:b25_pg011_capstone_project/pages/home_page.dart';
-import 'package:b25_pg011_capstone_project/pages/login_pages.dart';
+import 'package:b25_pg011_capstone_project/screen/main/home_page.dart';
+import 'package:b25_pg011_capstone_project/screen/login/login_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

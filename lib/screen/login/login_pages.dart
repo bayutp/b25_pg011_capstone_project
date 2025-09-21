@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:b25_pg011_capstone_project/services/auth_service.dart';
-import 'package:b25_pg011_capstone_project/pages/register_page.dart';
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
+import 'package:b25_pg011_capstone_project/screen/register/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

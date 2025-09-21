@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:b25_pg011_capstone_project/services/auth_service.dart';
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
