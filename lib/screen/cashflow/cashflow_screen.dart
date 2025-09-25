@@ -1,8 +1,11 @@
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../static/helper.dart';
 import '../../style/colors/app_colors.dart';
 import '../../widget/banner_cashflow_widget.dart';
+import '../../widget/date_picker_widget.dart';
+import '../../widget/snackbar_widget.dart';
 
 class CashflowScreen extends StatelessWidget {
   const CashflowScreen({super.key});
@@ -18,8 +21,10 @@ class CashflowScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
           child: Column(
             children: [
+              _DatePicker(),
+              SizedBox(height: 29,),
               _BannerCashflow(),
-              SizedBox(height: 16),
+              SizedBox(height: 29),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(
@@ -55,6 +60,25 @@ class CashflowScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DatePicker extends StatelessWidget {
+  const _DatePicker({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DatePickerWidget(
+      onDateChange: (date) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackbarWidget(
+            message: "Selected date: ${Helper.formatDate(date)}",
+            success: false,
+            icon: Icons.cancel,
+          ),
+        );
+      },
     );
   }
 }
