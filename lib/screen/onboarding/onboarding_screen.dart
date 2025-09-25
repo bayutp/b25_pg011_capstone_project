@@ -1,8 +1,9 @@
-import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
-import 'package:b25_pg011_capstone_project/widget/banner_cashflow_widget.dart';
+import 'package:b25_pg011_capstone_project/static/helper.dart';
+import 'package:b25_pg011_capstone_project/widget/date_picker_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   // final _formKey = GlobalKey<FormState>();
   // final _emailController = TextEditingController();
   // final _passwordController = TextEditingController();
@@ -10,32 +11,106 @@ class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
   @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  // List<Map<String, dynamic>> plans = [
+  //   {
+  //     "category": "Marketing",
+  //     "task": "Making 3 Post For Social Media",
+  //     "done": false,
+  //   },
+  //   {"category": "Production", "task": "Evaluasi Produk", "done": false},
+  //   {"category": "Finance", "task": "Evaluasi Produk", "done": false},
+  //   {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
+  // ];
+
+  // List<Map<String, dynamic>> cashflows = [
+  //   {"title": "Pengeluaran", "money": 10000},
+  //   {"title": "Pemasukan", "money": 10000},
+  //   {"title": "Pengeluaran", "money": 10000},
+  // ];
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      // backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: BannerCashflowWidget(
-                title: "Pemasukan",
-                money: 0,
-                color: AppColors.bgBlue.colors,
-                imgAssets: "assets/img/ic_in.png",
+        // child: BannerPlanWidget(
+        //   category: "Marketing",
+        //   finishedTask: 12,
+        //   allTask: 28,
+        // ),
+        child: DatePickerWidget(
+          onDateChange: (date) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackbarWidget(
+                message: "Selected date: ${Helper.formatDate(date)}",
+                success: false,
+                icon: Icons.cancel,
               ),
-            ),
-            Expanded(
-              child: BannerCashflowWidget(
-                title: "Pengeluaran",
-                money: 0,
-                color: AppColors.bgCream.colors,
-                imgAssets: "assets/img/ic_out.png",
-              ),
-            ),
-          ],
+            );
+          },
         ),
+        // ListView.builder(
+        //   itemCount: cashflows.length,
+        //   itemBuilder: (context, index) {
+        //     final cashflow = cashflows[index];
+        //     return ItemCashflotwWidget(
+        //       money: cashflow["money"],
+        //       title: cashflow["title"],
+        //       onTap: () {
+        //         ScaffoldMessenger.of(
+        //           context,
+        //         ).showSnackBar(SnackBar(content: Text(cashflow["title"])));
+        //       },
+        //     );
+        //   },
+        // ),
+        // SizedBox(
+        //   height: 156,
+        //   child: ListView.builder(
+        //     scrollDirection: Axis.horizontal,
+        //     shrinkWrap: true,
+        //     itemCount: plans.length,
+        //     itemBuilder: (context, index) {
+        //       final plan = plans[index];
+        //       return BannerPlanWidget(
+        //         category: plan["category"],
+        //         finishedTask: 0,
+        //         allTask: 0,
+        //         onTap: () {
+        //           ScaffoldMessenger.of(
+        //             context,
+        //           ).showSnackBar(SnackBar(content: Text(plan["category"])));
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     Expanded(
+        //       child: BannerCashflowWidget(
+        //         title: "Pemasukan",
+        //         money: 0,
+        //         color: AppColors.bgBlue.colors,
+        //         imgAssets: "assets/img/ic_in.png",
+        //       ),
+        //     ),
+        //     Expanded(
+        //       child: BannerCashflowWidget(
+        //         title: "Pengeluaran",
+        //         money: 0,
+        //         color: AppColors.bgCream.colors,
+        //         imgAssets: "assets/img/ic_out.png",
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
       // child: ButtonWidget(
       //   title: "Mulai Sekarang",
