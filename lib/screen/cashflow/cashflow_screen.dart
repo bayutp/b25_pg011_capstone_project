@@ -5,6 +5,7 @@ import '../../static/helper.dart';
 import '../../style/colors/app_colors.dart';
 import '../../widget/banner_cashflow_widget.dart';
 import '../../widget/date_picker_widget.dart';
+import '../../widget/item_cashflotw_widget.dart';
 import '../../widget/snackbar_widget.dart';
 
 class CashflowScreen extends StatelessWidget {
@@ -22,7 +23,7 @@ class CashflowScreen extends StatelessWidget {
           child: Column(
             children: [
               _DatePicker(),
-              SizedBox(height: 29,),
+              SizedBox(height: 29),
               _BannerCashflow(),
               SizedBox(height: 29),
               Padding(
@@ -55,10 +56,54 @@ class CashflowScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-              _EmptyCashflow(),
+              _CashflowList(),
+              SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: ButtonWidget(
+                  title: "Tambah Data",
+                  textColor: AppColors.btnTextWhite.colors,
+                  foregroundColor: AppColors.bgSoftGreen.colors,
+                  backgroundColor: AppColors.btnGreen.colors,
+                  onPressed: () {},
+                ),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _CashflowList extends StatelessWidget {
+  final List<Map<String, dynamic>> cashflows = [
+    {"title": "Pengeluaran", "money": 5000},
+    {"title": "Pemasukan", "money": 10000},
+    {"title": "Pengeluaran", "money": 5000},
+  ];
+
+  _CashflowList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: cashflows.length,
+        itemBuilder: (context, index) {
+          final cashflow = cashflows[index];
+          return ItemCashflotwWidget(
+            money: cashflow["money"],
+            title: cashflow["title"],
+            onTap: () {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(cashflow["title"])));
+            },
+          );
+        },
       ),
     );
   }
@@ -141,14 +186,6 @@ class _EmptyCashflow extends StatelessWidget {
               color: AppColors.textGrey.colors,
               fontSize: 14,
             ),
-          ),
-          SizedBox(height: 24),
-          ButtonWidget(
-            title: "Tambah Data",
-            textColor: AppColors.btnTextWhite.colors,
-            foregroundColor: AppColors.bgSoftGreen.colors,
-            backgroundColor: AppColors.btnGreen.colors,
-            onPressed: () {},
           ),
         ],
       ),
