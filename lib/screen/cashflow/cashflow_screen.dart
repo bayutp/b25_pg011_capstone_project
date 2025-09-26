@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -65,7 +66,12 @@ class CashflowScreen extends StatelessWidget {
                   textColor: AppColors.btnTextWhite.colors,
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.btnGreen.colors,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.addCashflow.name,
+                    );
+                  },
                 ),
               ),
             ],
