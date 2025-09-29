@@ -102,28 +102,32 @@ class _TransactionType extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<TransactionTypeProvider>(
       builder: (context, value, child) {
-        return RadioGroup<TransactionType>(
-          onChanged: value.setType,
-          groupValue: value.transactionType,
-          child: Row(
-            children: [
-              Radio<TransactionType>(value: TransactionType.income),
-              Text(
-                "Pemasukan",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontSize: 12),
-              ),
-              SizedBox(width: 8),
-              Radio<TransactionType>(value: TransactionType.expense),
-              Text(
-                "Pengeluaran",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontSize: 12),
-              ),
-            ],
-          ),
+        return Row(
+          children: [
+            Radio<TransactionType>(
+              value: TransactionType.income,
+              groupValue: value.transactionType,
+              onChanged: value.setType,
+            ),
+            Text(
+              "Pemasukan",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontSize: 12),
+            ),
+            SizedBox(width: 8),
+            Radio<TransactionType>(
+              value: TransactionType.expense,
+              groupValue: value.transactionType,
+              onChanged: value.setType,
+            ),
+            Text(
+              "Pengeluaran",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontSize: 12),
+            ),
+          ],
         );
       },
     );
