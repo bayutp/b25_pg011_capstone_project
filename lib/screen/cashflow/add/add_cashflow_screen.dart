@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../../../style/colors/app_colors.dart';
 
 class AddCashflowScreen extends StatefulWidget {
-
   const AddCashflowScreen({super.key});
 
   @override
@@ -35,7 +34,12 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(left: 18.0, right: 18, top: 70, bottom: 18),
+          padding: const EdgeInsets.only(
+            left: 18.0,
+            right: 18,
+            top: 70,
+            bottom: 18,
+          ),
           child: Form(
             key: _formKey,
             child: Column(
@@ -44,9 +48,10 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
               children: [
                 Text(
                   "Jenis",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontSize: 16, color: AppColors.textBlack.colors),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 16,
+                    color: AppColors.textBlack.colors,
+                  ),
                 ),
                 SizedBox(height: 18),
                 _TransactionType(),
@@ -101,28 +106,32 @@ class _TransactionType extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<TransactionTypeProvider>(
       builder: (context, value, child) {
-        return RadioGroup<TransactionType>(
-          onChanged: value.setType,
-          groupValue: value.transactionType,
-          child: Row(
-            children: [
-              Radio<TransactionType>(value: TransactionType.income),
-              Text(
-                "Pemasukan",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontSize: 12),
-              ),
-              SizedBox(width: 8),
-              Radio<TransactionType>(value: TransactionType.expense),
-              Text(
-                "Pengeluaran",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontSize: 12),
-              ),
-            ],
-          ),
+        return Row(
+          children: [
+            Radio<TransactionType>(
+              value: TransactionType.income,
+              groupValue: value.transactionType,
+              onChanged: value.setType,
+            ),
+            Text(
+              "Pemasukan",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontSize: 12),
+            ),
+            SizedBox(width: 8),
+            Radio<TransactionType>(
+              value: TransactionType.expense,
+              groupValue: value.transactionType,
+              onChanged: value.setType,
+            ),
+            Text(
+              "Pengeluaran",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontSize: 12),
+            ),
+          ],
         );
       },
     );
