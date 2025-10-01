@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../../../style/colors/app_colors.dart';
 
 class AddCashflowScreen extends StatefulWidget {
-
   const AddCashflowScreen({super.key});
 
   @override
@@ -35,7 +34,12 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(left: 18.0, right: 18, top: 70, bottom: 18),
+          padding: const EdgeInsets.only(
+            left: 18.0,
+            right: 18,
+            top: 70,
+            bottom: 18,
+          ),
           child: Form(
             key: _formKey,
             child: Column(
@@ -44,18 +48,15 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
               children: [
                 Text(
                   "Jenis",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontSize: 16, color: AppColors.textBlack.colors),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 16,
+                    color: AppColors.textBlack.colors,
+                  ),
                 ),
                 SizedBox(height: 18),
                 _TransactionType(),
                 SizedBox(height: 28),
-                TextFormFieldWidget(
-                  controller: _dateController,
-                  label: "Pilih Tanggal",
-                  obscureText: false,
-                ),
+                _PickedDate(dateController: _dateController),
                 SizedBox(height: 28),
                 TextFormFieldWidget(
                   controller: _expenseController,
@@ -125,6 +126,45 @@ class _TransactionType extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _PickedDate extends StatefulWidget {
+  final TextEditingController dateController;
+
+  const _PickedDate({super.key, required this.dateController});
+
+  @override
+  State<_PickedDate> createState() => _PickedDateState();
+}
+
+class _PickedDateState extends State<_PickedDate> {
+
+  Future<void> _selectDate() async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      locale: const Locale("id", "ID"),
+    );
+
+    if (picked != null) {
+      setState(() {
+        widget.dateController.text = "${picked.day}/${picked.month}/${picked.year}";
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormFieldWidget(
+      controller: widget.dateController,
+      label: "Pilih Tanggal",
+      obscureText: false,
+      readOnly: true,
+      onTap: _selectDate,
     );
   }
 }

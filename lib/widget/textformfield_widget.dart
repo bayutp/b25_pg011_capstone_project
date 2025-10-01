@@ -5,6 +5,8 @@ class TextFormFieldWidget extends StatefulWidget {
   final String label;
   final String? Function(String?)? validator;
   final bool obscureText;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   const TextFormFieldWidget({
     super.key,
@@ -12,6 +14,8 @@ class TextFormFieldWidget extends StatefulWidget {
     required this.label,
     this.validator,
     required this.obscureText,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
@@ -47,6 +51,8 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
+      onTap: widget.onTap,
+      readOnly: widget.readOnly,
     );
   }
 }
