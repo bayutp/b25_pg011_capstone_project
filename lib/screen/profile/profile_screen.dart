@@ -1,4 +1,5 @@
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
+import 'package:b25_pg011_capstone_project/widget/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/cardbutton_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/bottomnav_widget.dart';
@@ -29,7 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Judul Halaman
               const Text(
                 'Profile',
                 style: TextStyle(
@@ -84,7 +84,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               CardButtonWidget(
                 title: 'Hapus Akun',
                 onPressed: () {
-                  print('Tombol Hapus Akun ditekan');
+                  showAppConfirmationDialog(
+                    context: context,
+                    title: 'Hapus Akun',
+                    content: 'Anda yakin ingin menghapus akun ini?',
+                    confirmButtonText: 'Saya Yakin!',
+                    cancelButtonText: 'Batal',
+                    onConfirm: () {
+                      print('Akun dihapus!');
+                    },
+                  );
                 },
               ),
 
@@ -93,7 +102,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               CardButtonWidget(
                 title: 'Log Out',
                 onPressed: () {
-                  print('Tombol Log Out ditekan');
+                  showAppConfirmationDialog(
+                    context: context,
+                    title: 'Log Out',
+                    content: 'Anda yakin ingin keluar dari akun?',
+                    confirmButtonText: 'Ya, Keluar',
+                    cancelButtonText: 'Batal', 
+                    onConfirm: () {
+                      print('User logout!');
+                    },
+                  );
                 },
               ),
               const SizedBox(height: 20),
