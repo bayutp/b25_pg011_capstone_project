@@ -1,12 +1,18 @@
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
+
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
+
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
+
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
+
 import 'package:b25_pg011_capstone_project/style/theme/app_theme.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,12 +47,13 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      initialRoute: NavigationRoute.onboardingRoute.name,
+      initialRoute: NavigationRoute.profileRoute.name,
       routes: {
         NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),
         NavigationRoute.loginRoute.name: (context) => const LoginScreen(),
         NavigationRoute.registerRoute.name: (context) => const RegisterScreen(),
         NavigationRoute.homeRoute.name: (context) => const MainScreen(),
+        NavigationRoute.profileRoute.name: (context) => const ProfileScreen(),
       },
     );
   }

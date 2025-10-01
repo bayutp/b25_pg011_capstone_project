@@ -4,7 +4,9 @@ enum NavigationRoute {
   loginRoute("/login"),
   registerRoute("/register"),
   planDetail("/planDetail"),
-  cashFlowDetail("/cashFlowDetail");
+  cashFlowDetail("/cashFlowDetail"),
+  profileRoute("/profile");
+
 
   const NavigationRoute(this.name);
   final String name;
