@@ -104,13 +104,97 @@ class _CashflowList extends StatelessWidget {
             money: cashflow["money"],
             title: cashflow["title"],
             onTap: () {
-              ScaffoldMessenger.of(
+              showCashflowDetailDialog(
                 context,
-              ).showSnackBar(SnackBar(content: Text(cashflow["title"])));
+                cashflow["title"],
+                cashflow["money"],
+              );
             },
           );
         },
       ),
+    );
+  }
+
+  void showCashflowDetailDialog(
+    BuildContext context,
+    String title,
+    num expense,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Detail Cashflow',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge?.copyWith(fontSize: 16),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Icon(Icons.close, size: 20),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+
+                // Jenis Cashflow
+                Row(
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: AppColors.bgGreen.colors,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+
+                // Nominal
+                Text(
+                  Helper.formatCurrency(expense),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontSize: 16),
+                ),
+                SizedBox(height: 16),
+
+                // Keterangan
+                Text(
+                  'Keterangan :',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: 4),
+                Text('• Modal Bahan', style: TextStyle(fontSize: 14)),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
