@@ -62,6 +62,7 @@ class CashflowScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: ButtonWidget(
+                  key: const Key('tambah_data_button'),
                   title: "Tambah Data",
                   textColor: AppColors.btnTextWhite.colors,
                   foregroundColor: AppColors.bgSoftGreen.colors,
