@@ -18,12 +18,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, // Pastikan file firebase_options.dart ada
+  );
+
+  await FirebaseAppCheck.instance.activate(
+    // Untuk web, bisa dilewati jika tidak ada
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'), 
+    // PENTING: Gunakan 'debug' untuk development di Android Emulator
+    androidProvider: AndroidProvider.debug, 
+    // PENTING: Gunakan 'debug' untuk development di iOS Simulator
+    appleProvider: AppleProvider.debug,
+  );
 
   final prefs = await SharedPreferences.getInstance();
   final service = SharedpreferencesService(prefs);
   final user = service.getStatusUser();
+  
   runApp(
     MultiProvider(
       providers: [

@@ -12,13 +12,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _selectedIndex = 3; // Dimulai dari index 3 (Profil)
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,11 +111,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
-      ),
-
-      bottomNavigationBar: BottomnavWidget(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
       ),
     );
   }
