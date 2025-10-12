@@ -1,8 +1,11 @@
 import 'package:b25_pg011_capstone_project/data/model/transaction_type.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/textformfield_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../style/colors/app_colors.dart';
@@ -25,6 +28,11 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final transactionType =
+        context.watch<TransactionTypeProvider>().transactionType ==
+            TransactionType.expense
+        ? "Pengeluaran"
+        : "Pemasukan";
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -60,14 +68,36 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                 SizedBox(height: 28),
                 TextFormFieldWidget(
                   controller: _expenseController,
-                  label: "Total Pengeluaran",
+                  label: "Total $transactionType",
                   obscureText: false,
+                  inputFormatters: [
+                    CurrencyInputFormatter(
+                      leadingSymbol: 'Rp ',
+                      useSymbolPadding: true,
+                      thousandSeparator: ThousandSeparator.Period,
+                      mantissaLength: 0,
+                    ),
+                  ],
+                  validator: (value) {
+                    final numericString = toNumericString(value);
+                    if (numericString.isEmpty ||
+                        double.tryParse(numericString) == 0.0) {
+                      return 'Total $transactionType harus lebih dari 0';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 28),
                 TextFormFieldWidget(
                   controller: _noteController,
                   label: "Keterangan",
                   obscureText: false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Keterangan tidak boleh kosong';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 50),
                 ButtonWidget(
@@ -75,7 +105,11 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                   textColor: AppColors.btnTextWhite.colors,
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.bgGreen.colors,
-                  onPressed: () {},
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _saveCashflow();
+                    }
+                  },
                 ),
               ],
             ),
@@ -93,41 +127,110 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
     _expenseController.dispose();
     _noteController.dispose();
   }
+
+  void _saveCashflow() async {
+    final service = context.read<FirebaseFirestoreService>();
+    final typeProvider = context.read<TransactionTypeProvider>();
+    final type = typeProvider.transactionType == TransactionType.income
+        ? "income"
+        : "expense";
+    final dateParts = _dateController.text.split('/');
+    final day = int.parse(dateParts[0]);
+    final month = int.parse(dateParts[1]);
+    final year = int.parse(dateParts[2]);
+    final now = DateTime.now();
+    final date = DateTime(year, month, day, now.hour, now.minute, now.second);
+    final amount =
+        double.tryParse(toNumericString(_expenseController.text)) ?? 0.0;
+    final note = _noteController.text;
+
+    try {
+      await service.addCashflow(
+        UserCashflow(
+          businessId: "N9eTsVw6rtKE8eWROmGC",
+          userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+          amount: amount,
+          type: type,
+          note: note,
+          date: date,
+          createdBy: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+          createdAt: DateTime.now(),
+        ),
+      );
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal menambahkan data cashflow')),
+        );
+      }
+      return;
+    }
+  }
 }
 
 class _TransactionType extends StatelessWidget {
-  const _TransactionType({super.key});
+  const _TransactionType();
 
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionTypeProvider>(
       builder: (context, value, child) {
-        return Row(
-          children: [
-            Radio<TransactionType>(
-              value: TransactionType.income,
-              groupValue: value.transactionType,
-              onChanged: value.setType,
-            ),
-            Text(
-              "Pemasukan",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontSize: 12),
-            ),
-            SizedBox(width: 8),
-            Radio<TransactionType>(
-              value: TransactionType.expense,
-              groupValue: value.transactionType,
-              onChanged: value.setType,
-            ),
-            Text(
-              "Pengeluaran",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontSize: 12),
-            ),
-          ],
+        return FormField<TransactionType>(
+          validator: (value) {
+            if (value == null) {
+              return 'Jenis transaksi harus dipilih';
+            }
+            return null;
+          },
+          builder: (formKey) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RadioGroup<TransactionType>(
+                  groupValue: value.transactionType,
+                  onChanged: (value) {
+                    if (value != null) {
+                      context.read<TransactionTypeProvider>().setType(value);
+                      formKey.didChange(value);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Radio<TransactionType>(value: TransactionType.income),
+                      Text(
+                        "Pemasukan",
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleLarge?.copyWith(fontSize: 12),
+                      ),
+                      SizedBox(width: 8),
+                      Radio<TransactionType>(value: TransactionType.expense),
+                      Text(
+                        "Pengeluaran",
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleLarge?.copyWith(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                if (formKey.hasError)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, left: 12.0),
+                    child: Text(
+                      formKey.errorText ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
         );
       },
     );
@@ -137,14 +240,13 @@ class _TransactionType extends StatelessWidget {
 class _PickedDate extends StatefulWidget {
   final TextEditingController dateController;
 
-  const _PickedDate({super.key, required this.dateController});
+  const _PickedDate({required this.dateController});
 
   @override
   State<_PickedDate> createState() => _PickedDateState();
 }
 
 class _PickedDateState extends State<_PickedDate> {
-
   Future<void> _selectDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -156,7 +258,8 @@ class _PickedDateState extends State<_PickedDate> {
 
     if (picked != null) {
       setState(() {
-        widget.dateController.text = "${picked.day}/${picked.month}/${picked.year}";
+        widget.dateController.text =
+            "${picked.day}/${picked.month}/${picked.year}";
       });
     }
   }
@@ -169,6 +272,12 @@ class _PickedDateState extends State<_PickedDate> {
       obscureText: false,
       readOnly: true,
       onTap: _selectDate,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Tanggal tidak boleh kosong';
+        }
+        return null;
+      },
     );
   }
 }
