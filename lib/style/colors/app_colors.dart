@@ -7,6 +7,7 @@ enum AppColors {
   bgBlue("BgBlue", Color(0xFFDDECF2)),
   bgCream("BgCream", Color(0xFFFFF3D6)),
   bgGrey("BgGrey", Color(0xFFE8E8E8)),
+  bgPink("BgPink", Color(0xFFFAEFF8)),
 
   btnTextGreen("BtnTextGreen", Color(0xFF5E7F0F)),
   btnTextWhite("BtnTextWhite", Color(0xFFFFFFFF)),
@@ -20,7 +21,10 @@ enum AppColors {
   textGreen("TextGreen", Color(0xFF556B2F)),
 
   textTaskBlack("TextTaskBlack", Color(0xFF383838)),
-  textTaskRed("TextTaskRed", Color(0xFFF2656F));
+  textTaskRed("TextTaskRed", Color(0xFFF2656F)),
+
+  snackbarFailed("TextTaskRed", Color(0xFFF44336)),
+  snackbarSuccess("SnackbarSuccess", Color(0xFF4CAF50));
 
   const AppColors(this.name, this.colors);
   final String name;

@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/widgets.dart';
 
 class AppTextStyle {
@@ -119,4 +120,28 @@ class AppTextStyle {
     height: 1.2,
     letterSpacing: 1.3,
   );
+
+  static TextStyle dayTextStyle(BuildContext context) {
+    return _commonStyle.copyWith(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      color: AppColors.textGrey.colors,
+    );
+  }
+
+  static TextStyle monthTextStyle(BuildContext context) {
+    return _commonStyle.copyWith(
+      fontSize: 10,
+      fontWeight: FontWeight.w400,
+      color: AppColors.textGrey.colors,
+    );
+  }
+
+  static TextStyle dateTextStyle(BuildContext context) {
+    return _commonStyle.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: AppColors.textGrey.colors,
+    );
+  }
 }
