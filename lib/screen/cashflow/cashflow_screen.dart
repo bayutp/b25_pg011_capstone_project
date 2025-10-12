@@ -320,7 +320,7 @@ class _BannerCashflow extends StatelessWidget {
               final totalIncome = Provider.of<num>(context);
               return BannerCashflowWidget(
                 title: "Pemasukan",
-                money: int.tryParse(totalIncome.toString()) ?? 0,
+                money: totalIncome.toInt(),
                 color: AppColors.bgSoftGreen.colors,
                 imgAssets: "assets/img/ic_in.png",
               );
@@ -346,7 +346,7 @@ class _BannerCashflow extends StatelessWidget {
               final totalExpense = Provider.of<num>(context);
               return BannerCashflowWidget(
                 title: "Pengeluaran",
-                money: int.tryParse(totalExpense.toString()) ?? 0,
+                money: totalExpense.toInt(),
                 color: AppColors.bgCream.colors,
                 imgAssets: "assets/img/ic_out.png",
               );
