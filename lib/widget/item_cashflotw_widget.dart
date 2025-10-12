@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class ItemCashflotwWidget extends StatelessWidget {
   final String title;
-  final int money;
+  final num money;
   final Function() onTap;
 
   const ItemCashflotwWidget({
