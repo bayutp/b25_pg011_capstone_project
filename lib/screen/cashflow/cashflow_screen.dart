@@ -294,8 +294,7 @@ class _DatePicker extends StatelessWidget {
 
 class _BannerCashflow extends StatelessWidget {
   final DateTime selectedDate;
-  const _BannerCashflow({Key? key, required this.selectedDate})
-    : super(key: key);
+  const _BannerCashflow({super.key, required this.selectedDate});
 
   @override
   Widget build(BuildContext context) {
