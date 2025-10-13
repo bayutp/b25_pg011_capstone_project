@@ -19,7 +19,7 @@ class BannerPlanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.7,
+      width: MediaQuery.of(context).size.width * 0.75,
       child: Card(
         color: AppColors.bgGreen.colors,
         shape: RoundedRectangleBorder(
@@ -33,25 +33,26 @@ class BannerPlanWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 52,
-                    left: 15,
-                    top: 34,
-                  ),
+                  padding: const EdgeInsets.only(bottom: 52, left: 15, top: 34),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         Helper.progressText(finishedTask, allTask),
-                        style: Theme.of(context).textTheme.titleSmall,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.textWhite.colors,
+                        ),
                       ),
                       SizedBox(height: 8),
                       Text(
                         category,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleLarge?.copyWith(fontSize: 24),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontSize: 24,
+                          color: AppColors.textWhite.colors,
+                        ),
                       ),
                     ],
                   ),

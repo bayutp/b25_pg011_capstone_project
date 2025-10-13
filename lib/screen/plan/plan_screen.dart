@@ -1,4 +1,5 @@
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
+import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/date_picker_widget.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ class PlanScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             children: [
-              _EmptyPlaningWidget(),
+              // _EmptyPlaningWidget(),
+              _PlanListWidget(),
               const SizedBox(height: 39),
               _TotalTaskWidget(),
               const SizedBox(height: 28),
@@ -43,6 +45,39 @@ class PlanScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _PlanListWidget extends StatelessWidget {
+  const _PlanListWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, dynamic>> plans = [
+      {"category": "Marketing", "finisedTask": 12, "allTask": 20},
+      {"category": "Management", "finisedTask": 3, "allTask": 7},
+      {"category": "Sales", "finisedTask": 6, "allTask": 12},
+      {"category": "Support", "finisedTask": 2, "allTask": 5},
+      {"category": "HR", "finisedTask": 1, "allTask": 4},
+      {"category": "Finance", "finisedTask": 7, "allTask": 14},
+      {"category": "IT", "finisedTask": 9, "allTask": 18},
+    ];
+    return SizedBox(
+      height: 156,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: plans.length,
+        itemBuilder: (context, index) {
+          final plan = plans[index];
+          return BannerPlanWidget(
+            category: plan['category'],
+            finishedTask: 12,
+            allTask: 20,
+            onTap: () {},
+          );
+        },
       ),
     );
   }
