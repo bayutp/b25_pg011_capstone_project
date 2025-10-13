@@ -23,8 +23,8 @@ class PlanScreen extends StatelessWidget {
               const SizedBox(height: 28),
               _DatePickerWidget(),
               const SizedBox(height: 35),
-              // _StatusTaskWidget(),
-              // const SizedBox(height: 28),
+              _StatusTaskWidget(),
+              const SizedBox(height: 28),
               _EmptyTaskWidget(),
               SizedBox(height: 24),
               Padding(
@@ -138,6 +138,70 @@ class _DatePickerWidget extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _StatusTaskWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: DefaultTabController(
+        length: 3,
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TabBar(
+            labelColor: AppColors.bgGreen.colors,
+            unselectedLabelColor: Colors.grey[400],
+            indicator: BoxDecoration(
+              color: AppColors.bgSoftGreen.colors,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            indicatorSize: TabBarIndicatorSize.tab,
+            dividerColor: Colors.transparent,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 6),
+            overlayColor: WidgetStateProperty.all(Colors.transparent),
+            splashFactory: NoSplash.splashFactory,
+            tabs: [
+              Tab(
+                child: Text(
+                  "On Progress",
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "Completed",
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "Pending",
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
