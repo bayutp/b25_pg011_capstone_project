@@ -3,6 +3,7 @@ import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -25,6 +26,8 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
   final _dateController = TextEditingController();
 
   final _noteController = TextEditingController();
+
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +105,7 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                 SizedBox(height: 50),
                 ButtonWidget(
                   title: "Tambahkan Data",
+                  isLoading: _isLoading,
                   textColor: AppColors.btnTextWhite.colors,
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.bgGreen.colors,
@@ -128,7 +132,7 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
     _noteController.dispose();
   }
 
-  void _saveCashflow() async {
+  Future<void> _saveCashflow() async {
     final service = context.read<FirebaseFirestoreService>();
     final typeProvider = context.read<TransactionTypeProvider>();
     final type = typeProvider.transactionType == TransactionType.income
@@ -144,6 +148,10 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
         double.tryParse(toNumericString(_expenseController.text)) ?? 0.0;
     final note = _noteController.text;
 
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       await service.addCashflow(
         UserCashflow(
@@ -158,15 +166,32 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
         ),
       );
       if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackbarWidget(
+            message: "Data Berhasil disimpan",
+            success: true,
+            icon: Icons.check_circle_rounded,
+          ),
+        );
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menambahkan data cashflow')),
+          SnackbarWidget(
+            message: "Data Gagal disimpan",
+            success: false,
+            icon: Icons.cancel_rounded,
+          ),
         );
       }
       return;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 }
