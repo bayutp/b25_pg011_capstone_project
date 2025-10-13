@@ -5,7 +5,7 @@ class ButtonWidget extends StatelessWidget {
   final Color textColor;
   final Color foregroundColor;
   final Color backgroundColor;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const ButtonWidget({
     super.key,
