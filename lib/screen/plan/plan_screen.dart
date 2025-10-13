@@ -2,6 +2,7 @@ import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/date_picker_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
 
 class PlanScreen extends StatelessWidget {
@@ -18,7 +19,7 @@ class PlanScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             children: [
-              // _EmptyPlaningWidget(),
+              // _EmptyPlanWidget(),
               _PlanListWidget(),
               const SizedBox(height: 39),
               _TotalTaskWidget(),
@@ -27,8 +28,9 @@ class PlanScreen extends StatelessWidget {
               const SizedBox(height: 35),
               _StatusTaskWidget(),
               const SizedBox(height: 28),
-              _EmptyTaskWidget(),
-              SizedBox(height: 24),
+              // _EmptyTaskWidget(),
+              _TaskListWidget(),
+              const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: ButtonWidget(
@@ -83,7 +85,7 @@ class _PlanListWidget extends StatelessWidget {
   }
 }
 
-class _EmptyPlaningWidget extends StatelessWidget {
+class _EmptyPlanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -271,6 +273,56 @@ class _EmptyTaskWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TaskListWidget extends StatelessWidget {
+  const _TaskListWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, dynamic>> tasks = [
+      {
+        "category": "Marketing",
+        "task": "Making 3 Post For Social Media",
+        "done": false,
+      },
+      {"category": "Management", "task": "Meeting With Team", "done": false},
+      {
+        "category": "Sales",
+        "task": "Contact 10 Prospective Clients",
+        "done": false,
+      },
+      {
+        "category": "Support",
+        "task": "Respond to Customer Emails",
+        "done": false,
+      },
+      {
+        "category": "HR",
+        "task": "Organize Team Building Activity",
+        "done": false,
+      },
+      {"category": "Production", "task": "Evaluasi Produk", "done": true},
+      {"category": "Finance", "task": "Evaluasi Produk", "done": false},
+      {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          final task = tasks[index];
+          return ItemPlanWidget(
+            task: task['task'],
+            category: task['category'],
+            isChecked: task['done'],
+            onChange: (bool? value) {},
+          );
+        },
       ),
     );
   }
