@@ -2,7 +2,6 @@ import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.da
 import 'package:b25_pg011_capstone_project/widget/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/cardbutton_widget.dart';
-import 'package:b25_pg011_capstone_project/widget/bottomnav_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

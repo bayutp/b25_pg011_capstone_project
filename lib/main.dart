@@ -7,6 +7,7 @@ import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
+import 'package:b25_pg011_capstone_project/service/authwrapper_service.dart';
 
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 
@@ -80,7 +81,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      initialRoute: startRoute,
+      home: AuthWrapper(),
       routes: {
         NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),
         NavigationRoute.loginRoute.name: (context) => const LoginScreen(),

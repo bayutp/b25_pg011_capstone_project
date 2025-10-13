@@ -2,6 +2,7 @@
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
@@ -114,6 +115,22 @@ Future<void> _login() async {
               ),
               obscureText: true, // Menyembunyikan teks password
             ),
+            const SizedBox(height: 24),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Belum punya akun ?"),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed(NavigationRoute.registerRoute.name);
+                    },
+                    child: const Text(
+                      "Registrasi",
+                      style: TextStyle(color: Color(0xFF6B8E23)),
+                    ),
+                  ),
+                ],
+              ),
             const SizedBox(height: 24),
             ElevatedButton(
               // Jika sedang loading, tombol tidak bisa ditekan
