@@ -1,4 +1,4 @@
-import 'package:b25_pg011_capstone_project/screen/main/home_page.dart';
+import 'package:b25_pg011_capstone_project/screen/home/home_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/login/login_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +17,7 @@ class AuthWrapper extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasData) {
-          return const HomePage();
+          return const HomeScreen();
         } else {
           return const LoginPage();
         }

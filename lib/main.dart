@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
+      debugShowCheckedModeBanner: false,
       initialRoute: NavigationRoute.homeRoute.name,
       routes: {
         NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),

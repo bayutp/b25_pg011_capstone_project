@@ -1,6 +1,6 @@
+import 'package:b25_pg011_capstone_project/screen/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
-import 'package:b25_pg011_capstone_project/screen/main/home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -180,7 +180,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       
                       if (userCredential != null) {
                         Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => const HomePage()),
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
                         );
                       }
                     },
