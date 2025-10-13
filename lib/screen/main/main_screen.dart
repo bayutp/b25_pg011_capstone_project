@@ -15,7 +15,6 @@ class MainScreen extends StatelessWidget {
     return Consumer<BottomnavProvider>(
       builder: (context, navProvider, child) {
         return Scaffold(
-          // AppBar dihilangkan. Konten body akan mengambil seluruh ruang yang tersedia.
           body: switch (navProvider.getIndex) {
             0 => const HomeScreen(),
             1 => const PlanScreen(),
