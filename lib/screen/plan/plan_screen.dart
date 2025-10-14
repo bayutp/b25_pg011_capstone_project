@@ -40,7 +40,7 @@ class PlanScreen extends StatelessWidget {
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.btnGreen.colors,
                   onPressed: () {
-                    // Handle button press
+                    Navigator.pushNamed(context, '/addTask');
                   },
                 ),
               ),
@@ -53,7 +53,7 @@ class PlanScreen extends StatelessWidget {
 }
 
 class _PlanListWidget extends StatelessWidget {
-  const _PlanListWidget({super.key});
+  const _PlanListWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +129,7 @@ class _EmptyPlanWidget extends StatelessWidget {
 }
 
 class _TotalTaskWidget extends StatelessWidget {
-  const _TotalTaskWidget({super.key});
+  const _TotalTaskWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +166,7 @@ class _TotalTaskWidget extends StatelessWidget {
 }
 
 class _DatePickerWidget extends StatelessWidget {
-  const _DatePickerWidget({super.key});
+  const _DatePickerWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -285,7 +285,7 @@ class _EmptyTaskWidget extends StatelessWidget {
 }
 
 class _TaskListWidget extends StatelessWidget {
-  const _TaskListWidget({super.key});
+  const _TaskListWidget();
 
   @override
   Widget build(BuildContext context) {

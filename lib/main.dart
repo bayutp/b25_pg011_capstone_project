@@ -4,12 +4,14 @@ import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dar
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
-import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail.dart';
+import 'package:b25_pg011_capstone_project/screen/plan/add/add_todo_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/style/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,9 +67,19 @@ class MyApp extends StatelessWidget {
         NavigationRoute.homeRoute.name: (context) => const MainScreen(),
         NavigationRoute.planDetailRoute.name: (context) {
           final args = ModalRoute.of(context)!.settings.arguments as String;
-          return PlanDetail(planTitle: args);
+          return PlanDetailScreen(planTitle: args);
         },
+        NavigationRoute.addTaskRoute.name: (context) => const AddTodoScreen(),
       },
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'), // default
+        Locale('id', 'ID'), // Indonesia
+      ],
     );
   }
 }

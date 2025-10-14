@@ -4,9 +4,9 @@ import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
 
-class PlanDetail extends StatelessWidget {
+class PlanDetailScreen extends StatelessWidget {
   final String planTitle;
-  const PlanDetail({super.key, required this.planTitle});
+  const PlanDetailScreen({super.key, required this.planTitle});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class PlanDetail extends StatelessWidget {
 }
 
 class _PlanListWidget extends StatelessWidget {
-  const _PlanListWidget({super.key});
+  const _PlanListWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +172,7 @@ class _EmptyTaskWidget extends StatelessWidget {
 }
 
 class _TaskListWidget extends StatelessWidget {
-  const _TaskListWidget({super.key});
+  const _TaskListWidget();
 
   @override
   Widget build(BuildContext context) {
