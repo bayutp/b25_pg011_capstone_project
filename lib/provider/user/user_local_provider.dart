@@ -17,7 +17,8 @@ class UserLocalProvider extends ChangeNotifier {
     try {
       await _service.setStatusUser(user);
       _userLocal = user;
-      _message = "Status login ${_service.getStatusUser().statusLogin} first app launch ${_service.getStatusUser().statusFirstLaunch}";
+      _message =
+          "Status login ${_service.getStatusUser().statusLogin} first app launch ${_service.getStatusUser().statusFirstLaunch}";
     } catch (e) {
       _message = "Failed to change user status";
     }

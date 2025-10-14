@@ -38,11 +38,17 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: _PickedDate(dateController: _startDateController),
+                      child: _PickedDate(
+                        dateController: _startDateController,
+                        label: "Mulai",
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: _PickedDate(dateController: _endDateController),
+                      child: _PickedDate(
+                        dateController: _endDateController,
+                        label: "Selesai",
+                      ),
                     ),
                   ],
                 ),
@@ -105,7 +111,8 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
 
 class _PickedDate extends StatefulWidget {
   final TextEditingController dateController;
-  const _PickedDate({required this.dateController});
+  final String label;
+  const _PickedDate({required this.dateController, required this.label});
 
   @override
   State<_PickedDate> createState() => _PickedDateState();
@@ -133,13 +140,13 @@ class _PickedDateState extends State<_PickedDate> {
   Widget build(BuildContext context) {
     return TextFormFieldWidget(
       controller: widget.dateController,
-      label: "Pilih Tanggal",
+      label: "Tanggal ${widget.label}",
       obscureText: false,
       readOnly: true,
       onTap: _selectDate,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Tanggal tidak boleh kosong';
+          return 'Tanggal ${widget.label} tidak boleh kosong';
         }
         return null;
       },
@@ -166,22 +173,42 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
 
   void _addCategory() async {
     final controller = TextEditingController();
+    final _keyForm = GlobalKey<FormState>();
     final result = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add Category'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: 'Category name'),
+        title: Text(
+          'Tambah Kategori',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 16),
+        ),
+        content: Form(
+          key: _keyForm,
+          child: TextFormFieldWidget(
+            controller: controller,
+            label: 'Nama Kategori',
+            obscureText: false,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Nama kategori tidak boleh kosong';
+              }
+              return null;
+            },
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(
+              'Cancel',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, controller.text),
-            child: const Text('Add'),
+            onPressed: () => {
+              if (_keyForm.currentState!.validate())
+                {Navigator.pop(context, controller.text)},
+            },
+            child: Text('Add', style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),
@@ -205,7 +232,13 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
           children: [
             for (var category in _categories)
               ChoiceChip(
-                label: Text(category, style: TextStyle(fontFamily: 'Inter')),
+                label: Text(
+                  category,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 selected: _selectedCategory == category,
                 selectedColor: AppColors.bgSoftGreen.colors,
                 onSelected: (_) {
@@ -225,6 +258,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
                 'Add Category',
                 style: TextStyle(
                   fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
                   color: AppColors.btnGreen.colors,
                 ),
               ),
