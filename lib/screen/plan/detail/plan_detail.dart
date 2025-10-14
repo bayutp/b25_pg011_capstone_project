@@ -1,33 +1,28 @@
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
-import 'package:b25_pg011_capstone_project/widget/date_picker_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
 
-class PlanScreen extends StatelessWidget {
-  const PlanScreen({super.key});
+class PlanDetail extends StatelessWidget {
+  final String planTitle;
+  const PlanDetail({super.key, required this.planTitle});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Task", style: Theme.of(context).textTheme.titleLarge),
+        title: Text(planTitle, style: Theme.of(context).textTheme.titleLarge),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           child: Column(
             children: [
-              // _EmptyPlanWidget(),
               _PlanListWidget(),
-              const SizedBox(height: 39),
-              _TotalTaskWidget(),
-              const SizedBox(height: 28),
-              _DatePickerWidget(),
-              const SizedBox(height: 35),
+              const SizedBox(height: 60),
               _StatusTaskWidget(),
-              const SizedBox(height: 28),
+              const SizedBox(height: 35),
               // _EmptyTaskWidget(),
               _TaskListWidget(),
               const SizedBox(height: 24),
@@ -57,130 +52,22 @@ class _PlanListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> plans = [
-      {"category": "Marketing", "finisedTask": 12, "allTask": 20},
-      {"category": "Management", "finisedTask": 3, "allTask": 7},
-      {"category": "Sales", "finisedTask": 6, "allTask": 12},
-      {"category": "Support", "finisedTask": 2, "allTask": 5},
-      {"category": "HR", "finisedTask": 1, "allTask": 4},
-      {"category": "Finance", "finisedTask": 7, "allTask": 14},
-      {"category": "IT", "finisedTask": 9, "allTask": 18},
-    ];
+    Map<String, dynamic> plan = {
+      "category": "Marketing",
+      "finisedTask": 12,
+      "allTask": 20,
+    };
     return SizedBox(
       height: 156,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: plans.length,
-        itemBuilder: (context, index) {
-          final plan = plans[index];
-          return BannerPlanWidget(
-            category: plan['category'],
-            finishedTask: 12,
-            allTask: 20,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/planDetail',
-                arguments: plan['category'],
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _EmptyPlanWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 33),
-        decoration: BoxDecoration(
-          color: AppColors.bgGrey.colors,
-          borderRadius: BorderRadius.circular(12),
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: BannerPlanWidget(
+          category: plan['category'],
+          finishedTask: 12,
+          allTask: 20,
+          onTap: () {},
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/img/ic_empty_white.png',
-              width: 60,
-              height: 60,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Data Category kosong',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textGrey.colors,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TotalTaskWidget extends StatelessWidget {
-  const _TotalTaskWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "TO DO",
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontSize: 16),
-          ),
-          SizedBox(width: 8),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.bgPink.colors,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              "0",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontSize: 12,
-                color: AppColors.textTaskRed.colors,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DatePickerWidget extends StatelessWidget {
-  const _DatePickerWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: DatePickerWidget(
-        onDateChange: (date) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Selected date: $date'),
-              backgroundColor: AppColors.snackbarSuccess.colors,
-            ),
-          );
-        },
       ),
     );
   }

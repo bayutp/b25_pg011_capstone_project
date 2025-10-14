@@ -4,6 +4,7 @@ import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dar
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
@@ -55,13 +56,17 @@ class MyApp extends StatelessWidget {
       title: 'Capstone Project',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       initialRoute: startRoute,
       routes: {
         NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),
         NavigationRoute.loginRoute.name: (context) => const LoginScreen(),
         NavigationRoute.registerRoute.name: (context) => const RegisterScreen(),
         NavigationRoute.homeRoute.name: (context) => const MainScreen(),
+        NavigationRoute.planDetailRoute.name: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as String;
+          return PlanDetail(planTitle: args);
+        },
       },
     );
   }

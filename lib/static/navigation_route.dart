@@ -3,7 +3,7 @@ enum NavigationRoute {
   onboardingRoute("/onboarding"),
   loginRoute("/login"),
   registerRoute("/register"),
-  planDetail("/planDetail"),
+  planDetailRoute("/planDetail"),
   cashFlowDetail("/cashFlowDetail");
 
   const NavigationRoute(this.name);
