@@ -45,6 +45,8 @@ dependencies:
   flutter_timezone: ^4.1.1
   timezone: ^0.10.1
   date_picker_timeline: ^1.2.7 
+  firebase_core: ^4.1.1
+  cloud_firestore: ^6.0.2
   workmanager:
     git:
       url: https://github.com/fluttercommunity/flutter_workmanager.git
