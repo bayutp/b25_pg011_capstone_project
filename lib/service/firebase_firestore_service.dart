@@ -1,5 +1,6 @@
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
+import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseFirestoreService {
@@ -83,10 +84,7 @@ class FirebaseFirestoreService {
         );
   }
 
-  Future<List<UserTodo>> getDailyTodos(
-    String businessId,
-    String status,
-  ) async {
+  Future<List<UserTodo>> getDailyTodos(String businessId, String status) async {
     final querySnapshot = await _firestore
         .collection('todos')
         .where('businessId', isEqualTo: businessId)
@@ -97,5 +95,24 @@ class FirebaseFirestoreService {
     return querySnapshot.docs
         .map((doc) => UserTodo.fromJson(doc.data()))
         .toList();
+  }
+
+  Stream<int> countDailyTodos(
+    String userId,
+    String businessId,
+    DateTime date,
+    String period,
+  ) {
+    final dateRange = Helper().getDateRange(period, date);
+
+    final querySnapshot = _firestore
+        .collection('todos')
+        .where('userId', isEqualTo: userId)
+        .where('businessId', isEqualTo: businessId)
+        .where('startDate', isGreaterThanOrEqualTo: dateRange['start'])
+        .where('startDate', isLessThanOrEqualTo: dateRange['end'])
+        .snapshots();
+
+    return querySnapshot.map((snapshots) => snapshots.size);
   }
 }

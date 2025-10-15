@@ -26,4 +26,26 @@ class Helper {
   static String formatDate(DateTime date) {
     return DateFormat('dd MMMM yyyy').format(date);
   }
+
+  Map<String, DateTime> getDateRange(String period, DateTime date) {
+    switch (period) {
+      case 'daily':
+        return {
+          'start': DateTime(date.year, date.month, date.day),
+          'end': DateTime(date.year, date.month, date.day, 23, 59, 59),
+        };
+      case 'weekly':
+        final start = date.subtract(Duration(days: date.weekday - 1));
+        final end = start.add(
+          const Duration(days: 6, hours: 23, minutes: 59, seconds: 59),
+        );
+        return {'start': start, 'end': end};
+      case 'monthly':
+        final start = DateTime(date.year, date.month, 1);
+        final end = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
+        return {'start': start, 'end': end};
+      default:
+        throw Exception('Invalid period');
+    }
+  }
 }

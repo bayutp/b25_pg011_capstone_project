@@ -1,89 +1,139 @@
+import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
+import 'package:b25_pg011_capstone_project/provider/plan/plan_date_provider.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/date_picker_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PlanScreen extends StatelessWidget {
   const PlanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Task", style: Theme.of(context).textTheme.titleLarge),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            children: [
-              // _EmptyPlanWidget(),
-              _PlanListWidget(),
-              const SizedBox(height: 39),
-              _TotalTaskWidget(),
-              const SizedBox(height: 28),
-              _DatePickerWidget(),
-              const SizedBox(height: 35),
-              _StatusTaskWidget(),
-              const SizedBox(height: 28),
-              // _EmptyTaskWidget(),
-              _TaskListWidget(),
-              const SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: ButtonWidget(
-                  key: const Key('tambah_data_button'),
-                  title: "Tambah Data",
-                  textColor: AppColors.btnTextWhite.colors,
-                  foregroundColor: AppColors.bgSoftGreen.colors,
-                  backgroundColor: AppColors.btnGreen.colors,
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/addTask');
-                  },
-                ),
-              ),
-            ],
+    return Consumer<PlanDateProvider>(
+      builder: (context, value, child) {
+        final selectedDate = value.selectedDate;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "Task $selectedDate",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
-        ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                children: [
+                  _PlanWidget(),
+                  const SizedBox(height: 39),
+                  _TotalTaskWidget(
+                    key: ValueKey("totalTask"),
+                    selectedDate: selectedDate,
+                  ),
+                  const SizedBox(height: 28),
+                  _DatePickerWidget(),
+                  const SizedBox(height: 35),
+                  _StatusTaskWidget(),
+                  const SizedBox(height: 28),
+                  // _EmptyTaskWidget(),
+                  _TaskListWidget(),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: ButtonWidget(
+                      key: const Key('tambah_data_button'),
+                      title: "Tambah Data",
+                      textColor: AppColors.btnTextWhite.colors,
+                      foregroundColor: AppColors.bgSoftGreen.colors,
+                      backgroundColor: AppColors.btnGreen.colors,
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/addTask');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PlanWidget extends StatelessWidget {
+  const _PlanWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<List<UserPlan>>(
+      create: (context) =>
+          context.read<FirebaseFirestoreService>().getPlansByUserId(
+            "RJve4BfErDZNfASQl7OTbRiVAqg1",
+            "N9eTsVw6rtKE8eWROmGC",
+          ),
+      initialData: const [],
+      child: Consumer<List<UserPlan>>(
+        builder: (context, plans, child) {
+          if (plans.isEmpty) {
+            return _EmptyPlanWidget();
+          } else {
+            return _PlanListWidget(key: ValueKey("planning"), plans: plans);
+          }
+        },
       ),
     );
   }
 }
 
 class _PlanListWidget extends StatelessWidget {
-  const _PlanListWidget();
+  final List<UserPlan>? plans;
+  const _PlanListWidget({super.key, this.plans});
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> plans = [
-      {"category": "Marketing", "finisedTask": 12, "allTask": 20},
-      {"category": "Management", "finisedTask": 3, "allTask": 7},
-      {"category": "Sales", "finisedTask": 6, "allTask": 12},
-      {"category": "Support", "finisedTask": 2, "allTask": 5},
-      {"category": "HR", "finisedTask": 1, "allTask": 4},
-      {"category": "Finance", "finisedTask": 7, "allTask": 14},
-      {"category": "IT", "finisedTask": 9, "allTask": 18},
-    ];
     return SizedBox(
       height: 156,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: plans.length,
+        itemCount: plans?.length ?? 0,
         itemBuilder: (context, index) {
-          final plan = plans[index];
-          return BannerPlanWidget(
-            category: plan['category'],
-            finishedTask: 12,
-            allTask: 20,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/planDetail',
-                arguments: plan['category'],
+          final plan = plans![index];
+          return StreamProvider<List<UserTodo>>(
+            create: (context) {
+              return context.read<FirebaseFirestoreService>().getTodosByPlanId(
+                plan.planId,
+                "N9eTsVw6rtKE8eWROmGC",
               );
             },
+            initialData: const [],
+            child: Consumer<List<UserTodo>>(
+              builder: (context, value, child) {
+                final todos = value;
+                final finishedTask = todos
+                    .where((todo) => todo.status == "completed")
+                    .length;
+                final allTask = todos.length;
+                return BannerPlanWidget(
+                  category: plan.name,
+                  finishedTask: finishedTask,
+                  allTask: allTask,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/planDetail',
+                      arguments: plan.name,
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
@@ -129,7 +179,8 @@ class _EmptyPlanWidget extends StatelessWidget {
 }
 
 class _TotalTaskWidget extends StatelessWidget {
-  const _TotalTaskWidget();
+  final DateTime selectedDate;
+  const _TotalTaskWidget({super.key, required this.selectedDate});
 
   @override
   Widget build(BuildContext context) {
@@ -151,12 +202,31 @@ class _TotalTaskWidget extends StatelessWidget {
               color: AppColors.bgPink.colors,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
-              "0",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontSize: 12,
-                color: AppColors.textTaskRed.colors,
-              ),
+            child: StreamProvider<int>(
+              key: ValueKey(selectedDate),
+              create: (context) {
+                return context.read<FirebaseFirestoreService>().countDailyTodos(
+                  "RJve4BfErDZNfASQl7OTbRiVAqg1",
+                  "N9eTsVw6rtKE8eWROmGC",
+                  selectedDate,
+                  "daily",
+                );
+              },
+              initialData: 0,
+              catchError: (context, error) {
+                debugPrint('Error fetching todos: $error');
+                return 0;
+              },
+              builder: (context, child) {
+                final provider = Provider.of<int>(context);
+                return Text(
+                  provider.toString(),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 12,
+                    color: AppColors.textTaskRed.colors,
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -174,12 +244,8 @@ class _DatePickerWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: DatePickerWidget(
         onDateChange: (date) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Selected date: $date'),
-              backgroundColor: AppColors.snackbarSuccess.colors,
-            ),
-          );
+          final provider = context.read<PlanDateProvider>();
+          provider.setSelectedDate(date);
         },
       ),
     );

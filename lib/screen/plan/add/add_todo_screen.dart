@@ -276,6 +276,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
     Future.microtask(() {
       if (mounted) {
         userPlanProvider = context.read<UserPlanProvider>();
+        userPlanProvider.setSelectedPlan("");
       }
     });
   }
