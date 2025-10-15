@@ -103,15 +103,63 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.btnGreen.colors,
                   onPressed: () {
-                    if (_formKey.currentState!.validate() &&
-                        userPlanProvider?.selectedPlan != null) {
-                      _addTodo();
-                    } else if (userPlanProvider?.selectedPlan == null) {
+                    if (!_formKey.currentState!.validate()) return;
+
+                    final selectedPlan = userPlanProvider?.selectedPlan;
+
+                    // Cek dulu apakah plan sudah dipilih
+                    if (selectedPlan == null || selectedPlan.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Silahkan pilih project terlebih dahulu',
+                        SnackbarWidget(
+                          message: 'Silahkan pilih project terlebih dahulu',
+                          success: false,
+                        ),
+                      );
+                      return;
+                    }
+
+                    try {
+                      final startParts = _startDateController.text.split('/');
+                      final endParts = _endDateController.text.split('/');
+
+                      if (startParts.length < 3 || endParts.length < 3) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackbarWidget(
+                            message: 'Format tanggal tidak valid',
+                            success: false,
                           ),
+                        );
+                        return;
+                      }
+
+                      final startDate = DateTime(
+                        int.parse(startParts[2]),
+                        int.parse(startParts[1]),
+                        int.parse(startParts[0]),
+                      );
+
+                      final endDate = DateTime(
+                        int.parse(endParts[2]),
+                        int.parse(endParts[1]),
+                        int.parse(endParts[0]),
+                      );
+
+                      if (startDate.isAfter(endDate)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackbarWidget(
+                            message:
+                                "Tanggal selesai tidak boleh kurang dari tanggal mulai",
+                            success: false,
+                          ),
+                        );
+                        return;
+                      }
+                      _addTodo();
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackbarWidget(
+                          message: 'Terjadi kesalahan saat memproses tanggal',
+                          success: false,
                         ),
                       );
                     }
