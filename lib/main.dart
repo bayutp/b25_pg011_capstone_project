@@ -1,6 +1,7 @@
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/firebase_options.dart';
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/plan/user_plan_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
@@ -38,6 +39,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (context) => BottomnavProvider()),
         ChangeNotifierProvider(create: (context) => UserLocalProvider(service)),
+        ChangeNotifierProvider(create:  (context) => UserPlanProvider()),
       ],
       child: MyApp(user: user),
     ),
