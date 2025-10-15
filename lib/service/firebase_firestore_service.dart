@@ -84,17 +84,25 @@ class FirebaseFirestoreService {
         );
   }
 
-  Future<List<UserTodo>> getDailyTodos(String businessId, String status) async {
-    final querySnapshot = await _firestore
+  Stream<List<UserTodo>> getDailyTodos(
+    String businessId,
+    String status,
+    DateTime date,
+  ) {
+    final rangeDate = Helper().getDateRange("daily", date);
+
+    final querySnapshot = _firestore
         .collection('todos')
         .where('businessId', isEqualTo: businessId)
         .where('status', isEqualTo: status)
-        .where('startDate', isLessThanOrEqualTo: DateTime.now())
-        .get();
+        .where('startDate', isGreaterThanOrEqualTo: rangeDate['start'])
+        .where('startDate', isLessThanOrEqualTo: rangeDate['end'])
+        .snapshots();
 
-    return querySnapshot.docs
-        .map((doc) => UserTodo.fromJson(doc.data()))
-        .toList();
+    return querySnapshot.map(
+      (snapshots) =>
+          snapshots.docs.map((doc) => UserTodo.fromJson(doc.data())).toList(),
+    );
   }
 
   Stream<int> countDailyTodos(

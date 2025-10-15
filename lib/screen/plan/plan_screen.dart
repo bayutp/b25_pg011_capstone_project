@@ -1,6 +1,7 @@
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/plan_date_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/plan/todo_status_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
@@ -20,10 +21,7 @@ class PlanScreen extends StatelessWidget {
         final selectedDate = value.selectedDate;
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              "Task $selectedDate",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            title: Text("Task", style: Theme.of(context).textTheme.titleLarge),
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -39,10 +37,15 @@ class PlanScreen extends StatelessWidget {
                   const SizedBox(height: 28),
                   _DatePickerWidget(),
                   const SizedBox(height: 35),
-                  _StatusTaskWidget(),
+                  _StatusTaskWidget(
+                    key: ValueKey("todoStatus"),
+                    selectedDate: selectedDate,
+                  ),
                   const SizedBox(height: 28),
-                  // _EmptyTaskWidget(),
-                  _TaskListWidget(),
+                  _TaskWidget(
+                    key: ValueKey("todos"),
+                    selectedDate: selectedDate,
+                  ),
                   const SizedBox(height: 24),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -85,6 +88,34 @@ class _PlanWidget extends StatelessWidget {
             return _EmptyPlanWidget();
           } else {
             return _PlanListWidget(key: ValueKey("planning"), plans: plans);
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _TaskWidget extends StatelessWidget {
+  final DateTime selectedDate;
+  const _TaskWidget({super.key, required this.selectedDate});
+
+  @override
+  Widget build(BuildContext context) {
+    final status = context.watch<TodoStatusProvider>().status;
+    final date = context.watch<PlanDateProvider>().selectedDate;
+
+    return StreamProvider<List<UserTodo>>(
+      key: ValueKey('${status}_${date.toIso8601String()}'),
+      create: (context) => context
+          .read<FirebaseFirestoreService>()
+          .getDailyTodos("N9eTsVw6rtKE8eWROmGC", status, date),
+      initialData: const [],
+      child: Consumer<List<UserTodo>>(
+        builder: (context, todos, _) {
+          if (todos.isEmpty) {
+            return _EmptyTaskWidget();
+          } else {
+            return _TaskListWidget(tasks: todos);
           }
         },
       ),
@@ -246,6 +277,9 @@ class _DatePickerWidget extends StatelessWidget {
         onDateChange: (date) {
           final provider = context.read<PlanDateProvider>();
           provider.setSelectedDate(date);
+
+          final currentStatus = context.read<TodoStatusProvider>().status;
+          context.read<TodoStatusProvider>().setStatus(currentStatus);
         },
       ),
     );
@@ -253,6 +287,10 @@ class _DatePickerWidget extends StatelessWidget {
 }
 
 class _StatusTaskWidget extends StatelessWidget {
+  final DateTime selectedDate;
+
+  const _StatusTaskWidget({super.key, required this.selectedDate});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -309,6 +347,19 @@ class _StatusTaskWidget extends StatelessWidget {
                 ),
               ),
             ],
+            onTap: (value) {
+              final provider = context.read<TodoStatusProvider>();
+              switch (value) {
+                case 0:
+                  provider.setStatus("on progress");
+                case 1:
+                  provider.setStatus("completed");
+                case 2:
+                  provider.setStatus("pending");
+                default:
+                  provider.setStatus("on progress");
+              }
+            },
           ),
         ),
       ),
@@ -351,36 +402,11 @@ class _EmptyTaskWidget extends StatelessWidget {
 }
 
 class _TaskListWidget extends StatelessWidget {
-  const _TaskListWidget();
+  final List<UserTodo> tasks;
+  const _TaskListWidget({super.key, required this.tasks});
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> tasks = [
-      {
-        "category": "Marketing",
-        "task": "Making 3 Post For Social Media",
-        "done": false,
-      },
-      {"category": "Management", "task": "Meeting With Team", "done": false},
-      {
-        "category": "Sales",
-        "task": "Contact 10 Prospective Clients",
-        "done": false,
-      },
-      {
-        "category": "Support",
-        "task": "Respond to Customer Emails",
-        "done": false,
-      },
-      {
-        "category": "HR",
-        "task": "Organize Team Building Activity",
-        "done": false,
-      },
-      {"category": "Production", "task": "Evaluasi Produk", "done": true},
-      {"category": "Finance", "task": "Evaluasi Produk", "done": false},
-      {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
-    ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListView.builder(
@@ -389,9 +415,9 @@ class _TaskListWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final task = tasks[index];
           return ItemPlanWidget(
-            task: task['task'],
-            category: task['category'],
-            isChecked: task['done'],
+            task: task.todo,
+            category: task.plan,
+            isChecked: task.status == 'completed',
             onChange: (bool? value) {},
           );
         },

@@ -136,6 +136,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   void _addTodo() async {
     final service = context.read<FirebaseFirestoreService>();
     final planId = userPlanProvider?.idPlan ?? '';
+    final plan = userPlanProvider?.selectedPlan ?? '';
     final todoName = _taksNameController.text;
 
     final startDateParts = _startDateController.text.split('/');
@@ -177,6 +178,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
         userId: userId,
         businessId: businessId,
         todo: todoName,
+        plan: plan,
         startDate: startDate,
         endDate: endDate,
         status: status,
