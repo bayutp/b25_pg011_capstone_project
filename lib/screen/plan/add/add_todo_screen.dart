@@ -1,4 +1,5 @@
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/user_plan_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
@@ -17,10 +18,13 @@ class AddTodoScreen extends StatefulWidget {
 
 class _AddTodoScreenState extends State<AddTodoScreen> {
   final _formKey = GlobalKey<FormState>();
+
   late UserPlanProvider? userPlanProvider;
   final TextEditingController _taksNameController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -94,15 +98,19 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 ButtonWidget(
                   key: const Key('tambah_data_button'),
                   title: "Tambah Data",
+                  isLoading: isLoading,
                   textColor: AppColors.btnTextWhite.colors,
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.btnGreen.colors,
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (_formKey.currentState!.validate() &&
+                        userPlanProvider?.selectedPlan != null) {
+                      _addTodo();
+                    } else if (userPlanProvider?.selectedPlan == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text(
-                            'Data ${_taksNameController.text}, start: ${_startDateController.text}, end: ${_endDateController.text} ditambahkan',
+                            'Silahkan pilih project terlebih dahulu',
                           ),
                         ),
                       );
@@ -123,6 +131,87 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     _taksNameController.dispose();
     _startDateController.dispose();
     _endDateController.dispose();
+  }
+
+  void _addTodo() async {
+    final service = context.read<FirebaseFirestoreService>();
+    final planId = userPlanProvider?.idPlan ?? '';
+    final todoName = _taksNameController.text;
+
+    final startDateParts = _startDateController.text.split('/');
+    final endDateParts = _endDateController.text.split('/');
+
+    final now = DateTime.now();
+
+    final startDate = DateTime(
+      int.parse(startDateParts[2]),
+      int.parse(startDateParts[1]),
+      int.parse(startDateParts[0]),
+      now.hour,
+      now.minute,
+      now.second,
+    );
+
+    final endDate = DateTime(
+      int.parse(endDateParts[2]),
+      int.parse(endDateParts[1]),
+      int.parse(endDateParts[0]),
+      now.hour,
+      now.minute,
+      now.second,
+    );
+
+    final userId = "RJve4BfErDZNfASQl7OTbRiVAqg1";
+    final businessId = "N9eTsVw6rtKE8eWROmGC";
+    final createdBy = "RJve4BfErDZNfASQl7OTbRiVAqg1";
+    final createdAt = DateTime.now();
+    final status = "on progress";
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final newTodo = UserTodo(
+        planId: planId,
+        userId: userId,
+        businessId: businessId,
+        todo: todoName,
+        startDate: startDate,
+        endDate: endDate,
+        status: status,
+        createdBy: createdBy,
+        createdAt: createdAt,
+      );
+      await service.addTodo(newTodo);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackbarWidget(
+            message: "Data Berhasil disimpan",
+            success: true,
+            icon: Icons.check_circle_rounded,
+          ),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackbarWidget(
+            message: 'Gagal menambahkan task',
+            success: false,
+            icon: Icons.cancel_rounded,
+          ),
+        );
+        debugPrint('Error adding todo: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 }
 

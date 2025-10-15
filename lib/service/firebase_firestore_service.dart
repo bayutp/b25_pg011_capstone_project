@@ -1,4 +1,5 @@
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseFirestoreService {
@@ -27,10 +28,7 @@ class FirebaseFirestoreService {
     final docRef = _firestore.collection('plans').doc();
     final planId = docRef.id;
 
-    await docRef.set({
-      ...plan.toJson(),
-      'planId': planId,
-    });
+    await docRef.set({...plan.toJson(), 'planId': planId});
 
     return planId;
   }
@@ -46,5 +44,58 @@ class FirebaseFirestoreService {
               .map((doc) => UserPlan.fromJson(doc.data()))
               .toList(),
         );
+  }
+
+  Future<void> addTodo(UserTodo todoData) async {
+    final todo = todoData.todo.trim().toLowerCase();
+    final querySnapshot = await _firestore
+        .collection('todos')
+        .where('planId', isEqualTo: todoData.planId)
+        .where('userId', isEqualTo: todoData.userId)
+        .where('businessId', isEqualTo: todoData.businessId)
+        .get();
+
+    final duplicateTodo = querySnapshot.docs.any((doc) {
+      final existingTodo = (doc.data()['todo'] as String).trim().toLowerCase();
+      return existingTodo == todo;
+    });
+
+    if (duplicateTodo) {
+      throw Exception('Todo dengan nama "${todoData.todo}" sudah ada.');
+    }
+
+    final docRef = _firestore.collection('todos').doc();
+    final todoId = docRef.id;
+
+    await docRef.set({...todoData.toJson(), 'todoId': todoId});
+  }
+
+  Stream<List<UserTodo>> getTodosByPlanId(String planId, String businessId) {
+    return _firestore
+        .collection('todos')
+        .where('planId', isEqualTo: planId)
+        .where('businessId', isEqualTo: businessId)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => UserTodo.fromJson(doc.data()))
+              .toList(),
+        );
+  }
+
+  Future<List<UserTodo>> getDailyTodos(
+    String businessId,
+    String status,
+  ) async {
+    final querySnapshot = await _firestore
+        .collection('todos')
+        .where('businessId', isEqualTo: businessId)
+        .where('status', isEqualTo: status)
+        .where('startDate', isLessThanOrEqualTo: DateTime.now())
+        .get();
+
+    return querySnapshot.docs
+        .map((doc) => UserTodo.fromJson(doc.data()))
+        .toList();
   }
 }
