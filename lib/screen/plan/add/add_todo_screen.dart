@@ -1,4 +1,5 @@
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
+import 'package:b25_pg011_capstone_project/provider/plan/user_plan_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
@@ -16,9 +17,21 @@ class AddTodoScreen extends StatefulWidget {
 
 class _AddTodoScreenState extends State<AddTodoScreen> {
   final _formKey = GlobalKey<FormState>();
+  late UserPlanProvider? userPlanProvider;
   final TextEditingController _taksNameController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      if (mounted) {
+        userPlanProvider = context.read<UserPlanProvider>();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +89,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   ).textTheme.titleLarge?.copyWith(fontSize: 16),
                 ),
                 const SizedBox(height: 6),
-                const _CategoryWidget(key: ValueKey("fieldCategory"),),
+                const _CategoryWidget(key: ValueKey("fieldCategory")),
                 const SizedBox(height: 50),
                 ButtonWidget(
                   key: const Key('tambah_data_button'),
@@ -166,7 +179,17 @@ class _CategoryWidget extends StatefulWidget {
 }
 
 class _CategoryWidgetState extends State<_CategoryWidget> {
-  String? _selectedCategory;
+  late UserPlanProvider userPlanProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (mounted) {
+        userPlanProvider = context.read<UserPlanProvider>();
+      }
+    });
+  }
 
   void _addCategory() async {
     final controller = TextEditingController();
@@ -215,7 +238,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
       final service = context.read<FirebaseFirestoreService>();
 
       try {
-        await service.addPlan(
+        final newPlan = await service.addPlan(
           UserPlan(
             businessId: "N9eTsVw6rtKE8eWROmGC",
             userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
@@ -232,9 +255,8 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
               icon: Icons.check_circle_rounded,
             ),
           );
-          setState(() {
-            _selectedCategory = category;
-          });
+          userPlanProvider.setIdPlan(newPlan);
+          userPlanProvider.setSelectedPlan(category);
         }
       } catch (e) {
         if (mounted) {
@@ -245,6 +267,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
               icon: Icons.cancel_rounded,
             ),
           );
+          debugPrint('Error adding category: $e');
         }
       }
     }
@@ -265,52 +288,58 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
       initialData: [],
       catchError: (context, error) {
         debugPrint('Error fetching cashflows: $error');
-        return [];
+        return <UserPlan>[];
       },
       builder: (context, child) {
         final categories = context.watch<List<UserPlan>>();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (var category in categories)
-                  ChoiceChip(
-                    label: Text(
-                      category.name,
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
+            Consumer<UserPlanProvider>(
+              builder: (context, userPlanProvider, child) {
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (var category in categories)
+                      ChoiceChip(
+                        label: Text(
+                          category.name,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        selected:
+                            userPlanProvider.selectedPlan == category.name,
+                        selectedColor: AppColors.bgSoftGreen.colors,
+                        onSelected: (_) {
+                          userPlanProvider.setIdPlan(category.planId);
+                          userPlanProvider.setSelectedPlan(category.name);
+                        },
+                        side: BorderSide(color: AppColors.bgGreen.colors),
+                        labelStyle: TextStyle(
+                          color: userPlanProvider.selectedPlan == category.name
+                              ? AppColors.bgGreen.colors
+                              : AppColors.bgGreen.colors,
+                        ),
                       ),
+                    ActionChip(
+                      backgroundColor: AppColors.bgSoftGreen.colors,
+                      side: BorderSide(color: Colors.transparent),
+                      label: Text(
+                        'Add Category',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.btnGreen.colors,
+                        ),
+                      ),
+                      onPressed: _addCategory,
                     ),
-                    selected: _selectedCategory == category.name,
-                    selectedColor: AppColors.bgSoftGreen.colors,
-                    onSelected: (_) {
-                      setState(() => _selectedCategory = category.name);
-                    },
-                    side: BorderSide(color: AppColors.bgGreen.colors),
-                    labelStyle: TextStyle(
-                      color: _selectedCategory == category.name
-                          ? AppColors.bgGreen.colors
-                          : AppColors.bgGreen.colors,
-                    ),
-                  ),
-                ActionChip(
-                  backgroundColor: AppColors.bgSoftGreen.colors,
-                  side: BorderSide(color: Colors.transparent),
-                  label: Text(
-                    'Add Category',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.btnGreen.colors,
-                    ),
-                  ),
-                  onPressed: _addCategory,
-                ),
-              ],
+                  ],
+                );
+              },
             ),
           ],
         );

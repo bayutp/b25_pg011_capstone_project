@@ -7,7 +7,7 @@ class FirebaseFirestoreService {
   FirebaseFirestoreService(FirebaseFirestore? firestoreInstance)
     : _firestore = firestoreInstance ?? FirebaseFirestore.instance;
 
-  Future<void> addPlan(UserPlan plan) async {
+  Future<String> addPlan(UserPlan plan) async {
     final name = plan.name.trim().toLowerCase();
     final querySnapshot = await _firestore
         .collection('plans')
@@ -24,7 +24,15 @@ class FirebaseFirestoreService {
       throw Exception('Kategori dengan nama "${plan.name}" sudah ada.');
     }
 
-    await _firestore.collection('plans').add(plan.toJson());
+    final docRef = _firestore.collection('plans').doc();
+    final planId = docRef.id;
+
+    await docRef.set({
+      ...plan.toJson(),
+      'planId': planId,
+    });
+
+    return planId;
   }
 
   Stream<List<UserPlan>> getPlansByUserId(String userId, String businessId) {

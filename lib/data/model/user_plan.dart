@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserPlan {
+  final String planId;
   final String businessId;
   final String userId;
   final String name;
@@ -8,6 +9,7 @@ class UserPlan {
   final DateTime createdAt;
 
   UserPlan({
+    this.planId = '',
     required this.businessId,
     required this.userId,
     required this.name,
@@ -17,6 +19,7 @@ class UserPlan {
 
   factory UserPlan.fromJson(Map<String, dynamic> json) {
     return UserPlan(
+      planId: json['planId'] as String,
       businessId: json['businessId'] as String,
       userId: json['userId'] as String,
       name: json['name'] as String,
@@ -27,6 +30,7 @@ class UserPlan {
 
   Map<String, dynamic> toJson() {
     return {
+      'planId': planId,
       'businessId': businessId,
       'userId': userId,
       'name': name,
