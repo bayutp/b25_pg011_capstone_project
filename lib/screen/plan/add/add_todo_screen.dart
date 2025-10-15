@@ -1,7 +1,11 @@
+import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/textformfield_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddTodoScreen extends StatefulWidget {
   const AddTodoScreen({super.key});
@@ -72,7 +76,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   ).textTheme.titleLarge?.copyWith(fontSize: 16),
                 ),
                 const SizedBox(height: 6),
-                const _CategoryWidget(),
+                const _CategoryWidget(key: ValueKey("fieldCategory"),),
                 const SizedBox(height: 50),
                 ButtonWidget(
                   key: const Key('tambah_data_button'),
@@ -164,16 +168,9 @@ class _CategoryWidget extends StatefulWidget {
 class _CategoryWidgetState extends State<_CategoryWidget> {
   String? _selectedCategory;
 
-  final List<String> _categories = [
-    'Marketing',
-    'Management',
-    'Finance',
-    'Development',
-  ];
-
   void _addCategory() async {
     final controller = TextEditingController();
-    final _keyForm = GlobalKey<FormState>();
+    final keyForm = GlobalKey<FormState>();
     final result = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
@@ -182,7 +179,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
           style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 16),
         ),
         content: Form(
-          key: _keyForm,
+          key: keyForm,
           child: TextFormFieldWidget(
             controller: controller,
             label: 'Nama Kategori',
@@ -205,7 +202,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
           ),
           TextButton(
             onPressed: () => {
-              if (_keyForm.currentState!.validate())
+              if (keyForm.currentState!.validate())
                 {Navigator.pop(context, controller.text)},
             },
             child: Text('Add', style: Theme.of(context).textTheme.bodyMedium),
@@ -214,59 +211,110 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
       ),
     );
 
+    void saveCategory(String category) async {
+      final service = context.read<FirebaseFirestoreService>();
+
+      try {
+        await service.addPlan(
+          UserPlan(
+            businessId: "N9eTsVw6rtKE8eWROmGC",
+            userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+            name: category,
+            createdBy: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+            createdAt: DateTime.now(),
+          ),
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackbarWidget(
+              message: "Data Berhasil disimpan",
+              success: true,
+              icon: Icons.check_circle_rounded,
+            ),
+          );
+          setState(() {
+            _selectedCategory = category;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackbarWidget(
+              message: 'Gagal menambahkan kategori',
+              success: false,
+              icon: Icons.cancel_rounded,
+            ),
+          );
+        }
+      }
+    }
+
     if (result != null && result.isNotEmpty) {
-      setState(() {
-        _categories.add(result);
-      });
+      saveCategory(result);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+    return StreamProvider<List<UserPlan>>(
+      create: (context) =>
+          context.read<FirebaseFirestoreService>().getPlansByUserId(
+            "RJve4BfErDZNfASQl7OTbRiVAqg1",
+            "N9eTsVw6rtKE8eWROmGC",
+          ),
+      initialData: [],
+      catchError: (context, error) {
+        debugPrint('Error fetching cashflows: $error');
+        return [];
+      },
+      builder: (context, child) {
+        final categories = context.watch<List<UserPlan>>();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (var category in _categories)
-              ChoiceChip(
-                label: Text(
-                  category,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (var category in categories)
+                  ChoiceChip(
+                    label: Text(
+                      category.name,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    selected: _selectedCategory == category.name,
+                    selectedColor: AppColors.bgSoftGreen.colors,
+                    onSelected: (_) {
+                      setState(() => _selectedCategory = category.name);
+                    },
+                    side: BorderSide(color: AppColors.bgGreen.colors),
+                    labelStyle: TextStyle(
+                      color: _selectedCategory == category.name
+                          ? AppColors.bgGreen.colors
+                          : AppColors.bgGreen.colors,
+                    ),
                   ),
+                ActionChip(
+                  backgroundColor: AppColors.bgSoftGreen.colors,
+                  side: BorderSide(color: Colors.transparent),
+                  label: Text(
+                    'Add Category',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.btnGreen.colors,
+                    ),
+                  ),
+                  onPressed: _addCategory,
                 ),
-                selected: _selectedCategory == category,
-                selectedColor: AppColors.bgSoftGreen.colors,
-                onSelected: (_) {
-                  setState(() => _selectedCategory = category);
-                },
-                side: BorderSide(color: AppColors.bgGreen.colors),
-                labelStyle: TextStyle(
-                  color: _selectedCategory == category
-                      ? AppColors.bgGreen.colors
-                      : AppColors.bgGreen.colors,
-                ),
-              ),
-            ActionChip(
-              backgroundColor: AppColors.bgSoftGreen.colors,
-              side: BorderSide(color: Colors.transparent),
-              label: Text(
-                'Add Category',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.btnGreen.colors,
-                ),
-              ),
-              onPressed: _addCategory,
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }

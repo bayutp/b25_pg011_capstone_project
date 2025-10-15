@@ -8,6 +8,22 @@ class FirebaseFirestoreService {
     : _firestore = firestoreInstance ?? FirebaseFirestore.instance;
 
   Future<void> addPlan(UserPlan plan) async {
+    final name = plan.name.trim().toLowerCase();
+    final querySnapshot = await _firestore
+        .collection('plans')
+        .where('userId', isEqualTo: plan.userId)
+        .where('businessId', isEqualTo: plan.businessId)
+        .get();
+
+    final duplicateName = querySnapshot.docs.any((doc) {
+      final existingName = (doc.data()['name'] as String).trim().toLowerCase();
+      return existingName == name;
+    });
+
+    if (duplicateName) {
+      throw Exception('Kategori dengan nama "${plan.name}" sudah ada.');
+    }
+
     await _firestore.collection('plans').add(plan.toJson());
   }
 
@@ -17,8 +33,10 @@ class FirebaseFirestoreService {
         .where('userId', isEqualTo: userId)
         .where('businessId', isEqualTo: businessId)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => UserPlan.fromJson(doc.data()))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => UserPlan.fromJson(doc.data()))
+              .toList(),
+        );
   }
 }

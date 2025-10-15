@@ -8,9 +8,11 @@ import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.d
 import 'package:b25_pg011_capstone_project/screen/plan/add/add_todo_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/style/theme/app_theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,11 +27,15 @@ void main() async {
   final user = service.getStatusUser();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final firebaseFirestore = FirebaseFirestore.instance;
 
   runApp(
     MultiProvider(
       providers: [
         Provider(create: (context) => service),
+        Provider(
+          create: (context) => FirebaseFirestoreService(firebaseFirestore),
+        ),
         ChangeNotifierProvider(create: (context) => BottomnavProvider()),
         ChangeNotifierProvider(create: (context) => UserLocalProvider(service)),
       ],
