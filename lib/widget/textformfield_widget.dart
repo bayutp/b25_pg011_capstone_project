@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TextFormFieldWidget extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final String? Function(String?)? validator;
   final bool obscureText;
+  final bool readOnly;
+  final VoidCallback? onTap;
+  final List<TextInputFormatter> inputFormatters;
 
   const TextFormFieldWidget({
     super.key,
@@ -12,6 +16,9 @@ class TextFormFieldWidget extends StatefulWidget {
     required this.label,
     this.validator,
     required this.obscureText,
+    this.readOnly = false,
+    this.onTap,
+    this.inputFormatters = const [],
   });
 
   @override
@@ -33,6 +40,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       controller: widget.controller,
       validator: widget.validator,
       obscureText: _obscure,
+      inputFormatters: [...widget.inputFormatters],
       decoration: InputDecoration(
         labelText: widget.label,
         suffixIcon: widget.obscureText
@@ -47,6 +55,8 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
+      onTap: widget.onTap,
+      readOnly: widget.readOnly,
     );
   }
 }

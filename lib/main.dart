@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
@@ -6,6 +7,7 @@ import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
 import 'package:b25_pg011_capstone_project/service/authwrapper_service.dart';
 
@@ -14,6 +16,8 @@ import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dar
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 
 import 'package:b25_pg011_capstone_project/style/theme/app_theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +37,16 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final service = SharedpreferencesService(prefs);
   final user = service.getStatusUser();
+  final firebaseFirestore = FirebaseFirestore.instance;
 
   runApp(
     MultiProvider(
       providers: [
         Provider(create: (context) => service),
+        Provider(create: (context) => SharedpreferencesService(prefs)),
+        Provider(
+          create: (context) => FirebaseFirestoreService(firebaseFirestore),
+        ),
         ChangeNotifierProvider(create: (context) => BottomnavProvider()),
         ChangeNotifierProvider(
           create: (context) =>
@@ -45,6 +54,12 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (context) => TransactionTypeProvider()),
         ChangeNotifierProvider(create: (context) => UserLocalProvider(service)),
+        ChangeNotifierProvider(
+          create: (context) =>
+              UserLocalProvider(context.read<SharedpreferencesService>()),
+        ),
+        ChangeNotifierProvider(create: (context) => TransactionTypeProvider()),
+        ChangeNotifierProvider(create: (context) => CashflowDateProvider()),
       ],
       child: MyApp(user: user),
     ),
@@ -83,6 +98,16 @@ class MyApp extends StatelessWidget {
         NavigationRoute.profileRoute.name: (context) => const ProfileScreen(),
         NavigationRoute.addCashflow.name: (context) => AddCashflowScreen(),
       },
+
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'), // default
+        Locale('id', 'ID'), // Indonesia
+      ],
     );
   }
 }

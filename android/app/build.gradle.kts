@@ -45,11 +45,13 @@ android {
     }
 }
 
-flutter {
-    source = "../.."
+dependencies {
+    implementation("androidx.multidex:multidex:2.0.1")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
 
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+flutter {
+    source = "../.."
 }

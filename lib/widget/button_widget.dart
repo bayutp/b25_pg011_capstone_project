@@ -5,7 +5,8 @@ class ButtonWidget extends StatelessWidget {
   final Color textColor;
   final Color foregroundColor;
   final Color backgroundColor;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
+  final bool isLoading;
 
   const ButtonWidget({
     super.key,
@@ -14,6 +15,7 @@ class ButtonWidget extends StatelessWidget {
     required this.foregroundColor,
     required this.backgroundColor,
     required this.onPressed,
+    this.isLoading = false,
   });
 
   @override
@@ -31,13 +33,23 @@ class ButtonWidget extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: onPressed,
-        child: Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontSize: 16, color: textColor),
-        ),
+        onPressed: isLoading ? null : onPressed,
+        child: isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 16,
+                  color: textColor,
+                ),
+              ),
       ),
     );
   }
