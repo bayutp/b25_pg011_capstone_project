@@ -12,23 +12,27 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BottomnavProvider>(
-      builder: (context, navProvider, child) {
-        return Scaffold(
-          body: switch (navProvider.getIndex) {
-            0 => const HomeScreen(),
-            1 => const PlanScreen(),
-            2 => const CashflowScreen(),
-            _ => const ProfileScreen(),
-          },
-          bottomNavigationBar: BottomnavWidget(
-            currentIndex: navProvider.getIndex,
+    return Scaffold(
+      body: Consumer<BottomnavProvider>(
+        builder: (context, value, child) {
+          return switch (value.getIndex) {
+            0 => HomeScreen(),
+            1 => PlanScreen(),
+            2 => CashflowScreen(),
+            _ => ProfileScreen(),
+          };
+        },
+      ),
+      bottomNavigationBar: Consumer<BottomnavProvider>(
+        builder: (context, value, child) {
+          return BottomnavWidget(
+            currentIndex: value.getIndex,
             onTap: (index) {
-              navProvider.setIndex = index;
+              value.setIndex = index;
             },
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
