@@ -17,11 +17,10 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_){
       _controller.setDateAndAnimate(DateTime.now());
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
