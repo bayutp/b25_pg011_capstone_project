@@ -127,7 +127,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       // --- PERUBAHAN: Hubungkan tombol ke fungsi _saveChanges ---
                       ButtonWidget(
                         title: 'Simpan Perubahan',
-                        onPressed: _isLoading ? null : () => _saveChanges(), // Gunakan fungsi _saveChanges
+                        onPressed: () => _saveChanges(), 
+                        isLoading: _isLoading,// Gunakan fungsi _saveChanges
                         backgroundColor: const Color(0xFF546E41),
                         foregroundColor: Colors.white.withOpacity(0.8),
                         textColor: Colors.white,

@@ -112,7 +112,6 @@ class MyApp extends StatelessWidget {
           return PlanDetailScreen(plan: args);
         },
         NavigationRoute.addTaskRoute.name: (context) => const AddTodoScreen(),
-      },
         NavigationRoute.profileRoute.name: (context) => const ProfileScreen(),
         NavigationRoute.addCashflow.name: (context) => AddCashflowScreen(),
       },
