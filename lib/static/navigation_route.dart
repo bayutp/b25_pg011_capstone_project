@@ -3,8 +3,9 @@ enum NavigationRoute {
   onboardingRoute("/onboarding"),
   loginRoute("/login"),
   registerRoute("/register"),
-  planDetail("/planDetail"),
+  planDetailRoute("/planDetail"),
   cashFlowDetail("/cashFlowDetail"),
+  addTaskRoute("/addTask"),
   profileRoute("/profile"),
   addCashflow("/addCashflow");
 
