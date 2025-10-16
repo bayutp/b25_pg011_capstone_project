@@ -71,7 +71,7 @@ class PlanScreen extends StatelessWidget {
 }
 
 class _PlanWidget extends StatelessWidget {
-  const _PlanWidget({super.key});
+  const _PlanWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -403,7 +403,7 @@ class _EmptyTaskWidget extends StatelessWidget {
 
 class _TaskListWidget extends StatelessWidget {
   final List<UserTodo> tasks;
-  const _TaskListWidget({super.key, required this.tasks});
+  const _TaskListWidget({required this.tasks});
 
   @override
   Widget build(BuildContext context) {
@@ -418,7 +418,17 @@ class _TaskListWidget extends StatelessWidget {
             task: task.todo,
             category: task.plan,
             isChecked: task.status == 'completed',
-            onChange: (bool? value) {},
+            onChange: (bool? value) async {
+              final newStatus = value == true
+                  ? "completed"
+                  : task.endDate.isBefore(DateTime.now())
+                  ? "pending"
+                  : "on progress";
+              await context.read<FirebaseFirestoreService>().updateTodoStatus(
+                task.todoId,
+                newStatus,
+              );
+            },
           );
         },
       ),

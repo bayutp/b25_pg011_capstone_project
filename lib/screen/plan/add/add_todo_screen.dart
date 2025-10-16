@@ -279,7 +279,7 @@ class _PickedDateState extends State<_PickedDate> {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2100),
       locale: const Locale("id", "ID"),
     );

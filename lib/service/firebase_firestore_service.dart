@@ -123,4 +123,8 @@ class FirebaseFirestoreService {
 
     return querySnapshot.map((snapshots) => snapshots.size);
   }
+
+  Future<void> updateTodoStatus(String idTodo, String status) async {
+    await _firestore.collection("todos").doc(idTodo).update({'status': status});
+  }
 }
