@@ -1,34 +1,58 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart'; // Diperlukan untuk debugPrint
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Fungsi untuk mendaftar dengan email, password, dan username
-  Future<UserCredential?> registerWithEmailAndPassword(String email, String password, String username) async {
+  // Fungsi untuk mendaftar dengan penanganan error yang terpisah
+  Future<UserCredential?> registerWithEmailAndPassword(
+    String email,
+    String password,
+    String username,
+  ) async {
+    UserCredential? userCredential;
+
+    // 1. Operasi: Membuat Akun (Firebase Auth)
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-
-      // Simpan data pengguna (username) di Firestore
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'username': username,
-        'email': email,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      return userCredential;
     } on FirebaseAuthException catch (e) {
-      print('Registrasi gagal: ${e.message}');
-      return null;
+      // Menangani kegagalan Auth (misalnya, email sudah digunakan, format salah)
+      debugPrint('AUTH ERROR: ${e.code} - ${e.message}');
+      rethrow;
     }
+
+    // 2. Operasi: Menyimpan Data Pengguna (Cloud Firestore)
+    if (userCredential.user != null) {
+      try {
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'username': username,
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      } on FirebaseException catch (e) {
+        // Ini menangkap kegagalan Izin/Keamanan Firestore.
+        debugPrint('FIRESTORE ERROR (CRITICAL): ${e.code} - ${e.message}');
+
+        // Pilihan: Anda mungkin ingin menghapus akun Auth yang baru dibuat di sini
+        // userCredential.user!.delete();
+
+        rethrow; // Mengembalikan null karena pendaftaran data tidak lengkap
+      }
+    }
+
+    return userCredential;
   }
 
   // Fungsi untuk masuk (login)
-  Future<UserCredential?> signInWithEmailAndPassword(String email, String password) async {
+  Future<UserCredential?> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -36,8 +60,8 @@ class AuthService {
       );
       return userCredential;
     } on FirebaseAuthException catch (e) {
-      print('Login gagal: ${e.message}');
-      return null;
+      debugPrint('Login gagal: ${e.message}');
+      rethrow;
     }
   }
 
