@@ -7,7 +7,11 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Fungsi untuk mendaftar dengan penanganan error yang terpisah
-  Future<UserCredential?> registerWithEmailAndPassword(String email, String password, String username) async {
+  Future<UserCredential?> registerWithEmailAndPassword(
+    String email,
+    String password,
+    String username,
+  ) async {
     UserCredential? userCredential;
 
     // 1. Operasi: Membuat Akun (Firebase Auth)
@@ -19,11 +23,11 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       // Menangani kegagalan Auth (misalnya, email sudah digunakan, format salah)
       debugPrint('AUTH ERROR: ${e.code} - ${e.message}');
-      return null;
+      rethrow;
     }
 
     // 2. Operasi: Menyimpan Data Pengguna (Cloud Firestore)
-    if (userCredential != null && userCredential.user != null) {
+    if (userCredential.user != null) {
       try {
         await _firestore.collection('users').doc(userCredential.user!.uid).set({
           'username': username,
@@ -33,11 +37,11 @@ class AuthService {
       } on FirebaseException catch (e) {
         // Ini menangkap kegagalan Izin/Keamanan Firestore.
         debugPrint('FIRESTORE ERROR (CRITICAL): ${e.code} - ${e.message}');
-        
+
         // Pilihan: Anda mungkin ingin menghapus akun Auth yang baru dibuat di sini
-        // userCredential.user!.delete(); 
-        
-        return null; // Mengembalikan null karena pendaftaran data tidak lengkap
+        // userCredential.user!.delete();
+
+        rethrow; // Mengembalikan null karena pendaftaran data tidak lengkap
       }
     }
 
@@ -45,7 +49,10 @@ class AuthService {
   }
 
   // Fungsi untuk masuk (login)
-  Future<UserCredential?> signInWithEmailAndPassword(String email, String password) async {
+  Future<UserCredential?> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -54,7 +61,7 @@ class AuthService {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       debugPrint('Login gagal: ${e.message}');
-      return null;
+      rethrow;
     }
   }
 

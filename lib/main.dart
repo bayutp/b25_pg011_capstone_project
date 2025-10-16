@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
       title: 'Capstone Project',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
 
       home: startWidget,
       

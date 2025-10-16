@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Diperlukan untuk FirebaseAuthException
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
-import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart'; // Import MainScreen
+// Import MainScreen
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart'; // Diperlukan untuk navigasi
 
 class LoginScreen extends StatefulWidget {
@@ -51,30 +51,47 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final userCredential = await _auth.signInWithEmailAndPassword(email, password);
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email,
+        password,
+      );
 
       if (userCredential != null) {
         // Navigasi eksplisit ke MainScreen setelah login berhasil
         Navigator.of(context).pushNamedAndRemoveUntil(
-          NavigationRoute.homeRoute.name, // Gunakan homeRoute yang menunjuk ke MainScreen
+          NavigationRoute
+              .homeRoute
+              .name, // Gunakan homeRoute yang menunjuk ke MainScreen
           (Route<dynamic> route) => false, // Hapus semua rute sebelumnya
         );
       } else {
         // Ini mungkin terjadi jika ada masalah jaringan atau service error
-        _showAlertDialog('Gagal Login', 'Terjadi kesalahan. Silakan coba lagi.');
+        _showAlertDialog(
+          'Gagal Login',
+          'Terjadi kesalahan. Silakan coba lagi.',
+        );
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        errorMessage = 'Email atau password salah. Mohon periksa kembali.';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'Format email tidak valid.';
-      } else {
-        errorMessage = 'Login gagal: ${e.message}';
+      switch (e.code) {
+        case 'invalid-credential':
+        case 'user-not-found':
+        case 'wrong-password':
+          errorMessage = 'Email atau password salah. Mohon periksa kembali.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Format email tidak valid.';
+          break;
+        default:
+          errorMessage =
+              'Login gagal: ${e.message ?? 'Terjadi kesalahan tak terduga.'}';
       }
       _showAlertDialog('Gagal Login', errorMessage);
     } catch (e) {
-      _showAlertDialog('Kesalahan', 'Terjadi kesalahan tidak terduga: ${e.toString()}');
+      _showAlertDialog(
+        'Kesalahan',
+        'Terjadi kesalahan tidak terduga: ${e.toString()}',
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -87,12 +104,15 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24.0),
-        child: SingleChildScrollView( // Tambahkan SingleChildScrollView untuk menghindari overflow
+        child: SingleChildScrollView(
+          // Tambahkan SingleChildScrollView untuk menghindari overflow
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 100), // Jarak dari atas agar tidak terlalu mepet
+              const SizedBox(
+                height: 100,
+              ), // Jarak dari atas agar tidak terlalu mepet
               // Header
               const Text(
                 'Login',
@@ -136,7 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      _isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       color: Colors.grey,
                     ),
                     onPressed: () {
@@ -149,13 +171,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: !_isPasswordVisible,
               ),
               const SizedBox(height: 8),
-              
+
               // Lupa Password?
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    _showAlertDialog('Fitur Nonaktif', 'Fitur Lupa Password belum diimplementasikan.');
+                    _showAlertDialog(
+                      'Fitur Nonaktif',
+                      'Fitur Lupa Password belum diimplementasikan.',
+                    );
                   },
                   child: const Text('Lupa Password?'),
                 ),
@@ -175,11 +200,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        'Login',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Login',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -192,7 +217,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterScreen(),
+                        ),
                       );
                     },
                     child: const Text('Register'),
