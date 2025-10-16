@@ -55,34 +55,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
 
             // --- KONDISI 2: Jika terjadi error ---
-            if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+            if (snapshot.hasError ||
+                !snapshot.hasData ||
+                !snapshot.data!.exists) {
               return const Center(child: Text("Gagal memuat data profil."));
             }
 
             // --- KONDISI 3: Jika data berhasil didapatkan ---
             final userData = snapshot.data!.data()!;
-            final fullName = "${userData['firstName'] ?? ''} ${userData['lastName'] ?? ''}";
+            final fullName =
+                "${userData['firstName'] ?? ''} ${userData['lastName'] ?? ''}";
             final position = userData['position'] ?? 'Posisi belum diatur';
 
             // Tampilkan UI utama dengan data dari Firebase
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 20.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'Profile',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 30),
                   Row(
                     children: [
                       const CircleAvatar(
                         radius: 40,
-                        backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=a'), // Placeholder image
+                        backgroundImage: NetworkImage(
+                          'https://i.pravatar.cc/150?u=a',
+                        ), // Placeholder image
                       ),
                       const SizedBox(width: 20),
                       Column(
@@ -114,7 +119,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Navigasi ke EditProfileScreen
                       final result = await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const EditProfileScreen(),
+                        ),
                       );
                       // --- TAMBAHAN: Refresh data setelah kembali dari halaman edit ---
                       if (result == true && mounted) {
@@ -127,7 +134,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 15),
                   CardButtonWidget(
                     title: 'Hapus Akun',
-                    onPressed: () { /* Logika Hapus Akun di sini */ },
+                    onPressed: () {
+                      /* Logika Hapus Akun di sini */
+                    },
                   ),
                   const Spacer(),
                   CardButtonWidget(
@@ -140,19 +149,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         confirmButtonText: 'Ya, Keluar',
                         cancelButtonText: 'Batal',
                         onConfirm: () async {
-                          final spService = Provider.of<SharedpreferencesService>(context, listen: false);
+                          final spService =
+                              Provider.of<SharedpreferencesService>(
+                                context,
+                                listen: false,
+                              );
 
                           final currentUserState = spService.getStatusUser();
 
                           final newState = UserLocal(
                             statusLogin: false,
-                            statusFirstLaunch: currentUserState.statusFirstLaunch,
+                            statusFirstLaunch:
+                                currentUserState.statusFirstLaunch,
                           );
 
                           await spService.setStatusUser(newState);
 
                           await FirebaseAuth.instance.signOut();
-                          
                         },
                       );
                     },

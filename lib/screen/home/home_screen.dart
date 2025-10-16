@@ -92,8 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
 class _BannerCashflow extends StatelessWidget {
-  const _BannerCashflow({super.key});
+  const _BannerCashflow();
 
   @override
   Widget build(BuildContext context) {

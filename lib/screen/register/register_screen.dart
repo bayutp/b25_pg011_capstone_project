@@ -40,7 +40,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _onPasswordChanged(String password) {
     setState(() {
       _has8Characters = password.length >= 8;
-      _hasSymbolAndNumber = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')) && password.contains(RegExp(r'[0-9]'));
+      _hasSymbolAndNumber =
+          password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')) &&
+          password.contains(RegExp(r'[0-9]'));
       _hasCapitalLetter = password.contains(RegExp(r'[A-Z]'));
     });
   }
@@ -75,17 +77,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     if (password != confirmPassword) {
-      _showAlertDialog('Gagal Daftar', 'Password dan konfirmasi password tidak cocok.');
+      _showAlertDialog(
+        'Gagal Daftar',
+        'Password dan konfirmasi password tidak cocok.',
+      );
       return;
     }
 
     if (!_has8Characters || !_hasSymbolAndNumber || !_hasCapitalLetter) {
-      _showAlertDialog('Gagal Daftar', 'Password Anda tidak memenuhi semua kriteria keamanan.');
+      _showAlertDialog(
+        'Gagal Daftar',
+        'Password Anda tidak memenuhi semua kriteria keamanan.',
+      );
       return;
     }
-    
+
     // Mulai loading
-    setState(() { _isLoading = true; });
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
       final userCredential = await _auth.registerWithEmailAndPassword(
@@ -96,18 +106,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       // --- Pengecekan Kunci: if (mounted) ---
       if (userCredential != null && mounted) {
-        _showAlertDialog('Berhasil', 'Akun berhasil dibuat. Anda akan diarahkan ke Beranda.');
-        
+        _showAlertDialog(
+          'Berhasil',
+          'Akun berhasil dibuat. Anda akan diarahkan ke Beranda.',
+        );
+
         // Navigasi eksplisit ke MainScreen (homeRoute) dan menghapus semua riwayat.
         Navigator.of(context).pushNamedAndRemoveUntil(
-            NavigationRoute.homeRoute.name, 
-            (Route<dynamic> route) => false, 
+          NavigationRoute.homeRoute.name,
+          (Route<dynamic> route) => false,
         );
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       if (e.code == 'email-already-in-use') {
-        errorMessage = 'Email ini sudah terdaftar. Silakan login atau gunakan email lain.';
+        errorMessage =
+            'Email ini sudah terdaftar. Silakan login atau gunakan email lain.';
       } else {
         errorMessage = 'Pendaftaran gagal: ${e.message}';
       }
@@ -116,12 +130,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } catch (e) {
       if (mounted) {
-        _showAlertDialog('Kesalahan', 'Terjadi kesalahan tidak terduga: ${e.toString()}');
+        _showAlertDialog(
+          'Kesalahan',
+          'Terjadi kesalahan tidak terduga: ${e.toString()}',
+        );
       }
     } finally {
       // Hentikan loading
       if (mounted) {
-        setState(() { _isLoading = false; });
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -135,13 +154,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           size: 16,
         ),
         const SizedBox(width: 8),
-        Text(text, style: TextStyle(color: isValid ? Colors.green : Colors.grey)),
+        Text(
+          text,
+          style: TextStyle(color: isValid ? Colors.green : Colors.grey),
+        ),
       ],
     );
   }
 
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -209,7 +231,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.grey,
                       ),
                       onPressed: () {
@@ -224,11 +248,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 8),
 
                 // Validasi Password
-                _buildValidationRow('Password terdiri dari 8 huruf', _has8Characters),
-                _buildValidationRow('Password terdiri simbol dan angka', _hasSymbolAndNumber),
-                _buildValidationRow('Password terdiri dari Huruf Kapital', _hasCapitalLetter),
+                _buildValidationRow(
+                  'Password terdiri dari 8 huruf',
+                  _has8Characters,
+                ),
+                _buildValidationRow(
+                  'Password terdiri simbol dan angka',
+                  _hasSymbolAndNumber,
+                ),
+                _buildValidationRow(
+                  'Password terdiri dari Huruf Kapital',
+                  _hasCapitalLetter,
+                ),
                 const SizedBox(height: 16),
-                
+
                 // Konfirmasi Password Field
                 TextField(
                   controller: _confirmPasswordController,
@@ -243,12 +276,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isConfirmPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.grey,
                       ),
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                     ),
@@ -256,7 +292,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   obscureText: !_isConfirmPasswordVisible,
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Tombol Daftar
                 SizedBox(
                   width: double.infinity,
@@ -270,15 +306,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          'Daftar',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            'Daftar',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Link ke halaman Login
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

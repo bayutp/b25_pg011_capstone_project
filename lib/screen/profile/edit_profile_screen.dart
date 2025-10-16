@@ -15,7 +15,8 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final _formKey = GlobalKey<FormState>(); // --- TAMBAHAN: Kunci untuk validasi ---
+  final _formKey =
+      GlobalKey<FormState>(); // --- TAMBAHAN: Kunci untuk validasi ---
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _businessNameController = TextEditingController();
@@ -43,53 +44,81 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // --- TAMBAHAN: Fungsi untuk memuat data dari Firestore ke dalam form ---
   Future<void> _loadUserData() async {
-    setState(() { _isLoading = true; });
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
         if (doc.exists && mounted) {
           final data = doc.data()!;
           _firstNameController.text = data['firstName'] ?? '';
           _lastNameController.text = data['lastName'] ?? '';
           _businessNameController.text = data['companyName'] ?? '';
           _positionController.text = data['position'] ?? '';
-          setState(() { _isDataLoaded = true; });
+          setState(() {
+            _isDataLoaded = true;
+          });
         }
       }
     } finally {
-      if (mounted) { setState(() { _isLoading = false; }); }
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
-  
+
   // --- TAMBAHAN: Fungsi untuk menyimpan perubahan ke Firestore ---
   Future<void> _saveChanges() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() { _isLoading = true; });
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-          'firstName': _firstNameController.text.trim(),
-          'lastName': _lastNameController.text.trim(),
-          'companyName': _businessNameController.text.trim(),
-          'position': _positionController.text.trim(),
-        });
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+              'firstName': _firstNameController.text.trim(),
+              'lastName': _lastNameController.text.trim(),
+              'companyName': _businessNameController.text.trim(),
+              'position': _positionController.text.trim(),
+            });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Perubahan berhasil disimpan!"), backgroundColor: Colors.green),
+            const SnackBar(
+              content: Text("Perubahan berhasil disimpan!"),
+              backgroundColor: Colors.green,
+            ),
           );
-          Navigator.of(context).pop(true); // Kirim 'true' untuk menandakan ada perubahan
+          Navigator.of(
+            context,
+          ).pop(true); // Kirim 'true' untuk menandakan ada perubahan
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Gagal menyimpan: $e"), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text("Gagal menyimpan: $e"),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
-      if (mounted) { setState(() { _isLoading = false; }); }
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -114,21 +143,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     children: [
                       Row(
                         children: [
-                          Expanded(child: _buildTextField(label: 'Nama Depan', hint: 'Nama depan', controller: _firstNameController)),
+                          Expanded(
+                            child: _buildTextField(
+                              label: 'Nama Depan',
+                              hint: 'Nama depan',
+                              controller: _firstNameController,
+                            ),
+                          ),
                           const SizedBox(width: 16),
-                          Expanded(child: _buildTextField(label: 'Nama Belakang', hint: 'Nama belakang', controller: _lastNameController)),
+                          Expanded(
+                            child: _buildTextField(
+                              label: 'Nama Belakang',
+                              hint: 'Nama belakang',
+                              controller: _lastNameController,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 24),
-                      _buildTextField(label: 'Nama Usaha / Jasa', hint: 'Masukan Usaha', controller: _businessNameController),
+                      _buildTextField(
+                        label: 'Nama Usaha / Jasa',
+                        hint: 'Masukan Usaha',
+                        controller: _businessNameController,
+                      ),
                       const SizedBox(height: 24),
-                      _buildTextField(label: 'Posisi', hint: 'Masukan Posisi', controller: _positionController),
+                      _buildTextField(
+                        label: 'Posisi',
+                        hint: 'Masukan Posisi',
+                        controller: _positionController,
+                      ),
                       const SizedBox(height: 40),
                       // --- PERUBAHAN: Hubungkan tombol ke fungsi _saveChanges ---
                       ButtonWidget(
                         title: 'Simpan Perubahan',
-                        onPressed: () => _saveChanges(), 
-                        isLoading: _isLoading,// Gunakan fungsi _saveChanges
+                        onPressed: () => _saveChanges(),
+                        isLoading: _isLoading, // Gunakan fungsi _saveChanges
                         backgroundColor: const Color(0xFF546E41),
                         foregroundColor: Colors.white.withOpacity(0.8),
                         textColor: Colors.white,
@@ -143,13 +192,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   // --- PERUBAHAN: Tambahkan validasi ke TextFormField ---
-  Widget _buildTextField({ required String label, required String hint, required TextEditingController controller, }) {
+  Widget _buildTextField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
         const SizedBox(height: 8),
-        TextFormField( // Ganti dari TextField ke TextFormField
+        TextFormField(
+          // Ganti dari TextField ke TextFormField
           controller: controller,
           decoration: InputDecoration(
             // ... (Dekorasimu sudah bagus) ...

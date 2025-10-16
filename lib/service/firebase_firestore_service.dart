@@ -196,7 +196,7 @@ class FirebaseFirestoreService {
 
     return querySnapshot.map((snapshots) => snapshots.size);
   }
-    
+
   Stream<int> countDailyTodos(
     String userId,
     String businessId,
