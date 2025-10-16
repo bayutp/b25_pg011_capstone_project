@@ -31,9 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  # Dependencies dari authentication Anda
+  firebase_core: ^4.1.0
+  firebase_auth: ^6.0.2
+  cloud_firestore: ^6.0.1
+
+  # Dependencies dari project template
   intl: ^0.20.2
   provider: ^6.1.5+1
   http: ^1.5.0
@@ -42,12 +45,12 @@ dependencies:
   flutter_local_notifications: ^19.4.1
   flutter_timezone: ^4.1.1
   timezone: ^0.10.1
-  date_picker_timeline: ^1.2.7 
   workmanager:
     git:
       url: https://github.com/fluttercommunity/flutter_workmanager.git
       path: workmanager
       ref: main
+  date_picker_timeline: ^1.2.7
   firebase_auth: ^6.1.0
   cloud_firestore: ^6.0.2
 
