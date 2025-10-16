@@ -1,6 +1,8 @@
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/firebase_options.dart';
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/plan/detail_status_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/plan_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/todo_status_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/user_plan_provider.dart';
@@ -43,7 +45,8 @@ void main() async {
         ChangeNotifierProvider(create: (context) => UserLocalProvider(service)),
         ChangeNotifierProvider(create: (context) => UserPlanProvider()),
         ChangeNotifierProvider(create: (context) => PlanDateProvider()),
-        ChangeNotifierProvider(create: (context) => TodoStatusProvider())
+        ChangeNotifierProvider(create: (context) => TodoStatusProvider()),
+        ChangeNotifierProvider(create: (context) => DetailStatusProvider())
       ],
       child: MyApp(user: user),
     ),
@@ -83,8 +86,8 @@ class MyApp extends StatelessWidget {
         NavigationRoute.registerRoute.name: (context) => const RegisterScreen(),
         NavigationRoute.homeRoute.name: (context) => const MainScreen(),
         NavigationRoute.planDetailRoute.name: (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as String;
-          return PlanDetailScreen(planTitle: args);
+          final args = ModalRoute.of(context)!.settings.arguments as UserPlan;
+          return PlanDetailScreen(plan: args);
         },
         NavigationRoute.addTaskRoute.name: (context) => const AddTodoScreen(),
       },

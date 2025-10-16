@@ -159,7 +159,7 @@ class _PlanListWidget extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       '/planDetail',
-                      arguments: plan.name,
+                      arguments: plan,
                     );
                   },
                 );

@@ -84,6 +84,20 @@ class FirebaseFirestoreService {
         );
   }
 
+  Stream<List<UserTodo>> getDetailPlanByStatus(String planId, String businessId,String status) {
+    return _firestore
+        .collection('todos')
+        .where('planId', isEqualTo: planId)
+        .where('businessId', isEqualTo: businessId)
+        .where('status', isEqualTo: status)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => UserTodo.fromJson(doc.data()))
+              .toList(),
+        );
+  }
+
   Stream<List<UserTodo>> getDailyTodos(
     String businessId,
     String status,

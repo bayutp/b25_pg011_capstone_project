@@ -1,30 +1,35 @@
+import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
+import 'package:b25_pg011_capstone_project/provider/plan/detail_status_provider.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PlanDetailScreen extends StatelessWidget {
-  final String planTitle;
-  const PlanDetailScreen({super.key, required this.planTitle});
+  final UserPlan plan;
+  const PlanDetailScreen({super.key, required this.plan});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(planTitle, style: Theme.of(context).textTheme.titleLarge),
+        title: Text(plan.name, style: Theme.of(context).textTheme.titleLarge),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           child: Column(
             children: [
-              _PlanListWidget(),
+              _PlanListWidget(plan: plan),
               const SizedBox(height: 60),
               _StatusTaskWidget(),
               const SizedBox(height: 35),
-              // _EmptyTaskWidget(),
-              _TaskListWidget(),
+              _TaskWidget(plan: plan),
               const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -35,7 +40,10 @@ class PlanDetailScreen extends StatelessWidget {
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.btnGreen.colors,
                   onPressed: () {
-                    // Handle button press
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.addTaskRoute.name,
+                    );
                   },
                 ),
               ),
@@ -47,26 +55,66 @@ class PlanDetailScreen extends StatelessWidget {
   }
 }
 
-class _PlanListWidget extends StatelessWidget {
-  const _PlanListWidget();
+class _TaskWidget extends StatelessWidget {
+  final UserPlan plan;
+  const _TaskWidget({required this.plan});
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> plan = {
-      "category": "Marketing",
-      "finisedTask": 12,
-      "allTask": 20,
-    };
+    final status = context.watch<DetailStatusProvider>().status;
+    return StreamProvider<List<UserTodo>>(
+      key: ValueKey('plan-$status'),
+      create: (context) => context
+          .read<FirebaseFirestoreService>()
+          .getDetailPlanByStatus(plan.planId, "N9eTsVw6rtKE8eWROmGC", status),
+      initialData: const [],
+      child: Consumer<List<UserTodo>>(
+        builder: (context, todos, _) {
+          if (todos.isEmpty) {
+            return _EmptyTaskWidget();
+          } else {
+            return _TaskListWidget(tasks: todos);
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _PlanListWidget extends StatelessWidget {
+  final UserPlan plan;
+  const _PlanListWidget({required this.plan});
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 156,
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: BannerPlanWidget(
-          category: plan['category'],
-          finishedTask: 12,
-          allTask: 20,
-          onTap: () {},
+        child: StreamProvider<List<UserTodo>>(
+          key: ValueKey("plan ${plan.planId}"),
+          create: (context) {
+            return context.read<FirebaseFirestoreService>().getTodosByPlanId(
+              plan.planId,
+              "N9eTsVw6rtKE8eWROmGC",
+            );
+          },
+          initialData: const [],
+          child: Consumer<List<UserTodo>>(
+            builder: (context, value, child) {
+              final allTask = value.length;
+              final finishedTask = value
+                  .where((todo) => todo.status == "completed")
+                  .length;
+              return BannerPlanWidget(
+                category: plan.name,
+                finishedTask: finishedTask,
+                allTask: allTask,
+                onTap: () {},
+              );
+            },
+          ),
         ),
       ),
     );
@@ -130,6 +178,19 @@ class _StatusTaskWidget extends StatelessWidget {
                 ),
               ),
             ],
+            onTap: (value) {
+              final provider = context.read<DetailStatusProvider>();
+              switch (value) {
+                case 0:
+                  provider.setStatus("on progress");
+                case 1:
+                  provider.setStatus("completed");
+                case 2:
+                  provider.setStatus("pending");
+                default:
+                  provider.setStatus("on progress");
+              }
+            },
           ),
         ),
       ),
@@ -172,36 +233,11 @@ class _EmptyTaskWidget extends StatelessWidget {
 }
 
 class _TaskListWidget extends StatelessWidget {
-  const _TaskListWidget();
+  final List<UserTodo> tasks;
+  const _TaskListWidget({required this.tasks});
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> tasks = [
-      {
-        "category": "Marketing",
-        "task": "Making 3 Post For Social Media",
-        "done": false,
-      },
-      {"category": "Management", "task": "Meeting With Team", "done": false},
-      {
-        "category": "Sales",
-        "task": "Contact 10 Prospective Clients",
-        "done": false,
-      },
-      {
-        "category": "Support",
-        "task": "Respond to Customer Emails",
-        "done": false,
-      },
-      {
-        "category": "HR",
-        "task": "Organize Team Building Activity",
-        "done": false,
-      },
-      {"category": "Production", "task": "Evaluasi Produk", "done": true},
-      {"category": "Finance", "task": "Evaluasi Produk", "done": false},
-      {"category": "Inventory", "task": "Evaluasi Produk", "done": false},
-    ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListView.builder(
@@ -210,10 +246,20 @@ class _TaskListWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final task = tasks[index];
           return ItemPlanWidget(
-            task: task['task'],
-            category: task['category'],
-            isChecked: task['done'],
-            onChange: (bool? value) {},
+            task: task.todo,
+            category: task.plan,
+            isChecked: task.status == "completed",
+            onChange: (bool? value) async {
+              final newStatus = value == true
+                  ? "completed"
+                  : task.endDate.isBefore(DateTime.now())
+                  ? "pending"
+                  : "on progress";
+              await context.read<FirebaseFirestoreService>().updateTodoStatus(
+                task.todoId,
+                newStatus,
+              );
+            },
           );
         },
       ),
