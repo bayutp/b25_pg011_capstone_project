@@ -42,16 +42,21 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
       }
 
       // Update data di Firestore dengan Company Name dan Position
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-        'companyName': _companyNameController.text.trim(),
-        'position': _positionController.text.trim(),
-      });
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({
+            'companyName': _companyNameController.text.trim(),
+            'position': _positionController.text.trim(),
+          });
 
       // Setelah berhasil, navigasi ke MainScreen (Home)
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed(NavigationRoute.homeRoute.name);
+        Navigator.of(
+          context,
+        ).pushReplacementNamed(NavigationRoute.homeRoute.name);
       }
-      
+
       // Tampilkan SnackBar sukses
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +66,6 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
           ),
         );
       }
-
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -161,7 +165,10 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(labelText, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(
+          labelText,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,

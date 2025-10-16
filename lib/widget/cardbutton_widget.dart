@@ -18,24 +18,24 @@ class CardButtonWidget extends StatelessWidget {
       child: OutlinedButton(
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.all(Colors.white),
-          side: WidgetStateProperty.all(BorderSide(color: Colors.grey.shade200)),
+          side: WidgetStateProperty.all(
+            BorderSide(color: Colors.grey.shade200),
+          ),
           shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           padding: WidgetStateProperty.all(
             const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           ),
 
-          overlayColor: WidgetStateProperty.resolveWith<Color?>(
-            (Set<WidgetState> states) {
-              if (states.contains(WidgetState.pressed)) {
-                return Colors.grey.shade200; 
-              }
-              return null; 
-            },
-          ),
+          overlayColor: WidgetStateProperty.resolveWith<Color?>((
+            Set<WidgetState> states,
+          ) {
+            if (states.contains(WidgetState.pressed)) {
+              return Colors.grey.shade200;
+            }
+            return null;
+          }),
         ),
         onPressed: onPressed,
         child: Row(
@@ -49,10 +49,7 @@ class CardButtonWidget extends StatelessWidget {
                 color: Colors.black87,
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              color: Colors.grey.shade400,
-            ),
+            Icon(Icons.chevron_right, color: Colors.grey.shade400),
           ],
         ),
       ),

@@ -30,10 +30,7 @@ class TaskCard extends StatelessWidget {
               const SizedBox(height: 28),
               const Text(
                 'Hari ini',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               const SizedBox(height: 6),
               Text(
@@ -49,10 +46,7 @@ class TaskCard extends StatelessWidget {
           ),
           SizedBox(
             height: 120,
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(imagePath, fit: BoxFit.cover),
           ),
         ],
       ),

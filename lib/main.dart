@@ -1,4 +1,3 @@
-
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
@@ -34,13 +33,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   final prefs = await SharedPreferences.getInstance();
   final service = SharedpreferencesService(prefs);
@@ -99,9 +95,9 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
-      
+
       home: startWidget,
-      
+
       routes: {
         NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),
         NavigationRoute.loginRoute.name: (context) => const LoginScreen(),

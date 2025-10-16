@@ -17,7 +17,9 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     final host = Platform.isAndroid ? '10.0.2.2' : 'localhost';
     final firestore = FirebaseFirestore.instance;
@@ -29,15 +31,16 @@ void main() {
       persistenceEnabled: false,
     );
 
-    print('✅ Firebase initialized & emulator connected to $host:8080');
+    debugPrint('✅ Firebase initialized & emulator connected to $host:8080');
   });
-
 
   group('💰 Cashflow Firebase Integration Test', () {
     testWidgets(
       '1️⃣ Menambah data cashflow dan memastikan tampil di CashflowScreen',
-          (WidgetTester tester) async {
-        final firestoreService = FirebaseFirestoreService(FirebaseFirestore.instance);
+      (WidgetTester tester) async {
+        final firestoreService = FirebaseFirestoreService(
+          FirebaseFirestore.instance,
+        );
 
         await tester.pumpWidget(
           MultiProvider(
@@ -50,22 +53,25 @@ void main() {
           ),
         );
 
-        print('🔹 Pilih jenis transaksi (radio button)...');
+        debugPrint('🔹 Pilih jenis transaksi (radio button)...');
         await tester.tap(find.text('Pemasukan')); // pilih radio income
         await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-        print('🔹 Isi tanggal manual (bypass date picker)...');
+        debugPrint('🔹 Isi tanggal manual (bypass date picker)...');
         await tester.enterText(find.byType(TextFormField).first, '01/01/2025');
         await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-        print('🔹 Isi nominal dan keterangan...');
+        debugPrint('🔹 Isi nominal dan keterangan...');
         await tester.enterText(find.byType(TextFormField).at(1), 'Rp 150000');
-        await tester.enterText(find.byType(TextFormField).at(2), 'Testing integration');
+        await tester.enterText(
+          find.byType(TextFormField).at(2),
+          'Testing integration',
+        );
 
-        print('🔹 Simpan data...');
+        debugPrint('🔹 Simpan data...');
         await tester.tap(find.text('Tambahkan Data'));
         await tester.pumpAndSettle(const Duration(seconds: 5));
-        print('✅ Form disubmit');
+        debugPrint('✅ Form disubmit');
 
         // 🔁 Cek apakah data tersimpan di Firestore (retry beberapa kali)
         bool dataFound = false;
@@ -75,10 +81,12 @@ void main() {
               .where('note', isEqualTo: 'Testing integration')
               .get();
 
-          print('🔍 Cek Firestore (attempt $attempt): ${snapshot.docs.length} dokumen');
+          debugPrint(
+            '🔍 Cek Firestore (attempt $attempt): ${snapshot.docs.length} dokumen',
+          );
           if (snapshot.docs.isNotEmpty) {
             for (final doc in snapshot.docs) {
-              print('📄 Dokumen ditemukan: ${doc.data()}');
+              debugPrint('📄 Dokumen ditemukan: ${doc.data()}');
             }
             dataFound = true;
             break;
@@ -86,9 +94,13 @@ void main() {
           await Future.delayed(const Duration(seconds: 2));
         }
 
-        expect(dataFound, isTrue, reason: '❌ Data cashflow belum tersimpan di Firestore');
+        expect(
+          dataFound,
+          isTrue,
+          reason: '❌ Data cashflow belum tersimpan di Firestore',
+        );
 
-        print('🔹 Membuka CashflowScreen...');
+        debugPrint('🔹 Membuka CashflowScreen...');
         await tester.pumpWidget(
           MultiProvider(
             providers: [
@@ -100,64 +112,71 @@ void main() {
         );
 
         await tester.pumpAndSettle(const Duration(seconds: 5));
-        print('✅ CashflowScreen terbuka');
+        debugPrint('✅ CashflowScreen terbuka');
 
         expect(find.textContaining('Pemasukan'), findsWidgets);
         expect(find.textContaining('150000'), findsWidgets);
       },
     );
 
-    testWidgets('2️⃣ Hitung total cashflow harian sesuai data Firestore',
-            (WidgetTester tester) async {
-          final firestoreService = FirebaseFirestoreService(FirebaseFirestore.instance);
-          final now = DateTime.now();
+    testWidgets('2️⃣ Hitung total cashflow harian sesuai data Firestore', (
+      WidgetTester tester,
+    ) async {
+      final firestoreService = FirebaseFirestoreService(
+        FirebaseFirestore.instance,
+      );
+      final now = DateTime.now();
 
-          // Tambah data dummy
-          await firestoreService.addCashflow(UserCashflow(
-            businessId: "N9eTsVw6rtKE8eWROmGC",
-            userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            amount: 100000,
-            type: "income",
-            note: "test income",
-            date: now,
-            createdBy: "tester",
-            createdAt: now,
-          ));
+      // Tambah data dummy
+      await firestoreService.addCashflow(
+        UserCashflow(
+          businessId: "N9eTsVw6rtKE8eWROmGC",
+          userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+          amount: 100000,
+          type: "income",
+          note: "test income",
+          date: now,
+          createdBy: "tester",
+          createdAt: now,
+        ),
+      );
 
-          await firestoreService.addCashflow(UserCashflow(
-            businessId: "N9eTsVw6rtKE8eWROmGC",
-            userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            amount: 50000,
-            type: "expense",
-            note: "test expense",
-            date: now,
-            createdBy: "tester",
-            createdAt: now,
-          ));
+      await firestoreService.addCashflow(
+        UserCashflow(
+          businessId: "N9eTsVw6rtKE8eWROmGC",
+          userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+          amount: 50000,
+          type: "expense",
+          note: "test expense",
+          date: now,
+          createdBy: "tester",
+          createdAt: now,
+        ),
+      );
 
-          final incomeStream = firestoreService.getTotalCashflowByType(
-            "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            "N9eTsVw6rtKE8eWROmGC",
-            now,
-            "daily",
-            "income",
-          );
+      final incomeStream = firestoreService.getTotalCashflowByType(
+        "RJve4BfErDZNfASQl7OTbRiVAqg1",
+        "N9eTsVw6rtKE8eWROmGC",
+        now,
+        "daily",
+        "income",
+      );
 
-          final expenseStream = firestoreService.getTotalCashflowByType(
-            "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            "N9eTsVw6rtKE8eWROmGC",
-            now,
-            "daily",
-            "expense",
-          );
+      final expenseStream = firestoreService.getTotalCashflowByType(
+        "RJve4BfErDZNfASQl7OTbRiVAqg1",
+        "N9eTsVw6rtKE8eWROmGC",
+        now,
+        "daily",
+        "expense",
+      );
 
-          final income = await incomeStream.first;
-          final expense = await expenseStream.first;
+      final income = await incomeStream.first;
+      final expense = await expenseStream.first;
 
-          print('💵 Income: $income | Expense: $expense');
+      debugPrint('💵 Income: $income | Expense: $expense');
 
-          expect(income, greaterThanOrEqualTo(100000));
-          expect(expense, greaterThanOrEqualTo(50000));
-        });
+      expect(income, greaterThanOrEqualTo(100000));
+      expect(expense, greaterThanOrEqualTo(50000));
+    });
   });
 }

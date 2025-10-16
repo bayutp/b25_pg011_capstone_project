@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'button_widget.dart';
 
@@ -22,9 +21,7 @@ class ConfirmationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: Container(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -33,10 +30,7 @@ class ConfirmationDialog extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 16),
             SizedBox(
