@@ -86,6 +86,19 @@ class FirebaseFirestoreService {
         );
   }
 
+  Future<List<UserTodo>> getTodosByPlanIdOnce(
+    String planId,
+    String businessId,
+  ) async {
+    final snapshot = await _firestore
+        .collection('todos')
+        .where('planId', isEqualTo: planId)
+        .where('businessId', isEqualTo: businessId)
+        .get();
+
+    return snapshot.docs.map((doc) => UserTodo.fromJson(doc.data())).toList();
+  }
+
   Stream<List<UserTodo>> getDetailPlanByStatus(
     String planId,
     String businessId,

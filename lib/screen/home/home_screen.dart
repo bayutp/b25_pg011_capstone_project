@@ -237,9 +237,11 @@ class _TaskListWidget extends StatelessWidget {
             category: task.plan,
             isChecked: task.status == "completed",
             onChange: (bool? value) async {
+              final now = DateTime.now();
+              final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
               final newStatus = value == true
                   ? "completed"
-                  : task.endDate.isBefore(DateTime.now())
+                  : task.endDate.isBefore(today)
                   ? "pending"
                   : "on progress";
               await context.read<FirebaseFirestoreService>().updateTodoStatus(
