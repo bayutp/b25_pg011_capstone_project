@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../style/colors/app_colors.dart';
 import '../../widget/banner_cashflow_widget.dart';
@@ -11,13 +9,26 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
-    final int completed =2;
+    final int completed = 2;
     final int total = 5;
     final todos = [
-      {'department': 'Marketing', 'task': 'Making 3 Post For Social Media', 'isDone': false},
+      {
+        'department': 'Marketing',
+        'task': 'Making 3 Post For Social Media',
+        'isDone': false,
+      },
       {'department': 'Production', 'task': 'Evaluasi Produk', 'isDone': false},
-      {'department': 'Finance', 'task': 'Update Monthly Report', 'isDone': true},
+      {
+        'department': 'Finance',
+        'task': 'Update Monthly Report',
+        'isDone': true,
+      },
     ];
     return Scaffold(
       appBar: AppBar(
@@ -40,9 +51,7 @@ class HomeScreen extends StatefulWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.notifications, size: 28),
-                onPressed: ()  {
-
-                },
+                onPressed: () {},
               ),
             ],
           ),
@@ -59,7 +68,7 @@ class HomeScreen extends StatefulWidget {
               completedTasks: completed,
               totalTasks: total,
               imagePath: 'assets/img/ic_onboarding.png',
-        ),
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
@@ -80,7 +89,6 @@ class HomeScreen extends StatefulWidget {
           ],
         ),
       ),
-
     );
   }
 }

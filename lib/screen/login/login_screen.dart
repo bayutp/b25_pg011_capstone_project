@@ -1,14 +1,8 @@
-// lib/login_page.dart
-
-import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
-import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Diperlukan untuk FirebaseAuthException
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
-// Import MainScreen
-import 'package:b25_pg011_capstone_project/static/navigation_route.dart'; // Diperlukan untuk navigasi
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -234,78 +228,6 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 50),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login Pengguna"),
-        automaticallyImplyLeading: false, // Menghilangkan tombol back
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true, // Menyembunyikan teks password
-            ),
-            const SizedBox(height: 24),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Belum punya akun ?"),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacementNamed(NavigationRoute.registerRoute.name);
-                    },
-                    child: const Text(
-                      "Registrasi",
-                      style: TextStyle(color: Color(0xFF6B8E23)),
-                    ),
-                  ),
-                ],
-              ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              // Jika sedang loading, tombol tidak bisa ditekan
-              onPressed: _isLoading ? null : _login,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Text("Login"),
-            ),
-          ],
         ),
       ),
     );

@@ -31,11 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Dependencies dari authentication Anda
-  firebase_core: ^4.1.0
-  firebase_auth: ^6.0.2
-  cloud_firestore: ^6.0.1
-
   # Dependencies dari project template
   intl: ^0.20.2
   provider: ^6.1.5+1
@@ -52,7 +47,6 @@ dependencies:
       ref: main
   
   firebase_core: ^4.1.1
-  firebase_app_check: ^0.4.1
   date_picker_timeline: ^1.2.7
   firebase_auth: ^6.1.0
   cloud_firestore: ^6.0.2
