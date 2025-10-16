@@ -133,6 +133,7 @@ class FirebaseFirestoreService {
         .where('businessId', isEqualTo: businessId)
         .where('startDate', isGreaterThanOrEqualTo: rangeDate['start'])
         .where('startDate', isLessThanOrEqualTo: rangeDate['end'])
+        .orderBy('status', descending: true)
         .snapshots();
 
     return querySnapshot.map(

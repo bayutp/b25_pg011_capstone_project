@@ -23,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<UserTodo>>.value(
-      // 🔥 Stream utama: hanya 1x dideklarasikan
       value: context.read<FirebaseFirestoreService>().getAllDailyTodos(
         businessId,
       ),
@@ -54,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔹 Dashboard Banner
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Consumer<List<UserTodo>>(
@@ -72,7 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 29),
 
-              // 🔹 Cashflow Section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
@@ -87,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 29),
 
-              // 🔹 Todo Title + Counter
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
@@ -127,7 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 16),
 
-              // 🔹 Todo List
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Center(
@@ -145,7 +140,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 24),
 
-              // 🔹 Add Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ButtonWidget(
@@ -231,28 +225,31 @@ class _TaskListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: tasks.length,
-      itemBuilder: (context, index) {
-        final task = tasks[index];
-        return ItemPlanWidget(
-          task: task.todo,
-          category: task.plan,
-          isChecked: task.status == "completed",
-          onChange: (bool? value) async {
-            final newStatus = value == true
-                ? "completed"
-                : task.endDate.isBefore(DateTime.now())
-                ? "pending"
-                : "on progress";
-            await context.read<FirebaseFirestoreService>().updateTodoStatus(
-              task.todoId,
-              newStatus,
-            );
-          },
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          final task = tasks[index];
+          return ItemPlanWidget(
+            task: task.todo,
+            category: task.plan,
+            isChecked: task.status == "completed",
+            onChange: (bool? value) async {
+              final newStatus = value == true
+                  ? "completed"
+                  : task.endDate.isBefore(DateTime.now())
+                  ? "pending"
+                  : "on progress";
+              await context.read<FirebaseFirestoreService>().updateTodoStatus(
+                task.todoId,
+                newStatus,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
