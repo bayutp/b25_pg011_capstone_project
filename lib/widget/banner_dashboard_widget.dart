@@ -33,14 +33,17 @@ class BannerDashboardWidget extends StatelessWidget {
                     children: [
                       Text(
                         "Hari ini",
-                        style: Theme.of(context).textTheme.titleSmall,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.textWhite.colors,
+                        ),
                       ),
                       SizedBox(height: 13),
                       Text(
                         "$finishedTask/$allTask Tasks",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleLarge?.copyWith(fontSize: 18),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontSize: 18,
+                          color: AppColors.textWhite.colors,
+                        ),
                       ),
                     ],
                   ),
