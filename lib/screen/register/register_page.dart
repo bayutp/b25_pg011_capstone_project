@@ -1,18 +1,15 @@
-// lib/screen/register/register_screen.dart
-
+import 'package:b25_pg011_capstone_project/screen/home/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
-import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterPageState extends State<RegisterPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -21,21 +18,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
-  bool _isLoading = false; // State untuk loading
 
   bool _has8Characters = false;
   bool _hasSymbolAndNumber = false;
   bool _hasCapitalLetter = false;
-
-  @override
-  void dispose() {
-    // Wajib: Hapus controllers saat widget dihapus (agar tidak terjadi memory leak)
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
 
   void _onPasswordChanged(String password) {
     setState(() {
@@ -43,87 +29,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _hasSymbolAndNumber = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')) && password.contains(RegExp(r'[0-9]'));
       _hasCapitalLetter = password.contains(RegExp(r'[A-Z]'));
     });
-  }
-
-  // Fungsi untuk menampilkan dialog peringatan
-  void _showAlertDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _handleRegister() async {
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-
-    // --- Validasi Input ---
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      _showAlertDialog('Gagal Daftar', 'Semua kolom wajib diisi.');
-      return;
-    }
-
-    if (password != confirmPassword) {
-      _showAlertDialog('Gagal Daftar', 'Password dan konfirmasi password tidak cocok.');
-      return;
-    }
-
-    if (!_has8Characters || !_hasSymbolAndNumber || !_hasCapitalLetter) {
-      _showAlertDialog('Gagal Daftar', 'Password Anda tidak memenuhi semua kriteria keamanan.');
-      return;
-    }
-    
-    // Mulai loading
-    setState(() { _isLoading = true; });
-
-    try {
-      final userCredential = await _auth.registerWithEmailAndPassword(
-        email,
-        password,
-        name,
-      );
-
-      // --- Pengecekan Kunci: if (mounted) ---
-      if (userCredential != null && mounted) {
-        _showAlertDialog('Berhasil', 'Akun berhasil dibuat. Anda akan diarahkan ke Beranda.');
-        
-        // Navigasi eksplisit ke MainScreen (homeRoute) dan menghapus semua riwayat.
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            NavigationRoute.homeRoute.name, 
-            (Route<dynamic> route) => false, 
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      String errorMessage;
-      if (e.code == 'email-already-in-use') {
-        errorMessage = 'Email ini sudah terdaftar. Silakan login atau gunakan email lain.';
-      } else {
-        errorMessage = 'Pendaftaran gagal: ${e.message}';
-      }
-      if (mounted) {
-        _showAlertDialog('Gagal Daftar', errorMessage);
-      }
-    } catch (e) {
-      if (mounted) {
-        _showAlertDialog('Kesalahan', 'Terjadi kesalahan tidak terduga: ${e.toString()}');
-      }
-    } finally {
-      // Hentikan loading
-      if (mounted) {
-        setState(() { _isLoading = false; });
-      }
-    }
   }
 
   Widget _buildValidationRow(String text, bool isValid) {
@@ -161,7 +66,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Nama Field
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
@@ -177,7 +81,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Email Field
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -194,7 +97,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password Field
                 TextField(
                   controller: _passwordController,
                   onChanged: _onPasswordChanged,
@@ -223,13 +125,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 8),
 
-                // Validasi Password
                 _buildValidationRow('Password terdiri dari 8 huruf', _has8Characters),
                 _buildValidationRow('Password terdiri simbol dan angka', _hasSymbolAndNumber),
                 _buildValidationRow('Password terdiri dari Huruf Kapital', _hasCapitalLetter),
                 const SizedBox(height: 16),
                 
-                // Konfirmasi Password Field
                 TextField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
@@ -257,29 +157,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 24),
                 
-                // Tombol Daftar
                 SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleRegister,
+                    onPressed: () async {
+                      if (_passwordController.text != _confirmPasswordController.text) {
+                        print('Error: Password tidak cocok');
+                        return;
+                      }
+
+                      if (!_has8Characters || !_hasSymbolAndNumber || !_hasCapitalLetter) {
+                        print('Error: Validasi password gagal');
+                        return;
+                      }
+                      
+                      final userCredential = await _auth.registerWithEmailAndPassword(
+                        _emailController.text,
+                        _passwordController.text,
+                        _nameController.text,
+                      );
+                      
+                      if (userCredential != null) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6B8E23),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          'Daftar',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
+                    child: const Text(
+                      'Daftar',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 
-                // Link ke halaman Login
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
