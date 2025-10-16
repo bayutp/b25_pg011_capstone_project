@@ -125,6 +125,22 @@ class FirebaseFirestoreService {
     );
   }
 
+  Stream<List<UserTodo>> getAllDailyTodos(String businessId) {
+    final rangeDate = Helper().getDateRange("daily", DateTime.now());
+
+    final querySnapshot = _firestore
+        .collection('todos')
+        .where('businessId', isEqualTo: businessId)
+        .where('startDate', isGreaterThanOrEqualTo: rangeDate['start'])
+        .where('startDate', isLessThanOrEqualTo: rangeDate['end'])
+        .snapshots();
+
+    return querySnapshot.map(
+      (snapshots) =>
+          snapshots.docs.map((doc) => UserTodo.fromJson(doc.data())).toList(),
+    );
+  }
+
   Future<void> addCashflow(UserCashflow cashflowData) async {
     await _firestore.collection('cashflows').add(cashflowData.toJson());
   }
