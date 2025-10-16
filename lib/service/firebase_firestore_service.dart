@@ -2,6 +2,7 @@ import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class FirebaseFirestoreService {
   final FirebaseFirestore _firestore;
@@ -84,7 +85,11 @@ class FirebaseFirestoreService {
         );
   }
 
-  Stream<List<UserTodo>> getDetailPlanByStatus(String planId, String businessId,String status) {
+  Stream<List<UserTodo>> getDetailPlanByStatus(
+    String planId,
+    String businessId,
+    String status,
+  ) {
     return _firestore
         .collection('todos')
         .where('planId', isEqualTo: planId)
@@ -140,5 +145,25 @@ class FirebaseFirestoreService {
 
   Future<void> updateTodoStatus(String idTodo, String status) async {
     await _firestore.collection("todos").doc(idTodo).update({'status': status});
+  }
+
+  Future<void> updateExpiredTodos(String businessId) async {
+    final now = DateTime.now();
+
+    final snapshot = await _firestore
+        .collection('todos')
+        .where('businessId', isEqualTo: businessId)
+        .where('status', isEqualTo: 'on progress')
+        .where('endDate', isLessThan: now)
+        .get();
+
+    final batch = _firestore.batch();
+
+    for (var doc in snapshot.docs) {
+      batch.update(doc.reference, {'status': 'pending'});
+    }
+
+    await batch.commit();
+    debugPrint("Updated ${snapshot.docs.length} expired todos to pending");
   }
 }

@@ -46,7 +46,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => UserPlanProvider()),
         ChangeNotifierProvider(create: (context) => PlanDateProvider()),
         ChangeNotifierProvider(create: (context) => TodoStatusProvider()),
-        ChangeNotifierProvider(create: (context) => DetailStatusProvider())
+        ChangeNotifierProvider(create: (context) => DetailStatusProvider()),
       ],
       child: MyApp(user: user),
     ),
