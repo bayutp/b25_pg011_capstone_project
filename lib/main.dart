@@ -66,9 +66,9 @@ class MyApp extends StatelessWidget {
     if (isLoggedIn) {
       startRoute = NavigationRoute.homeRoute.name;
     } else if (!isLoggedIn && !isFirstLaunch) {
-      startRoute = NavigationRoute.loginRoute.name;
+      startRoute = NavigationRoute.homeRoute.name;
     } else {
-      startRoute = NavigationRoute.onboardingRoute.name;
+      startRoute = NavigationRoute.homeRoute.name;
     }
 
     return MaterialApp(
