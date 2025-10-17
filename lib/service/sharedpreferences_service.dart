@@ -8,11 +8,15 @@ class SharedpreferencesService {
 
   static const String _keyUser = "USER_KEY_LOGIN";
   static const String _keyLaunch = "USER_KEY_LAUNCH";
+  static const String _keyUid = "USER_KEY_UID";
+  static const String _keyIdbuz = "USER_KEY_IDBUZ";
 
   Future<void> setStatusUser(UserLocal user) async {
     try {
       await _preferences.setBool(_keyUser, user.statusLogin);
       await _preferences.setBool(_keyLaunch, user.statusFirstLaunch);
+      await _preferences.setString(_keyUid, user.uid);
+      await _preferences.setString(_keyIdbuz, user.idbuz);
     } catch (e) {
       throw Exception("Shared preferences cannot set data user");
     }
@@ -22,6 +26,8 @@ class SharedpreferencesService {
     return UserLocal(
       statusLogin: _preferences.getBool(_keyUser) ?? false,
       statusFirstLaunch: _preferences.getBool(_keyLaunch) ?? true,
+      uid: _preferences.getString(_keyUid) ?? '',
+      idbuz: _preferences.getString(_keyIdbuz) ?? '',
     );
   }
 }
