@@ -18,7 +18,7 @@ class ProfilCheckScreen extends StatelessWidget {
         }
 
         if (snapshots.data == null || snapshots.data!.isEmpty) {
-          return EditProfileScreen(newUser: true,);
+          return EditProfileScreen(newUser: true);
         } else {
           return MainScreen();
         }

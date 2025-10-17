@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     sp = context.read<UserLocalProvider>();
+    sp.getStatusUser();
     userId = sp.userLocal?.uid ?? "";
     businessId = sp.userLocal?.idbuz ?? "";
   }
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Text(
-              'Hello JohnDoe!',
+              'uid: $userId - $businessId',
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
@@ -158,7 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   textColor: AppColors.btnTextWhite.colors,
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.btnGreen.colors,
-                  onPressed: () => Navigator.pushNamed(context, '/addTask', arguments: sp.userLocal),
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    '/addTask',
+                    arguments: sp.userLocal,
+                  ),
                 ),
               ),
             ],

@@ -97,7 +97,10 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   ).textTheme.titleLarge?.copyWith(fontSize: 16),
                 ),
                 const SizedBox(height: 6),
-                _CategoryWidget(key: ValueKey("fieldCategory",), user: widget.user,),
+                _CategoryWidget(
+                  key: ValueKey("fieldCategory"),
+                  user: widget.user,
+                ),
                 const SizedBox(height: 50),
                 ButtonWidget(
                   key: const Key('tambah_data_button'),

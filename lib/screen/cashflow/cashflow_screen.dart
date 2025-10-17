@@ -28,7 +28,7 @@ class _CashflowScreenState extends State<CashflowScreen> {
     super.initState();
 
     final sp = context.read<UserLocalProvider>();
-    
+
     user = UserLocal(
       statusLogin: true,
       statusFirstLaunch: false,

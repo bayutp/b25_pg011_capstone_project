@@ -27,11 +27,11 @@ class PlanDetailScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           child: Column(
             children: [
-              _PlanListWidget(plan: plan, idBusiness: user.idbuz,),
+              _PlanListWidget(plan: plan, idBusiness: user.idbuz),
               const SizedBox(height: 60),
               _StatusTaskWidget(),
               const SizedBox(height: 35),
-              _TaskWidget(plan: plan, idBusiness: user.idbuz,),
+              _TaskWidget(plan: plan, idBusiness: user.idbuz),
               const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -45,7 +45,7 @@ class PlanDetailScreen extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       NavigationRoute.addTaskRoute.name,
-                      arguments: user
+                      arguments: user,
                     );
                   },
                 ),

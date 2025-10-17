@@ -59,7 +59,7 @@ class OnboardingScreen extends StatelessWidget {
                           statusLogin: isLogin,
                           statusFirstLaunch: false,
                           uid: '',
-                          idbuz: ''
+                          idbuz: '',
                         ),
                       );
                       if (context.mounted) {

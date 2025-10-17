@@ -58,11 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (userCredential != null) {
         // Navigasi eksplisit ke MainScreen setelah login berhasil
         if (mounted) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            NavigationRoute
-                .homeRoute
-                .name, // Gunakan homeRoute yang menunjuk ke MainScreen
-            (Route<dynamic> route) => false, // Hapus semua rute sebelumnya
+          Navigator.pushReplacementNamed(
+            context,
+            NavigationRoute.homeRoute.name,
           );
         }
       } else {
