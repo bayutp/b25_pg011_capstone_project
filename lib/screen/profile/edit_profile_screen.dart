@@ -1,14 +1,21 @@
 // lib/screen/profile/edit_profile_screen.dart
 
+import 'package:b25_pg011_capstone_project/data/model/user_business.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 
 // --- TAMBAHAN ---
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+  final bool newUser;
+  const EditProfileScreen({super.key, required this.newUser});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -21,6 +28,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _businessNameController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
+  late AuthService service;
+  late UserLocalProvider sp;
 
   // --- TAMBAHAN: State untuk loading ---
   bool _isLoading = false;
@@ -30,6 +39,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
     // --- TAMBAHAN: Panggil fungsi untuk memuat data pengguna ---
+    service = context.read<AuthService>();
+    sp = context.read<UserLocalProvider>();
     _loadUserData();
   }
 
@@ -44,33 +55,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // --- TAMBAHAN: Fungsi untuk memuat data dari Firestore ke dalam form ---
   Future<void> _loadUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
+
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-        if (doc.exists && mounted) {
-          final data = doc.data()!;
-          _firstNameController.text = data['firstName'] ?? '';
-          _lastNameController.text = data['lastName'] ?? '';
-          _businessNameController.text = data['companyName'] ?? '';
-          _positionController.text = data['position'] ?? '';
-          setState(() {
-            _isDataLoaded = true;
-          });
-        }
+      if (user == null) return;
+
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final isHasBuz = await service.hasBusiness();
+      final userBuzList = await service.getUserBusiness();
+      String buzName = '';
+      if (isHasBuz && userBuzList.isNotEmpty) {
+        buzName = userBuzList.firstWhere((buz) => buz.isActive == true).name;
       }
+      debugPrint("nama bisnis >>> $buzName $isHasBuz $userBuzList");
+
+      if (doc.exists && mounted) {
+        final data = doc.data()!;
+        _firstNameController.text = data['firstName'] ?? '';
+        _lastNameController.text = data['lastName'] ?? '';
+        _businessNameController.text = buzName;
+        _positionController.text = data['position'] ?? '';
+        setState(() => _isDataLoaded = true);
+      } else {
+        debugPrint('Data user tidak ditemukan di Firestore');
+      }
+    } catch (e) {
+      debugPrint('Error load user data: $e');
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -83,15 +99,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
+        final userBuzList = await service.getUserBusiness();
+        final userBuz = userBuzList
+            .where((buz) => buz.isActive == true)
+            .toList();
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({
               'firstName': _firstNameController.text.trim(),
               'lastName': _lastNameController.text.trim(),
-              'companyName': _businessNameController.text.trim(),
               'position': _positionController.text.trim(),
             });
+        if (userBuz.isNotEmpty) {
+          await service.updateBuzName(
+            userBuz.first.idBusiness,
+            user.uid,
+            _businessNameController.text,
+          );
+          sp.setStatusUser(
+            UserLocal(
+              statusLogin: true,
+              statusFirstLaunch: false,
+              uid: user.uid,
+              idbuz: userBuz.first.idBusiness,
+            ),
+          );
+        } else {
+          final idbuz = await service.addBusiness(
+            UserBusiness(
+              idOwner: service.uid!,
+              name: _businessNameController.text,
+              createdAt: DateTime.now(),
+            ),
+          );
+          sp.setStatusUser(
+            UserLocal(
+              statusLogin: true,
+              statusFirstLaunch: false,
+              uid: user.uid,
+              idbuz: idbuz,
+            ),
+          );
+        }
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -99,9 +150,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.of(
-            context,
-          ).pop(true); // Kirim 'true' untuk menandakan ada perubahan
+          if (widget.newUser) {
+            Navigator.pushReplacementNamed(
+              context,
+              NavigationRoute.homeRoute.name,
+            );
+          } else {
+            Navigator.pop(context);
+          }
         }
       }
     } catch (e) {

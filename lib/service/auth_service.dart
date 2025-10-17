@@ -78,7 +78,7 @@ class AuthService {
 
     final snapshot = await _firestore
         .collection("business")
-        .where("ownerId", isEqualTo: uid)
+        .where("idOwner", isEqualTo: uid)
         .get();
 
     return snapshot.docs
@@ -86,7 +86,7 @@ class AuthService {
         .toList();
   }
 
- Future<void> addBusiness(UserBusiness business) async {
+  Future<String> addBusiness(UserBusiness business) async {
     final name = business.name.trim();
     final normalizedName = name.toLowerCase();
 
@@ -117,6 +117,8 @@ class AuthService {
 
     // Update status bisnis aktif
     await updateBuzStatus(buzId, business.idOwner);
+
+    return buzId;
   }
 
   Future<void> updateBuzStatus(String idBusiness, String idUser) async {
@@ -140,12 +142,21 @@ class AuthService {
     await batch.commit();
   }
 
+  Future<void> updateBuzName(
+    String idBusiness,
+    String idUser,
+    String name,
+  ) async {
+    final docRef = _firestore.collection("business").doc(idBusiness);
+    await docRef.update({'name': name});
+  }
+
   Future<bool> hasBusiness() async {
     if (uid == null) return false;
 
     final snapshot = await _firestore
-        .collection('businesses')
-        .where('ownerId', isEqualTo: uid)
+        .collection('business')
+        .where('idOwner', isEqualTo: uid)
         .limit(1)
         .get();
 
