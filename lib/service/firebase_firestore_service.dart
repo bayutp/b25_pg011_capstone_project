@@ -1,6 +1,5 @@
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
-import 'package:flutter/foundation.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
 import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -267,6 +266,5 @@ class FirebaseFirestoreService {
     }
 
     await batch.commit();
-    debugPrint("Updated ${snapshot.docs.length} expired todos to pending");
   }
 }

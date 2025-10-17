@@ -63,7 +63,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
                     body: Center(child: CircularProgressIndicator()),
                   );
                 } else if (asyncSnap.hasError) {
-                  debugPrint("Auth error: ${asyncSnap.error}");
                   return const ProfilCheckScreen();
                 } else if (asyncSnap.hasData) {
                   return asyncSnap.data!;
@@ -85,6 +84,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   ) async {
     final userBuzList = await service.getUserBusiness();
     final userBuz = userBuzList.where((buz) => buz.isActive == true).toList();
+    final fullname = await service.getFullname();
 
     if (userBuz.isNotEmpty) {
       sp.getStatusUser();
@@ -95,13 +95,12 @@ class _AuthWrapperState extends State<AuthWrapper> {
             statusFirstLaunch: false,
             uid: uid,
             idbuz: userBuz.first.idBusiness,
+            fullname: fullname,
           ),
         );
       }
-      debugPrint("data user true >> ${sp.userLocal?.idbuz} ${userBuz.first}");
       return true;
     }
-    debugPrint("data user false >> ${userBuz.first}");
     return false;
   }
 }

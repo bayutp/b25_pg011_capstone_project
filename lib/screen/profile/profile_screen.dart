@@ -163,6 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 statusFirstLaunch: false,
                                 uid: '',
                                 idbuz: '',
+                                fullname: '',
                               ),
                             );
                             Navigator.popAndPushNamed(

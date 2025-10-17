@@ -230,7 +230,6 @@ class _TotalTaskWidget extends StatelessWidget {
               },
               initialData: 0,
               catchError: (context, error) {
-                debugPrint('Error fetching todos: $error');
                 return 0;
               },
               builder: (context, child) {

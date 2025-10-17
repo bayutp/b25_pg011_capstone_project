@@ -260,7 +260,6 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
             icon: Icons.cancel_rounded,
           ),
         );
-        debugPrint('Error adding todo: $e');
       }
     } finally {
       if (mounted) {
@@ -415,7 +414,6 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
               icon: Icons.cancel_rounded,
             ),
           );
-          debugPrint('Error adding category: $e');
         }
       }
     }
@@ -433,7 +431,6 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
           .getPlansByUserId(widget.user.uid, widget.user.idbuz),
       initialData: [],
       catchError: (context, error) {
-        debugPrint('Error fetching cashflows: $error');
         return <UserPlan>[];
       },
       builder: (context, child) {

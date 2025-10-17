@@ -27,14 +27,7 @@ class _CashflowScreenState extends State<CashflowScreen> {
   void initState() {
     super.initState();
 
-    final sp = context.read<UserLocalProvider>();
-
-    user = UserLocal(
-      statusLogin: true,
-      statusFirstLaunch: false,
-      uid: sp.userLocal?.uid ?? "",
-      idbuz: sp.userLocal?.idbuz ?? "",
-    );
+    user = context.read<UserLocalProvider>().userLocal;
   }
 
   @override
@@ -123,7 +116,6 @@ class _TotalCashflowWidget extends StatelessWidget {
           .getCountCashflow(user.uid, user.idbuz, selectedDate, "daily"),
       initialData: 0,
       catchError: (context, error) {
-        debugPrint('Error fetching total cashflow: $error');
         return 0;
       },
       builder: (context, child) {
@@ -179,7 +171,6 @@ class _CashflowWidget extends StatelessWidget {
           .getCashflowsByDate(user.uid, user.idbuz, selectedDate, "daily"),
       initialData: const [],
       catchError: (context, error) {
-        debugPrint('Error fetching cashflows: $error');
         return [];
       },
       builder: (context, child) {
@@ -348,7 +339,6 @@ class _BannerCashflow extends StatelessWidget {
                 ),
             initialData: 0,
             catchError: (context, error) {
-              debugPrint('Error fetching total income: $error');
               return 0;
             },
             builder: (context, child) {
@@ -374,7 +364,6 @@ class _BannerCashflow extends StatelessWidget {
                 ),
             initialData: 0,
             catchError: (context, error) {
-              debugPrint('Error fetching total expense: $error');
               return 0;
             },
             builder: (context, child) {

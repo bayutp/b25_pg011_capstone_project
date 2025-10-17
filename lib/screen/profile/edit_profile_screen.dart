@@ -71,7 +71,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (isHasBuz && userBuzList.isNotEmpty) {
         buzName = userBuzList.firstWhere((buz) => buz.isActive == true).name;
       }
-      debugPrint("nama bisnis >>> $buzName $isHasBuz $userBuzList");
 
       if (doc.exists && mounted) {
         final data = doc.data()!;
@@ -80,8 +79,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _businessNameController.text = buzName;
         _positionController.text = data['position'] ?? '';
         setState(() => _isDataLoaded = true);
-      } else {
-        debugPrint('Data user tidak ditemukan di Firestore');
       }
     } catch (e) {
       debugPrint('Error load user data: $e');
@@ -112,6 +109,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               'lastName': _lastNameController.text.trim(),
               'position': _positionController.text.trim(),
             });
+        final fullname =
+            "${_firstNameController.text} ${_lastNameController.text}";
         if (userBuz.isNotEmpty) {
           await service.updateBuzName(
             userBuz.first.idBusiness,
@@ -124,6 +123,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               statusFirstLaunch: false,
               uid: user.uid,
               idbuz: userBuz.first.idBusiness,
+              fullname: fullname,
             ),
           );
         } else {
@@ -140,6 +140,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               statusFirstLaunch: false,
               uid: user.uid,
               idbuz: idbuz,
+              fullname: fullname,
             ),
           );
         }

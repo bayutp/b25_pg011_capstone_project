@@ -3,11 +3,13 @@ class UserLocal {
   final bool statusFirstLaunch;
   final String uid;
   final String idbuz;
+  final String fullname;
 
   UserLocal({
     required this.statusLogin,
     required this.statusFirstLaunch,
-    required this.uid,
-    required this.idbuz,
+    this.uid = '',
+    this.idbuz = '',
+    this.fullname = '',
   });
 }

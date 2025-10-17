@@ -20,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String userId = "";
   String businessId = "";
+  String fullname = "";
   late UserLocalProvider sp;
 
   @override
@@ -27,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     sp = context.read<UserLocalProvider>();
     sp.getStatusUser();
+
     userId = sp.userLocal?.uid ?? "";
     businessId = sp.userLocal?.idbuz ?? "";
+    fullname = sp.userLocal?.fullname ?? "";
   }
 
   @override
@@ -43,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Text(
-              'uid: $userId - $businessId',
+              'Hello $fullname!',
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),

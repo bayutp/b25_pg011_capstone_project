@@ -86,6 +86,16 @@ class AuthService {
         .toList();
   }
 
+  Future<String> getFullname() async {
+    if (uid == null) return '';
+
+    final snapshot = await _firestore.collection("users").doc(uid).get();
+    if (!snapshot.exists) return '';
+
+    final data = snapshot.data();
+    return '${data?['firstName'] ?? ''} ${data?['lastName'] ?? ''}'.trim();
+  }
+
   Future<String> addBusiness(UserBusiness business) async {
     final name = business.name.trim();
     final normalizedName = name.toLowerCase();

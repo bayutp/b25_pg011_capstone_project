@@ -12,6 +12,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<BottomnavProvider>();
+    provider.setIndex = 0;
     return Scaffold(
       body: Consumer<BottomnavProvider>(
         builder: (context, value, child) {
