@@ -1,4 +1,5 @@
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_dashboard_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
@@ -17,8 +18,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final String userId = "RJve4BfErDZNfASQl7OTbRiVAqg1";
-  final String businessId = "N9eTsVw6rtKE8eWROmGC";
+  String userId = "";
+  String businessId = "";
+  late UserLocalProvider sp;
+
+  @override
+  void initState() {
+    super.initState();
+    sp = context.read<UserLocalProvider>();
+    userId = sp.userLocal?.uid ?? "";
+    businessId = sp.userLocal?.idbuz ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   textColor: AppColors.btnTextWhite.colors,
                   foregroundColor: AppColors.bgSoftGreen.colors,
                   backgroundColor: AppColors.btnGreen.colors,
-                  onPressed: () => Navigator.pushNamed(context, '/addTask'),
+                  onPressed: () => Navigator.pushNamed(context, '/addTask', arguments: sp.userLocal),
                 ),
               ),
             ],

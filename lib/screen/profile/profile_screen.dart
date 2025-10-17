@@ -1,7 +1,10 @@
 // lib/screen/profile/profile_screen.dart
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/widget/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/cardbutton_widget.dart';
@@ -120,7 +123,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const EditProfileScreen(),
+                          builder: (context) =>
+                              EditProfileScreen(newUser: false),
                         ),
                       );
                       // --- TAMBAHAN: Refresh data setelah kembali dari halaman edit ---
@@ -149,23 +153,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         confirmButtonText: 'Ya, Keluar',
                         cancelButtonText: 'Batal',
                         onConfirm: () async {
-                          final spService =
-                              Provider.of<SharedpreferencesService>(
-                                context,
-                                listen: false,
-                              );
+                          final sp = context.read<UserLocalProvider>();
+                          final service = context.read<AuthService>();
 
-                          final currentUserState = spService.getStatusUser();
-
-                          final newState = UserLocal(
-                            statusLogin: false,
-                            statusFirstLaunch:
-                                currentUserState.statusFirstLaunch,
-                          );
-
-                          await spService.setStatusUser(newState);
-
-                          await FirebaseAuth.instance.signOut();
+                          service.signOut().whenComplete(() {
+                            sp.setStatusUser(
+                              UserLocal(
+                                statusLogin: false,
+                                statusFirstLaunch: false,
+                                uid: '',
+                                idbuz: '',
+                              ),
+                            );
+                            Navigator.popAndPushNamed(
+                              context,
+                              NavigationRoute.loginRoute.name,
+                            );
+                          });
                         },
                       );
                     },

@@ -1,6 +1,8 @@
 import 'package:b25_pg011_capstone_project/data/model/transaction_type.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
@@ -28,6 +30,15 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
   final _noteController = TextEditingController();
 
   bool _isLoading = false;
+
+  late UserLocal user;
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = context.read<UserLocalProvider>();
+    user = provider.userLocal!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,13 +166,13 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
     try {
       await service.addCashflow(
         UserCashflow(
-          businessId: "N9eTsVw6rtKE8eWROmGC",
-          userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+          businessId: user.idbuz,
+          userId: user.uid,
           amount: amount,
           type: type,
           note: note,
           date: date,
-          createdBy: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+          createdBy: user.uid,
           createdAt: DateTime.now(),
         ),
       );
