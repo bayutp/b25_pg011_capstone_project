@@ -123,6 +123,7 @@ class MyApp extends StatelessWidget {
           final args = ModalRoute.of(context)!.settings.arguments as bool;
           return EditProfileScreen(newUser: args);
         },
+        NavigationRoute.userCheck.name: (context) => AuthWrapper(),
       },
 
       localizationsDelegates: [

@@ -11,13 +11,13 @@ class ProfilCheckScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final service = context.read<AuthService>();
     return FutureBuilder(
-      future: service.getUserBusiness(),
+      future: service.hasBusiness(),
       builder: (context, snapshots) {
         if (snapshots.connectionState == ConnectionState.waiting) {
           return Scaffold(body: Center(child: CircularProgressIndicator()));
         }
 
-        if (snapshots.data == null || snapshots.data!.isEmpty) {
+        if (!snapshots.hasData) {
           return EditProfileScreen(newUser: true);
         } else {
           return MainScreen();

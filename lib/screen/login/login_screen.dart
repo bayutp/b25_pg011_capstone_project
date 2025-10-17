@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           Navigator.pushReplacementNamed(
             context,
-            NavigationRoute.homeRoute.name,
+            NavigationRoute.userCheck.name,
           );
         }
       } else {

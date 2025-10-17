@@ -8,7 +8,8 @@ enum NavigationRoute {
   addTaskRoute("/addTask"),
   profileRoute("/profile"),
   editProfil("/editProfil"),
-  addCashflow("/addCashflow");
+  addCashflow("/addCashflow"),
+  userCheck("/userCheck");
 
   const NavigationRoute(this.name);
   final String name;

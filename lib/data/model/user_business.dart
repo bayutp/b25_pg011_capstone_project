@@ -5,7 +5,7 @@ class UserBusiness {
   final String idOwner;
   final String name;
   final DateTime createdAt;
-  final isActive;
+  final bool isActive;
 
   const UserBusiness({
     this.idBusiness = '',

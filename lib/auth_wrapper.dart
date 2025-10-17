@@ -44,18 +44,34 @@ class _AuthWrapperState extends State<AuthWrapper> {
           );
         }
 
-        return FutureBuilder<Widget>(
-          future: _handleAuth(snapshot.data),
-          builder: (context, asyncSnap) {
-            if (asyncSnap.connectionState == ConnectionState.waiting) {
+        return StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
               );
-            } else if (asyncSnap.hasData) {
-              return asyncSnap.data!;
-            } else {
-              return const LoginScreen();
             }
+
+            if (!snapshot.hasData) return const LoginScreen();
+
+            return FutureBuilder<Widget>(
+              future: _handleAuth(snapshot.data),
+              builder: (context, asyncSnap) {
+                if (asyncSnap.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                } else if (asyncSnap.hasError) {
+                  debugPrint("Auth error: ${asyncSnap.error}");
+                  return const ProfilCheckScreen();
+                } else if (asyncSnap.hasData) {
+                  return asyncSnap.data!;
+                } else {
+                  return const LoginScreen();
+                }
+              },
+            );
           },
         );
       },
@@ -71,15 +87,17 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final userBuz = userBuzList.where((buz) => buz.isActive == true).toList();
 
     if (userBuz.isNotEmpty) {
-      sp.setStatusUser(
-        UserLocal(
-          statusLogin: true,
-          statusFirstLaunch: false,
-          uid: uid,
-          idbuz: userBuz.first.idBusiness,
-        ),
-      );
       sp.getStatusUser();
+      if (sp.userLocal!.idbuz.isEmpty) {
+        sp.setStatusUser(
+          UserLocal(
+            statusLogin: true,
+            statusFirstLaunch: false,
+            uid: uid,
+            idbuz: userBuz.first.idBusiness,
+          ),
+        );
+      }
       debugPrint("data user true >> ${sp.userLocal?.idbuz} ${userBuz.first}");
       return true;
     }

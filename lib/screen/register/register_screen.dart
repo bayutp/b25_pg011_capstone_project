@@ -112,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
 
         // Navigasi eksplisit ke MainScreen (homeRoute) dan menghapus semua riwayat.
-        Navigator.pushReplacementNamed(context, NavigationRoute.homeRoute.name);
+        Navigator.pushReplacementNamed(context, NavigationRoute.userCheck.name);
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
