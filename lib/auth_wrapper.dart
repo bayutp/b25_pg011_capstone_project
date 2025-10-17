@@ -1,4 +1,4 @@
-import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/profile/profil_check_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
@@ -16,7 +16,7 @@ class AuthWrapper extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasData) {
-          return const MainScreen();
+          return const ProfilCheckScreen();
         } else {
           return const LoginScreen();
         }

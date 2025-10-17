@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/auth_wrapper.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
@@ -14,9 +15,9 @@ import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.d
 import 'package:b25_pg011_capstone_project/screen/plan/add/add_todo_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
-import 'package:b25_pg011_capstone_project/service/authwrapper_service.dart';
 
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 
@@ -51,6 +52,7 @@ void main() async {
         Provider(
           create: (context) => FirebaseFirestoreService(firebaseFirestore),
         ),
+        Provider(create: (context) => AuthService()),
         ChangeNotifierProvider(create: (context) => BottomnavProvider()),
         ChangeNotifierProvider(
           create: (context) =>
