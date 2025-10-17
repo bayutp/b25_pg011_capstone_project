@@ -12,7 +12,7 @@ class UserBusiness {
     required this.idOwner,
     required this.name,
     required this.createdAt,
-    this.isActive = false
+    this.isActive = false,
   });
 
   factory UserBusiness.fromJson(Map<String, dynamic> json) => UserBusiness(

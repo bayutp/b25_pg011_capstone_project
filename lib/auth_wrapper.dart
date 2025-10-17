@@ -1,10 +1,37 @@
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
+import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profil_check_screen.dart';
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
+import 'package:provider/provider.dart';
 
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  late final AuthService service;
+  late final UserLocalProvider sp;
+
+  Future<Widget> _handleAuth(User? firebaseUser) async {
+    if (firebaseUser == null) return const LoginScreen();
+
+    final hasBusiness = await setupUser(service, sp, firebaseUser.uid);
+    return hasBusiness ? const MainScreen() : const ProfilCheckScreen();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    service = context.read<AuthService>();
+    sp = context.read<UserLocalProvider>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +42,48 @@ class AuthWrapper extends StatelessWidget {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
-        } else if (snapshot.hasData) {
-          return const ProfilCheckScreen();
-        } else {
-          return const LoginScreen();
         }
+
+        return FutureBuilder<Widget>(
+          future: _handleAuth(snapshot.data),
+          builder: (context, asyncSnap) {
+            if (asyncSnap.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            } else if (asyncSnap.hasData) {
+              return asyncSnap.data!;
+            } else {
+              return const LoginScreen();
+            }
+          },
+        );
       },
     );
+  }
+
+  Future<bool> setupUser(
+    AuthService service,
+    UserLocalProvider sp,
+    String uid,
+  ) async {
+    final userBuzList = await service.getUserBusiness();
+    final userBuz = userBuzList.where((buz) => buz.isActive == true).toList();
+
+    if (userBuz.isNotEmpty) {
+      sp.setStatusUser(
+        UserLocal(
+          statusLogin: true,
+          statusFirstLaunch: false,
+          uid: uid,
+          idbuz: userBuz.first.idBusiness,
+        ),
+      );
+      sp.getStatusUser();
+      debugPrint("data user true >> ${sp.userLocal?.idbuz} ${userBuz.first}");
+      return true;
+    }
+    debugPrint("data user false >> ${userBuz.first}");
+    return false;
   }
 }
