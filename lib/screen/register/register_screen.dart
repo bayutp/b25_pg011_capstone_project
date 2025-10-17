@@ -19,21 +19,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
-  bool _isLoading = false; // State untuk loading
+  bool _isLoading = false; 
 
   bool _has8Characters = false;
   bool _hasSymbolAndNumber = false;
   bool _hasCapitalLetter = false;
-
-  @override
-  void dispose() {
-    // Wajib: Hapus controllers saat widget dihapus (agar tidak terjadi memory leak)
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
 
   void _onPasswordChanged(String password) {
     setState(() {
@@ -60,13 +50,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // Fungsi untuk menangani proses pendaftaran
   Future<void> _handleRegister() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
-    // --- Validasi Input ---
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
       _showAlertDialog('Gagal Daftar', 'Semua kolom wajib diisi.');
       return;
@@ -82,7 +72,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
     
-    // Mulai loading
     setState(() { _isLoading = true; });
 
     try {
@@ -92,14 +81,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         name,
       );
 
-      // --- Pengecekan Kunci: if (mounted) ---
-      if (userCredential != null && mounted) {
+      if (userCredential != null) {
+        // Navigasi eksplisit ke MainScreen setelah pendaftaran berhasil
         _showAlertDialog('Berhasil', 'Akun berhasil dibuat. Anda akan diarahkan ke Beranda.');
         
-        // Navigasi eksplisit ke MainScreen (homeRoute) dan menghapus semua riwayat.
+        // Menggunakan pushNamedAndRemoveUntil untuk pindah ke MainScreen dan menutup semua halaman sebelumnya
         Navigator.of(context).pushNamedAndRemoveUntil(
-            NavigationRoute.homeRoute.name, 
-            (Route<dynamic> route) => false, 
+          NavigationRoute.homeRoute.name, 
+          (Route<dynamic> route) => false, 
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -109,18 +98,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else {
         errorMessage = 'Pendaftaran gagal: ${e.message}';
       }
-      if (mounted) {
-        _showAlertDialog('Gagal Daftar', errorMessage);
-      }
+      _showAlertDialog('Gagal Daftar', errorMessage);
     } catch (e) {
-      if (mounted) {
-        _showAlertDialog('Kesalahan', 'Terjadi kesalahan tidak terduga: ${e.toString()}');
-      }
+      _showAlertDialog('Kesalahan', 'Terjadi kesalahan tidak terduga: ${e.toString()}');
     } finally {
-      // Hentikan loading
-      if (mounted) {
-        setState(() { _isLoading = false; });
-      }
+      setState(() { _isLoading = false; });
     }
   }
 
@@ -284,6 +266,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const Text('Sudah Punya Akun? '),
                     TextButton(
                       onPressed: () {
+                        // Menggunakan pop untuk kembali ke LoginScreen
                         Navigator.of(context).pop();
                       },
                       child: const Text('Login'),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Diperlukan untuk FirebaseAuthException
+import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
-// Import MainScreen
-import 'package:b25_pg011_capstone_project/static/navigation_route.dart'; // Diperlukan untuk navigasi
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart'; 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
