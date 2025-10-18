@@ -1,4 +1,6 @@
 import 'package:b25_pg011_capstone_project/data/model/user_business.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart'; // Diperlukan untuk debugPrint
@@ -6,6 +8,9 @@ import 'package:flutter/foundation.dart'; // Diperlukan untuk debugPrint
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final SharedpreferencesService _prefs;
+
+  AuthService(this._prefs);
 
   // Fungsi untuk mendaftar dengan penanganan error yang terpisah
   Future<UserCredential?> registerWithEmailAndPassword(
@@ -35,6 +40,14 @@ class AuthService {
           'email': email,
           'createdAt': FieldValue.serverTimestamp(),
         });
+
+        await _prefs.setStatusUser(
+          UserLocal(
+            statusLogin: true,
+            statusFirstLaunch: false,
+            uid: userCredential.user!.uid,
+          ),
+        );
       } on FirebaseException catch (e) {
         // Ini menangkap kegagalan Izin/Keamanan Firestore.
         debugPrint('FIRESTORE ERROR (CRITICAL): ${e.code} - ${e.message}');
@@ -58,6 +71,13 @@ class AuthService {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
+      );
+      await _prefs.setStatusUser(
+        UserLocal(
+          statusLogin: true,
+          statusFirstLaunch: false,
+          uid: userCredential.user!.uid,
+        ),
       );
       return userCredential;
     } on FirebaseAuthException catch (e) {
