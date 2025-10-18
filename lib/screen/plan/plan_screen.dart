@@ -154,7 +154,13 @@ class _PlanListWidget extends StatelessWidget {
                     category: plans.first.name,
                     finishedTask: finishedTask,
                     allTask: allTask,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/planDetail',
+                        arguments: {'plan': plans.first, 'user': user},
+                      );
+                    },
                   );
                 },
               ),
