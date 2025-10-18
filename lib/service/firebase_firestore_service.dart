@@ -1,6 +1,5 @@
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
-import 'package:flutter/foundation.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
 import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -84,6 +83,19 @@ class FirebaseFirestoreService {
               .map((doc) => UserTodo.fromJson(doc.data()))
               .toList(),
         );
+  }
+
+  Future<List<UserTodo>> getTodosByPlanIdOnce(
+    String planId,
+    String businessId,
+  ) async {
+    final snapshot = await _firestore
+        .collection('todos')
+        .where('planId', isEqualTo: planId)
+        .where('businessId', isEqualTo: businessId)
+        .get();
+
+    return snapshot.docs.map((doc) => UserTodo.fromJson(doc.data())).toList();
   }
 
   Stream<List<UserTodo>> getDetailPlanByStatus(
@@ -254,6 +266,5 @@ class FirebaseFirestoreService {
     }
 
     await batch.commit();
-    debugPrint("Updated ${snapshot.docs.length} expired todos to pending");
   }
 }

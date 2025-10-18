@@ -7,7 +7,9 @@ enum NavigationRoute {
   cashFlowDetail("/cashFlowDetail"),
   addTaskRoute("/addTask"),
   profileRoute("/profile"),
-  addCashflow("/addCashflow");
+  editProfil("/editProfil"),
+  addCashflow("/addCashflow"),
+  userCheck("/userCheck");
 
   const NavigationRoute(this.name);
   final String name;

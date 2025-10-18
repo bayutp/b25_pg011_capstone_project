@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/detail_status_provider.dart';
@@ -12,7 +13,8 @@ import 'package:provider/provider.dart';
 
 class PlanDetailScreen extends StatelessWidget {
   final UserPlan plan;
-  const PlanDetailScreen({super.key, required this.plan});
+  final UserLocal user;
+  const PlanDetailScreen({super.key, required this.plan, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +27,11 @@ class PlanDetailScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           child: Column(
             children: [
-              _PlanListWidget(plan: plan),
+              _PlanListWidget(plan: plan, idBusiness: user.idbuz),
               const SizedBox(height: 60),
               _StatusTaskWidget(),
               const SizedBox(height: 35),
-              _TaskWidget(plan: plan),
+              _TaskWidget(plan: plan, idBusiness: user.idbuz),
               const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -43,6 +45,7 @@ class PlanDetailScreen extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       NavigationRoute.addTaskRoute.name,
+                      arguments: {'user': user, 'plan': plan},
                     );
                   },
                 ),
@@ -57,7 +60,8 @@ class PlanDetailScreen extends StatelessWidget {
 
 class _TaskWidget extends StatelessWidget {
   final UserPlan plan;
-  const _TaskWidget({required this.plan});
+  final String idBusiness;
+  const _TaskWidget({required this.plan, required this.idBusiness});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +70,7 @@ class _TaskWidget extends StatelessWidget {
       key: ValueKey('plan-$status'),
       create: (context) => context
           .read<FirebaseFirestoreService>()
-          .getDetailPlanByStatus(plan.planId, "N9eTsVw6rtKE8eWROmGC", status),
+          .getDetailPlanByStatus(plan.planId, idBusiness, status),
       initialData: const [],
       child: Consumer<List<UserTodo>>(
         builder: (context, todos, _) {
@@ -83,7 +87,8 @@ class _TaskWidget extends StatelessWidget {
 
 class _PlanListWidget extends StatelessWidget {
   final UserPlan plan;
-  const _PlanListWidget({required this.plan});
+  final String idBusiness;
+  const _PlanListWidget({required this.plan, required this.idBusiness});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +102,7 @@ class _PlanListWidget extends StatelessWidget {
           create: (context) {
             return context.read<FirebaseFirestoreService>().getTodosByPlanId(
               plan.planId,
-              "N9eTsVw6rtKE8eWROmGC",
+              idBusiness,
             );
           },
           initialData: const [],
@@ -250,9 +255,11 @@ class _TaskListWidget extends StatelessWidget {
             category: task.plan,
             isChecked: task.status == "completed",
             onChange: (bool? value) async {
+              final now = DateTime.now();
+              final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
               final newStatus = value == true
                   ? "completed"
-                  : task.endDate.isBefore(DateTime.now())
+                  : task.endDate.isBefore(today)
                   ? "pending"
                   : "on progress";
               await context.read<FirebaseFirestoreService>().updateTodoStatus(

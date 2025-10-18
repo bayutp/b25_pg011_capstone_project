@@ -9,6 +9,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   final List<TextInputFormatter> inputFormatters;
+  final TextInputType keyboardType;
 
   const TextFormFieldWidget({
     super.key,
@@ -18,6 +19,7 @@ class TextFormFieldWidget extends StatefulWidget {
     required this.obscureText,
     this.readOnly = false,
     this.onTap,
+    this.keyboardType = TextInputType.text,
     this.inputFormatters = const [],
   });
 
@@ -40,6 +42,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       controller: widget.controller,
       validator: widget.validator,
       obscureText: _obscure,
+      keyboardType: widget.keyboardType,
       inputFormatters: [...widget.inputFormatters],
       decoration: InputDecoration(
         labelText: widget.label,

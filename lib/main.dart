@@ -1,4 +1,4 @@
-import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
+import 'package:b25_pg011_capstone_project/auth_wrapper.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
@@ -13,10 +13,11 @@ import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/plan/add/add_todo_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
-import 'package:b25_pg011_capstone_project/service/authwrapper_service.dart';
 
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 
@@ -51,6 +52,7 @@ void main() async {
         Provider(
           create: (context) => FirebaseFirestoreService(firebaseFirestore),
         ),
+        Provider(create: (context) => AuthService()),
         ChangeNotifierProvider(create: (context) => BottomnavProvider()),
         ChangeNotifierProvider(
           create: (context) =>
@@ -104,12 +106,28 @@ class MyApp extends StatelessWidget {
         NavigationRoute.registerRoute.name: (context) => const RegisterScreen(),
         NavigationRoute.homeRoute.name: (context) => const MainScreen(),
         NavigationRoute.planDetailRoute.name: (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as UserPlan;
-          return PlanDetailScreen(plan: args);
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>;
+          final plan = args['plan'];
+          final user = args['user'];
+          return PlanDetailScreen(plan: plan, user: user);
         },
-        NavigationRoute.addTaskRoute.name: (context) => const AddTodoScreen(),
+        NavigationRoute.addTaskRoute.name: (context) {
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>;
+          final plan = args['plan'];
+          final user = args['user'];
+          return AddTodoScreen(user: user, plan: plan);
+        },
         NavigationRoute.profileRoute.name: (context) => const ProfileScreen(),
         NavigationRoute.addCashflow.name: (context) => AddCashflowScreen(),
+        NavigationRoute.editProfil.name: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as bool;
+          return EditProfileScreen(newUser: args);
+        },
+        NavigationRoute.userCheck.name: (context) => AuthWrapper(),
       },
 
       localizationsDelegates: [
