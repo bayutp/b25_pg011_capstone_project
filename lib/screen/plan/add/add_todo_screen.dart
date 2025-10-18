@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 
 class AddTodoScreen extends StatefulWidget {
   final UserLocal user;
-  const AddTodoScreen({super.key, required this.user});
+  final UserPlan plan;
+  const AddTodoScreen({super.key, required this.user, required this.plan});
 
   @override
   State<AddTodoScreen> createState() => _AddTodoScreenState();
@@ -100,6 +101,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 _CategoryWidget(
                   key: ValueKey("fieldCategory"),
                   user: widget.user,
+                  plan: widget.plan,
                 ),
                 const SizedBox(height: 50),
                 ButtonWidget(
@@ -212,9 +214,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
       int.parse(endDateParts[2]),
       int.parse(endDateParts[1]),
       int.parse(endDateParts[0]),
-      now.hour,
-      now.minute,
-      now.second,
+      23,
+      59,
+      59,
     );
 
     final userId = user.uid;
@@ -318,7 +320,8 @@ class _PickedDateState extends State<_PickedDate> {
 
 class _CategoryWidget extends StatefulWidget {
   final UserLocal user;
-  const _CategoryWidget({super.key, required this.user});
+  final UserPlan plan;
+  const _CategoryWidget({super.key, required this.user, required this.plan});
 
   @override
   State<_CategoryWidget> createState() => _CategoryWidgetState();
@@ -333,7 +336,8 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
     Future.microtask(() {
       if (mounted) {
         userPlanProvider = context.read<UserPlanProvider>();
-        userPlanProvider.setSelectedPlan("");
+        userPlanProvider.setSelectedPlan(widget.plan.name);
+        userPlanProvider.setIdPlan(widget.plan.planId);
       }
     });
   }

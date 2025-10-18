@@ -114,8 +114,12 @@ class MyApp extends StatelessWidget {
           return PlanDetailScreen(plan: plan, user: user);
         },
         NavigationRoute.addTaskRoute.name: (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as UserLocal;
-          return AddTodoScreen(user: args);
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>;
+          final plan = args['plan'];
+          final user = args['user'];
+          return AddTodoScreen(user: user, plan: plan);
         },
         NavigationRoute.profileRoute.name: (context) => const ProfileScreen(),
         NavigationRoute.addCashflow.name: (context) => AddCashflowScreen(),

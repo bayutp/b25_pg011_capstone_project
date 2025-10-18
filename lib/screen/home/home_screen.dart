@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
@@ -162,7 +163,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () => Navigator.pushNamed(
                       context,
                       '/addTask',
-                      arguments: sp.userLocal,
+                      arguments: {
+                        'user': sp.userLocal,
+                        'plan': UserPlan(
+                          userId: sp.userLocal!.uid,
+                          businessId: sp.userLocal!.idbuz,
+                          name: '',
+                          planId: '',
+                          createdBy: sp.userLocal!.uid,
+                          createdAt: DateTime.now(),
+                        ),
+                      },
                     ),
                   ),
                 ),

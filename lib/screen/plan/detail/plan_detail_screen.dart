@@ -45,7 +45,7 @@ class PlanDetailScreen extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       NavigationRoute.addTaskRoute.name,
-                      arguments: user,
+                      arguments: {'user': user, 'plan': plan},
                     );
                   },
                 ),

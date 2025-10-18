@@ -50,7 +50,21 @@ class PlanScreen extends StatelessWidget {
                 foregroundColor: AppColors.bgSoftGreen.colors,
                 backgroundColor: AppColors.btnGreen.colors,
                 onPressed: () {
-                  Navigator.pushNamed(context, '/addTask', arguments: user);
+                  Navigator.pushNamed(
+                    context,
+                    '/addTask',
+                    arguments: {
+                      'user': user,
+                      'plan': UserPlan(
+                        userId: user.uid,
+                        businessId: user.idbuz,
+                        name: '',
+                        planId: '',
+                        createdBy: user.uid,
+                        createdAt: DateTime.now(),
+                      ),
+                    },
+                  );
                 },
               ),
             ),
