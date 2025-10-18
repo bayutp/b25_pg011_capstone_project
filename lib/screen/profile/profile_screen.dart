@@ -2,6 +2,7 @@
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
+import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/cardbutton_widget.dart';
@@ -43,7 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
       body: SafeArea(
         // --- PERUBAHAN: Bungkus dengan FutureBuilder ---
         child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -64,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // --- KONDISI 3: Jika data berhasil didapatkan ---
             final userData = snapshot.data!.data()!;
             final fullName =
-                "${userData['firstName'] ?? ''} ${userData['lastName'] ?? ''}";
+                "${userData['firstName'] ?? 'null'} ${userData['lastName'] ?? ''}";
             final position = userData['position'] ?? 'Posisi belum diatur';
 
             // Tampilkan UI utama dengan data dari Firebase

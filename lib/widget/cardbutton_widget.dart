@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CardButtonWidget extends StatelessWidget {
@@ -17,7 +18,7 @@ class CardButtonWidget extends StatelessWidget {
       width: double.infinity,
       child: OutlinedButton(
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(Colors.white),
+          backgroundColor: WidgetStateProperty.all(AppColors.btnWhite.colors),
           side: WidgetStateProperty.all(
             BorderSide(color: Colors.grey.shade200),
           ),

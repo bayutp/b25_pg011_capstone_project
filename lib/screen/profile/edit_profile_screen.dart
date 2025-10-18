@@ -1,5 +1,6 @@
 // lib/screen/profile/edit_profile_screen.dart
 
+import 'package:b25_pg011_capstone_project/widget/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 
@@ -125,7 +126,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         // ... (AppBar-mu sudah bagus) ...
       ),
@@ -144,32 +144,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: _buildTextField(
+                            child: TextFormFieldWidget(
                               label: 'Nama Depan',
-                              hint: 'Nama depan',
+                              obscureText: false,
                               controller: _firstNameController,
                             ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: _buildTextField(
+                            child: TextFormFieldWidget(
                               label: 'Nama Belakang',
-                              hint: 'Nama belakang',
+                              obscureText: false,
                               controller: _lastNameController,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
-                      _buildTextField(
+                      TextFormFieldWidget(
                         label: 'Nama Usaha / Jasa',
-                        hint: 'Masukan Usaha',
+                        obscureText: false,
                         controller: _businessNameController,
                       ),
                       const SizedBox(height: 24),
-                      _buildTextField(
+                      TextFormFieldWidget(
                         label: 'Posisi',
-                        hint: 'Masukan Posisi',
+                        obscureText: false,
                         controller: _positionController,
                       ),
                       const SizedBox(height: 40),
