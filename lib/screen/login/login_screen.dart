@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Diperlukan untuk FirebaseAuthException
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,9 +15,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthService _auth = AuthService();
+  late AuthService _auth;
   bool _isPasswordVisible = false;
   bool _isLoading = false; // State untuk loading
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = context.read<AuthService>();
+  }
 
   // Fungsi untuk menampilkan dialog peringatan
   void _showAlertDialog(String title, String message) {
@@ -61,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushNamedAndRemoveUntil(
             context,
             NavigationRoute.userCheck.name,
-            (route) => false
+            (route) => false,
           );
         }
       } else {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -17,7 +18,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final AuthService _auth = AuthService();
+  late AuthService _auth;
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -26,6 +27,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _has8Characters = false;
   bool _hasSymbolAndNumber = false;
   bool _hasCapitalLetter = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = context.read<AuthService>();
+  }
 
   @override
   void dispose() {
@@ -112,7 +119,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
 
         // Navigasi eksplisit ke MainScreen (homeRoute) dan menghapus semua riwayat.
-        Navigator.pushNamedAndRemoveUntil(context, NavigationRoute.userCheck.name, (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          NavigationRoute.userCheck.name,
+          (route) => false,
+        );
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;

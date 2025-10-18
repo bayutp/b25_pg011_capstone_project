@@ -52,7 +52,10 @@ void main() async {
         Provider(
           create: (context) => FirebaseFirestoreService(firebaseFirestore),
         ),
-        Provider(create: (context) => AuthService()),
+        Provider(
+          create: (context) =>
+              AuthService(context.read<SharedpreferencesService>()),
+        ),
         ChangeNotifierProvider(create: (context) => BottomnavProvider()),
         ChangeNotifierProvider(
           create: (context) =>
