@@ -104,7 +104,7 @@ Future<bool> setupUser(
   sp.getStatusUser();
 
   if (sp.userLocal == null || sp.userLocal!.idbuz.isEmpty) {
-    sp.setStatusUser(
+    await sp.setStatusUser(
       UserLocal(
         statusLogin: true,
         statusFirstLaunch: false,
@@ -119,13 +119,14 @@ Future<bool> setupUser(
   final todayStr = "${today.year}-${today.month}-${today.day}";
   final lastUpdate = sp.userLocal?.lastUpdate ?? '';
 
-  if (lastUpdate != todayStr) {
-    await firestoreService.updateExpiredTodos(
-      sp.userLocal?.idbuz ?? userBuz.first.idBusiness,
-    );
+  if (lastUpdate != todayStr && sp.userLocal != null) {
+    final idBuz = sp.userLocal?.idbuz ?? '';
+    if (idBuz.isNotEmpty) {
+      await firestoreService.updateExpiredTodos(idBuz);
 
-    final currentUser = sp.userLocal!;
-    sp.setStatusUser(currentUser.copyWith(lastUpdate: todayStr));
+      final currentUser = sp.userLocal!;
+      await sp.setStatusUser(currentUser.copyWith(lastUpdate: todayStr));
+    }
   }
 
   return true;
