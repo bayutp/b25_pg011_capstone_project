@@ -7,14 +7,15 @@ import 'package:b25_pg011_capstone_project/provider/plan/plan_date_provider.dart
 import 'package:b25_pg011_capstone_project/provider/plan/todo_status_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/user_plan_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
+import 'package:b25_pg011_capstone_project/screen/auth/forgotpswd/forgot_pswd_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/auth/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/cashflow/add/add_cashflow_screen.dart';
-import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/auth/login/login_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/plan/add/add_todo_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
-import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
@@ -131,6 +132,7 @@ class MyApp extends StatelessWidget {
           return EditProfileScreen(newUser: args);
         },
         NavigationRoute.userCheck.name: (context) => AuthWrapper(),
+        NavigationRoute.forgotPswd.name: (context) => ForgotPasswordScreen(),
       },
 
       localizationsDelegates: [

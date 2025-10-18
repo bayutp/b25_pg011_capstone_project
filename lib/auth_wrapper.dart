@@ -7,7 +7,7 @@ import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.da
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/auth/login/login_screen.dart';
 import 'package:provider/provider.dart';
 
 class AuthWrapper extends StatefulWidget {
