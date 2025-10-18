@@ -184,7 +184,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        // ... (AppBar-mu sudah bagus) ...
+        title: Text(
+          "Ubah Profile",
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
       // --- PERUBAHAN: Tampilkan loading jika data awal belum termuat ---
       body: _isLoading && !_isDataLoaded

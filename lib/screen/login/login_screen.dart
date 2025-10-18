@@ -58,9 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (userCredential != null) {
         // Navigasi eksplisit ke MainScreen setelah login berhasil
         if (mounted) {
-          Navigator.pushReplacementNamed(
+          Navigator.pushNamedAndRemoveUntil(
             context,
             NavigationRoute.userCheck.name,
+            (route) => false
           );
         }
       } else {
