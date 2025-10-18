@@ -4,11 +4,12 @@ import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
+import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/textformfield_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../style/colors/app_colors.dart';
@@ -84,16 +85,16 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                   controller: _expenseController,
                   label: "Total $transactionType",
                   obscureText: false,
+                  keyboardType: TextInputType.number,
                   inputFormatters: [
-                    CurrencyInputFormatter(
-                      leadingSymbol: 'Rp ',
-                      useSymbolPadding: true,
-                      thousandSeparator: ThousandSeparator.Period,
-                      mantissaLength: 0,
-                    ),
+                    FilteringTextInputFormatter.digitsOnly,
+                    RupiahFormatter()
                   ],
                   validator: (value) {
                     final numericString = toNumericString(value);
+                    if (numericString.contains('-')) {
+                      return 'Tidak boleh angka negatif';
+                    }
                     if (numericString.isEmpty ||
                         double.tryParse(numericString) == 0.0) {
                       return 'Total $transactionType harus lebih dari 0';
