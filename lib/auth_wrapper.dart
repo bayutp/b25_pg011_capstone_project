@@ -1,7 +1,7 @@
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
-import 'package:b25_pg011_capstone_project/screen/profile/profil_check_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +23,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     if (firebaseUser == null) return const LoginScreen();
 
     final hasBusiness = await setupUser(service, sp, firebaseUser.uid);
-    return hasBusiness ? const MainScreen() : const ProfilCheckScreen();
+    return hasBusiness ? const MainScreen() : const EditProfileScreen(newUser: true,);
   }
 
   @override
@@ -63,7 +63,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                     body: Center(child: CircularProgressIndicator()),
                   );
                 } else if (asyncSnap.hasError) {
-                  return const ProfilCheckScreen();
+                  return const EditProfileScreen(newUser: true,);
                 } else if (asyncSnap.hasData) {
                   return asyncSnap.data!;
                 } else {

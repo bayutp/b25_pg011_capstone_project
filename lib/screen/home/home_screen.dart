@@ -18,9 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String userId = "";
-  String businessId = "";
-  String fullname = "";
   late UserLocalProvider sp;
 
   @override
@@ -28,148 +25,149 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     sp = context.read<UserLocalProvider>();
     sp.getStatusUser();
-
-    userId = sp.userLocal?.uid ?? "";
-    businessId = sp.userLocal?.idbuz ?? "";
-    fullname = sp.userLocal?.fullname ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<UserTodo>>.value(
-      value: context.read<FirebaseFirestoreService>().getAllDailyTodos(
-        businessId,
-      ),
-      initialData: const [],
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Text(
-              'Hello $fullname!',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          centerTitle: false,
-          automaticallyImplyLeading: false,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Icon(Icons.notifications_outlined, size: 27),
-              ),
-            ),
-          ],
+    return Consumer<UserLocalProvider>(
+      builder: (context, value, child) => StreamProvider<List<UserTodo>>.value(
+        value: context.read<FirebaseFirestoreService>().getAllDailyTodos(
+          value.userLocal?.idbuz ?? '',
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Consumer<List<UserTodo>>(
-                  builder: (context, todos, _) {
-                    final finishedTask = todos
-                        .where((todo) => todo.status == "completed")
-                        .length;
-                    return BannerDashboardWidget(
-                      finishedTask: finishedTask,
-                      allTask: todos.length,
-                    );
-                  },
-                ),
+        initialData: const [],
+        child: Scaffold(
+          appBar: AppBar(
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                'Hello ${value.userLocal?.fullname}',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-
-              const SizedBox(height: 29),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  'Keuangan Minggu ini',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontSize: 16),
-                ),
-              ),
-              const SizedBox(height: 16),
-              _BannerCashflow(userId: userId, businessId: businessId),
-
-              const SizedBox(height: 29),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  children: [
-                    Text(
-                      "TO DO",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleLarge?.copyWith(fontSize: 16),
-                    ),
-                    const SizedBox(width: 8),
-                    Consumer<List<UserTodo>>(
-                      builder: (context, todos, _) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.bgPink.colors,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            todos.length.toString(),
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  fontSize: 12,
-                                  color: AppColors.textTaskRed.colors,
-                                ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Center(
-                  child: Consumer<List<UserTodo>>(
-                    builder: (context, todos, _) {
-                      if (todos.isEmpty) {
-                        return const _EmptyTaskWidget();
-                      } else {
-                        return _TaskListWidget(tasks: todos);
-                      }
-                    },
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: ButtonWidget(
-                  key: const Key('tambah_data_button'),
-                  title: "Tambah Data",
-                  textColor: AppColors.btnTextWhite.colors,
-                  foregroundColor: AppColors.bgSoftGreen.colors,
-                  backgroundColor: AppColors.btnGreen.colors,
-                  onPressed: () => Navigator.pushNamed(
-                    context,
-                    '/addTask',
-                    arguments: sp.userLocal,
-                  ),
+            ),
+            centerTitle: false,
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Icon(Icons.notifications_outlined, size: 27),
                 ),
               ),
             ],
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Consumer<List<UserTodo>>(
+                    builder: (context, todos, _) {
+                      final finishedTask = todos
+                          .where((todo) => todo.status == "completed")
+                          .length;
+                      return BannerDashboardWidget(
+                        finishedTask: finishedTask,
+                        allTask: todos.length,
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 29),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    'Keuangan Minggu ini',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _BannerCashflow(
+                  userId: value.userLocal?.uid ?? "",
+                  businessId: value.userLocal?.idbuz ?? "",
+                ),
+
+                const SizedBox(height: 29),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "TO DO",
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleLarge?.copyWith(fontSize: 16),
+                      ),
+                      const SizedBox(width: 8),
+                      Consumer<List<UserTodo>>(
+                        builder: (context, todos, _) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.bgPink.colors,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              todos.length.toString(),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                    fontSize: 12,
+                                    color: AppColors.textTaskRed.colors,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Center(
+                    child: Consumer<List<UserTodo>>(
+                      builder: (context, todos, _) {
+                        if (todos.isEmpty) {
+                          return const _EmptyTaskWidget();
+                        } else {
+                          return _TaskListWidget(tasks: todos);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: ButtonWidget(
+                    key: const Key('tambah_data_button'),
+                    title: "Tambah Data",
+                    textColor: AppColors.btnTextWhite.colors,
+                    foregroundColor: AppColors.bgSoftGreen.colors,
+                    backgroundColor: AppColors.btnGreen.colors,
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      '/addTask',
+                      arguments: sp.userLocal,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

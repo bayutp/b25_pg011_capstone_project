@@ -16,7 +16,7 @@ class UserLocalProvider extends ChangeNotifier {
   Future<void> setStatusUser(UserLocal user) async {
     try {
       await _service.setStatusUser(user);
-      _userLocal = user;
+      _userLocal = _service.getStatusUser();
       _message =
           "Status login ${_service.getStatusUser().statusLogin} first app launch ${_service.getStatusUser().statusFirstLaunch}";
     } catch (e) {
