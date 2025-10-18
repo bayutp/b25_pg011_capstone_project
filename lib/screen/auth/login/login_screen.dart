@@ -1,8 +1,8 @@
+import 'package:b25_pg011_capstone_project/screen/auth/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Diperlukan untuk FirebaseAuthException
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
-import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -184,9 +184,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    _showAlertDialog(
-                      'Fitur Nonaktif',
-                      'Fitur Lupa Password belum diimplementasikan.',
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.forgotPswd.name,
                     );
                   },
                   child: const Text('Lupa Password?'),
