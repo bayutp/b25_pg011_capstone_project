@@ -88,7 +88,7 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
-                    RupiahFormatter()
+                    RupiahFormatter(),
                   ],
                   validator: (value) {
                     final numericString = toNumericString(value);

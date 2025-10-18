@@ -20,6 +20,8 @@ class PlanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedDate = context.watch<PlanDateProvider>().selectedDate;
     final user = context.watch<UserLocalProvider>().userLocal;
+    final provider = context.read<TodoStatusProvider>();
+    provider.setStatus("on progress");
 
     return Scaffold(
       appBar: AppBar(
@@ -118,42 +120,67 @@ class _PlanListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 156,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: plans.length,
-        itemBuilder: (context, index) {
-          final plan = plans[index];
-          return StreamBuilder<List<UserTodo>>(
-            stream: context.read<FirebaseFirestoreService>().getTodosByPlanId(
-              plan.planId,
-              user.idbuz,
-            ),
-            builder: (context, snapshot) {
-              final todos = snapshot.data ?? [];
-              final finishedTask = todos
-                  .where((t) => t.status == "completed")
-                  .length;
-              final allTask = todos.length;
-
-              return BannerPlanWidget(
-                category: plan.name,
-                finishedTask: finishedTask,
-                allTask: allTask,
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/planDetail',
-                    arguments: {'plan': plan, 'user': user},
+    return plans.length <= 1
+        ? SizedBox(
+            height: 156,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: StreamBuilder(
+                stream: context
+                    .read<FirebaseFirestoreService>()
+                    .getTodosByPlanId(plans.first.planId, user.idbuz),
+                builder: (context, asyncSnapshot) {
+                  final todos = asyncSnapshot.data ?? [];
+                  final finishedTask = todos
+                      .where((t) => t.status == "completed")
+                      .length;
+                  final allTask = todos.length;
+                  return BannerPlanWidget(
+                    category: plans.first.name,
+                    finishedTask: finishedTask,
+                    allTask: allTask,
+                    onTap: () {},
                   );
                 },
-              );
-            },
+              ),
+            ),
+          )
+        : SizedBox(
+            height: 156,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: plans.length,
+              itemBuilder: (context, index) {
+                final plan = plans[index];
+                return StreamBuilder<List<UserTodo>>(
+                  stream: context
+                      .read<FirebaseFirestoreService>()
+                      .getTodosByPlanId(plan.planId, user.idbuz),
+                  builder: (context, snapshot) {
+                    final todos = snapshot.data ?? [];
+                    final finishedTask = todos
+                        .where((t) => t.status == "completed")
+                        .length;
+                    final allTask = todos.length;
+
+                    return BannerPlanWidget(
+                      category: plan.name,
+                      finishedTask: finishedTask,
+                      allTask: allTask,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/planDetail',
+                          arguments: {'plan': plan, 'user': user},
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           );
-        },
-      ),
-    );
   }
 }
 

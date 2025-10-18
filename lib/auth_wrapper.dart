@@ -5,7 +5,6 @@ import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.da
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
-import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
