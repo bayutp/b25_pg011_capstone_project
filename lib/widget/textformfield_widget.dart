@@ -10,6 +10,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final VoidCallback? onTap;
   final List<TextInputFormatter> inputFormatters;
   final TextInputType keyboardType;
+  final void Function(String)? onChange;
 
   const TextFormFieldWidget({
     super.key,
@@ -21,6 +22,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.onTap,
     this.keyboardType = TextInputType.text,
     this.inputFormatters = const [],
+    this.onChange
   });
 
   @override
@@ -60,6 +62,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       ),
       onTap: widget.onTap,
       readOnly: widget.readOnly,
+      onChanged: widget.onChange
     );
   }
 }
