@@ -1,8 +1,10 @@
+import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/textformfield_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -14,6 +16,39 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _keyForm = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  late AuthService _authService;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = context.read<AuthService>();
+  }
+
+  Future<void> _handleResetPassword() async {
+    setState(() => _isLoading = true);
+    try {
+      await _authService.sendPasswordResetEmail(_emailController.text);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackbarWidget(
+            message: "Link reset password berhasil dikirim ke email kamu!",
+            success: true,
+          ),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackbarWidget(message: e.toString(), success: false));
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +88,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 },
                 onChange: (value) {
                   if (_keyForm.currentState != null) {
-                     _keyForm.currentState!.validate();
+                    _keyForm.currentState!.validate();
                   }
                 },
               ),
@@ -63,11 +98,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 textColor: AppColors.btnTextWhite.colors,
                 foregroundColor: AppColors.bgSoftGreen.colors,
                 backgroundColor: AppColors.bgGreen.colors,
-                onPressed: () {
+                isLoading: _isLoading,
+                onPressed: () async {
                   if (_keyForm.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackbarWidget(message: "Data dikirim", success: true),
-                    );
+                    await _handleResetPassword();
                   }
                 },
               ),
@@ -76,5 +110,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
   }
 }

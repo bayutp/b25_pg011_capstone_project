@@ -91,6 +91,21 @@ class AuthService {
     await _auth.signOut();
   }
 
+  // Forgot password
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw 'Email tidak terdaftar.';
+      } else if (e.code == 'invalid-email') {
+        throw 'Format email tidak valid.';
+      } else {
+        throw 'Terjadi kesalahan. Coba lagi nanti.';
+      }
+    }
+  }
+
   String? get uid => _auth.currentUser?.uid;
 
   Future<List<UserBusiness>> getUserBusiness() async {
