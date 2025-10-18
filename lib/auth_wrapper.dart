@@ -3,6 +3,7 @@ import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dar
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:b25_pg011_capstone_project/screen/login/login_screen.dart';
@@ -17,19 +18,28 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   late final AuthService service;
+  late final FirebaseFirestoreService firestoreService;
   late final UserLocalProvider sp;
 
   Future<Widget> _handleAuth(User? firebaseUser) async {
     if (firebaseUser == null) return const LoginScreen();
 
-    final hasBusiness = await setupUser(service, sp, firebaseUser.uid);
-    return hasBusiness ? const MainScreen() : const EditProfileScreen(newUser: true,);
+    final hasBusiness = await setupUser(
+      service,
+      sp,
+      firebaseUser.uid,
+      firestoreService,
+    );
+    return hasBusiness
+        ? const MainScreen()
+        : const EditProfileScreen(newUser: true);
   }
 
   @override
   void initState() {
     super.initState();
     service = context.read<AuthService>();
+    firestoreService = context.read<FirebaseFirestoreService>();
     sp = context.read<UserLocalProvider>();
   }
 
@@ -63,7 +73,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                     body: Center(child: CircularProgressIndicator()),
                   );
                 } else if (asyncSnap.hasError) {
-                  return const EditProfileScreen(newUser: true,);
+                  return const EditProfileScreen(newUser: true);
                 } else if (asyncSnap.hasData) {
                   return asyncSnap.data!;
                 } else {
@@ -81,26 +91,41 @@ class _AuthWrapperState extends State<AuthWrapper> {
     AuthService service,
     UserLocalProvider sp,
     String uid,
+    FirebaseFirestoreService firestoreService,
   ) async {
     final userBuzList = await service.getUserBusiness();
     final userBuz = userBuzList.where((buz) => buz.isActive == true).toList();
     final fullname = await service.getFullname();
 
-    if (userBuz.isNotEmpty) {
-      sp.getStatusUser();
-      if (sp.userLocal!.idbuz.isEmpty) {
-        sp.setStatusUser(
-          UserLocal(
-            statusLogin: true,
-            statusFirstLaunch: false,
-            uid: uid,
-            idbuz: userBuz.first.idBusiness,
-            fullname: fullname,
-          ),
-        );
-      }
-      return true;
+    if (userBuz.isEmpty) return false;
+
+    sp.getStatusUser();
+
+    if (sp.userLocal == null || sp.userLocal!.idbuz.isEmpty) {
+      sp.setStatusUser(
+        UserLocal(
+          statusLogin: true,
+          statusFirstLaunch: false,
+          uid: uid,
+          idbuz: userBuz.first.idBusiness,
+          fullname: fullname,
+        ),
+      );
     }
-    return false;
+
+    final today = DateTime.now();
+    final todayStr = "${today.year}-${today.month}-${today.day}";
+    final lastUpdate = sp.userLocal?.lastUpdate ?? '';
+
+    if (lastUpdate != todayStr) {
+      await firestoreService.updateExpiredTodos(
+        sp.userLocal?.idbuz ?? userBuz.first.idBusiness,
+      );
+
+      final currentUser = sp.userLocal!;
+      sp.setStatusUser(currentUser.copyWith(lastUpdate: todayStr));
+    }
+
+    return true;
   }
 }

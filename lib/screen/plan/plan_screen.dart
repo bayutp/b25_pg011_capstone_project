@@ -126,9 +126,10 @@ class _PlanListWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final plan = plans[index];
           return StreamBuilder<List<UserTodo>>(
-            stream: context
-                .read<FirebaseFirestoreService>()
-                .getTodosByPlanId(plan.planId, user.idbuz),
+            stream: context.read<FirebaseFirestoreService>().getTodosByPlanId(
+              plan.planId,
+              user.idbuz,
+            ),
             builder: (context, snapshot) {
               final todos = snapshot.data ?? [];
               final finishedTask = todos

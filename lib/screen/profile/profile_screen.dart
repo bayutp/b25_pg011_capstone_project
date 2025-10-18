@@ -1,6 +1,5 @@
 // lib/screen/profile/profile_screen.dart
 
-import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
@@ -156,21 +155,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           final sp = context.read<UserLocalProvider>();
                           final service = context.read<AuthService>();
 
-                          service.signOut().whenComplete(() {
-                            sp.setStatusUser(
-                              UserLocal(
-                                statusLogin: false,
-                                statusFirstLaunch: false,
-                                uid: '',
-                                idbuz: '',
-                                fullname: '',
-                              ),
-                            );
+                          await service.signOut();
+                          await sp.clearDaata();
+                          if (context.mounted) {
                             Navigator.popAndPushNamed(
                               context,
                               NavigationRoute.loginRoute.name,
                             );
-                          });
+                          }
                         },
                       );
                     },

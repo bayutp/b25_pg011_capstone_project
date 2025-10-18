@@ -33,4 +33,17 @@ class UserLocalProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> clearDaata() async {
+    try {
+      await _service.setStatusUser(
+        UserLocal(statusLogin: false, statusFirstLaunch: false),
+      );
+      _userLocal = _service.getStatusUser();
+      _message = "User data cleared successfully";
+    } catch (e) {
+      _message = "Failed to clear data";
+    }
+    notifyListeners();
+  }
 }
