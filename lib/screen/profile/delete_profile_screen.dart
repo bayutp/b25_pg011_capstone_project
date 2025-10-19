@@ -5,11 +5,6 @@ import 'package:b25_pg011_capstone_project/widget/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Untuk menjalankan contoh ini secara mandiri
-void main() {
-  runApp(const MyApp());
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -18,13 +13,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Contoh Hapus Akun',
       theme: ThemeData(
-        // Menggunakan warna dari AppColors sebagai tema utama
         primaryColor: AppColors.btnGreen.colors,
         scaffoldBackgroundColor: AppColors.bgWhite.colors,
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.bgWhite.colors,
           elevation: 0,
-          foregroundColor: AppColors.textBlack.colors, // Warna ikon dan teks
+          foregroundColor: AppColors.textBlack.colors,
         ),
       ),
       home: const DeleteProfileScreen(),
@@ -32,7 +26,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Ini adalah screen utama yang sudah direvisi
 class DeleteProfileScreen extends StatelessWidget {
   const DeleteProfileScreen({super.key});
 
@@ -53,7 +46,6 @@ class DeleteProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Teks Peringatan (bold-nya sudah beneran ya pakai RichText)
             RichText(
               text: TextSpan(
                 style: TextStyle(
@@ -68,9 +60,7 @@ class DeleteProfileScreen extends StatelessWidget {
                   ),
                   TextSpan(
                     text: 'dihapus secara permanen ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ), // Ini yang membuat tebal
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
                     text:
@@ -80,19 +70,16 @@ class DeleteProfileScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 32), // Jarak antara teks dan tombol
-            // Tombol Hapus Akun (selalu aktif)
+            const SizedBox(height: 32),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.btnGreen.colors, // Warna tombol
-                foregroundColor:
-                    AppColors.btnTextWhite.colors, // Warna teks tombol
+                backgroundColor: AppColors.btnGreen.colors,
+                foregroundColor: AppColors.btnTextWhite.colors,
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              // Langsung panggil fungsi karena tidak ada checkbox
               onPressed: () async {
                 showAppConfirmationDialog(
                   context: context,
@@ -104,16 +91,13 @@ class DeleteProfileScreen extends StatelessWidget {
                     final service = context.read<AuthService>();
 
                     try {
-                      // 2. Panggil fungsi hapus akun dan tunggu sampai selesai
                       await service.deleteAccount();
 
-                      // 3. Jika berhasil, tampilkan pesan sukses dan navigasi ke halaman login
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Akun Anda berhasil dihapus.'),
-                            backgroundColor: Colors
-                                .green, // atau AppColors.snackbarSuccess.colors
+                            backgroundColor: Colors.green,
                           ),
                         );
                         Navigator.popAndPushNamed(
@@ -122,13 +106,11 @@ class DeleteProfileScreen extends StatelessWidget {
                         );
                       }
                     } catch (e) {
-                      // 4. Jika gagal, tangkap error dan tampilkan pesannya ke pengguna
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(e.toString()),
-                            backgroundColor: Colors
-                                .red, // atau AppColors.snackbarFailed.colors
+                            backgroundColor: Colors.red,
                           ),
                         );
                       }
