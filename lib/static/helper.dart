@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class Helper {
@@ -48,4 +49,42 @@ class Helper {
         throw Exception('Invalid period');
     }
   }
+}
+
+class RupiahFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String digitsOnly = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digitsOnly.isEmpty) return newValue.copyWith(text: '');
+
+    final number = int.parse(digitsOnly);
+    final formatted = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    ).format(number);
+
+    int cursorPosition =
+        formatted.length -
+        (oldValue.text.length - oldValue.selection.baseOffset);
+
+    if (cursorPosition > formatted.length) {
+      cursorPosition = formatted.length;
+    } else if (cursorPosition < 0) {
+      cursorPosition = 0;
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: cursorPosition),
+    );
+  }
+}
+
+String toNumericString(String? value) {
+  if (value == null || value.isEmpty) return '';
+  return value.replaceAll(RegExp(r'[^0-9]'), '');
 }

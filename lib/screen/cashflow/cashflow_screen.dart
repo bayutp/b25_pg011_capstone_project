@@ -1,5 +1,7 @@
 import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
@@ -12,11 +14,27 @@ import '../../widget/banner_cashflow_widget.dart';
 import '../../widget/date_picker_widget.dart';
 import '../../widget/item_cashflotw_widget.dart';
 
-class CashflowScreen extends StatelessWidget {
+class CashflowScreen extends StatefulWidget {
   const CashflowScreen({super.key});
 
   @override
+  State<CashflowScreen> createState() => _CashflowScreenState();
+}
+
+class _CashflowScreenState extends State<CashflowScreen> {
+  late UserLocal? user;
+  @override
+  void initState() {
+    super.initState();
+
+    user = context.read<UserLocalProvider>().userLocal;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Consumer<CashflowDateProvider>(
       builder: (context, value, child) {
         final selectedDate = value.selectedDate;
@@ -40,16 +58,19 @@ class CashflowScreen extends StatelessWidget {
                   _BannerCashflow(
                     key: ValueKey("${selectedDate}banner"),
                     selectedDate: selectedDate,
+                    user: user!,
                   ),
                   SizedBox(height: 29),
                   _TotalCashflowWidget(
                     key: ValueKey("${selectedDate}total"),
                     selectedDate: selectedDate,
+                    user: user!,
                   ),
                   SizedBox(height: 16),
                   _CashflowWidget(
                     key: ValueKey("${selectedDate}list"),
                     selectedDate: selectedDate,
+                    user: user!,
                   ),
                   SizedBox(height: 24),
                   Padding(
@@ -80,21 +101,21 @@ class CashflowScreen extends StatelessWidget {
 
 class _TotalCashflowWidget extends StatelessWidget {
   final DateTime selectedDate;
-  const _TotalCashflowWidget({super.key, required this.selectedDate});
+  final UserLocal user;
+  const _TotalCashflowWidget({
+    super.key,
+    required this.selectedDate,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
     return StreamProvider<int>(
-      create: (context) =>
-          context.read<FirebaseFirestoreService>().getCountCashflow(
-            "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            "N9eTsVw6rtKE8eWROmGC",
-            selectedDate,
-            "daily",
-          ),
+      create: (context) => context
+          .read<FirebaseFirestoreService>()
+          .getCountCashflow(user.uid, user.idbuz, selectedDate, "daily"),
       initialData: 0,
       catchError: (context, error) {
-        debugPrint('Error fetching total cashflow: $error');
         return 0;
       },
       builder: (context, child) {
@@ -135,21 +156,21 @@ class _TotalCashflowWidget extends StatelessWidget {
 
 class _CashflowWidget extends StatelessWidget {
   final DateTime selectedDate;
-  const _CashflowWidget({super.key, required this.selectedDate});
+  final UserLocal user;
+  const _CashflowWidget({
+    super.key,
+    required this.selectedDate,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<UserCashflow>>(
-      create: (context) =>
-          context.read<FirebaseFirestoreService>().getCashflowsByDate(
-            "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            "N9eTsVw6rtKE8eWROmGC",
-            selectedDate,
-            "daily",
-          ),
+      create: (context) => context
+          .read<FirebaseFirestoreService>()
+          .getCashflowsByDate(user.uid, user.idbuz, selectedDate, "daily"),
       initialData: const [],
       catchError: (context, error) {
-        debugPrint('Error fetching cashflows: $error');
         return [];
       },
       builder: (context, child) {
@@ -294,7 +315,12 @@ class _DatePicker extends StatelessWidget {
 
 class _BannerCashflow extends StatelessWidget {
   final DateTime selectedDate;
-  const _BannerCashflow({super.key, required this.selectedDate});
+  final UserLocal user;
+  const _BannerCashflow({
+    super.key,
+    required this.selectedDate,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -305,15 +331,14 @@ class _BannerCashflow extends StatelessWidget {
           child: StreamProvider<num>(
             create: (context) =>
                 context.read<FirebaseFirestoreService>().getTotalCashflowByType(
-                  "RJve4BfErDZNfASQl7OTbRiVAqg1",
-                  "N9eTsVw6rtKE8eWROmGC",
+                  user.uid,
+                  user.idbuz,
                   selectedDate,
                   "daily",
                   "income",
                 ),
             initialData: 0,
             catchError: (context, error) {
-              debugPrint('Error fetching total income: $error');
               return 0;
             },
             builder: (context, child) {
@@ -331,15 +356,14 @@ class _BannerCashflow extends StatelessWidget {
           child: StreamProvider<num>(
             create: (context) =>
                 context.read<FirebaseFirestoreService>().getTotalCashflowByType(
-                  "RJve4BfErDZNfASQl7OTbRiVAqg1",
-                  "N9eTsVw6rtKE8eWROmGC",
+                  user.uid,
+                  user.idbuz,
                   selectedDate,
                   "daily",
                   "expense",
                 ),
             initialData: 0,
             catchError: (context, error) {
-              debugPrint('Error fetching total expense: $error');
               return 0;
             },
             builder: (context, child) {

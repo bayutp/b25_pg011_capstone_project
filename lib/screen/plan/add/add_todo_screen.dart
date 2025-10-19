@@ -1,6 +1,8 @@
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/user_plan_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
@@ -10,7 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddTodoScreen extends StatefulWidget {
-  const AddTodoScreen({super.key});
+  final UserLocal user;
+  final UserPlan plan;
+  const AddTodoScreen({super.key, required this.user, required this.plan});
 
   @override
   State<AddTodoScreen> createState() => _AddTodoScreenState();
@@ -20,6 +24,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late UserPlanProvider? userPlanProvider;
+  late UserLocalProvider sp;
   final TextEditingController _taksNameController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
@@ -93,7 +98,11 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   ).textTheme.titleLarge?.copyWith(fontSize: 16),
                 ),
                 const SizedBox(height: 6),
-                const _CategoryWidget(key: ValueKey("fieldCategory")),
+                _CategoryWidget(
+                  key: ValueKey("fieldCategory"),
+                  user: widget.user,
+                  plan: widget.plan,
+                ),
                 const SizedBox(height: 50),
                 ButtonWidget(
                   key: const Key('tambah_data_button'),
@@ -154,7 +163,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                         );
                         return;
                       }
-                      _addTodo();
+                      _addTodo(widget.user);
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackbarWidget(
@@ -181,7 +190,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     _endDateController.dispose();
   }
 
-  void _addTodo() async {
+  void _addTodo(UserLocal user) async {
     final service = context.read<FirebaseFirestoreService>();
     final planId = userPlanProvider?.idPlan ?? '';
     final plan = userPlanProvider?.selectedPlan ?? '';
@@ -205,14 +214,14 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
       int.parse(endDateParts[2]),
       int.parse(endDateParts[1]),
       int.parse(endDateParts[0]),
-      now.hour,
-      now.minute,
-      now.second,
+      23,
+      59,
+      59,
     );
 
-    final userId = "RJve4BfErDZNfASQl7OTbRiVAqg1";
-    final businessId = "N9eTsVw6rtKE8eWROmGC";
-    final createdBy = "RJve4BfErDZNfASQl7OTbRiVAqg1";
+    final userId = user.uid;
+    final businessId = user.idbuz;
+    final createdBy = user.uid;
     final createdAt = DateTime.now();
     final status = "on progress";
 
@@ -253,7 +262,6 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
             icon: Icons.cancel_rounded,
           ),
         );
-        debugPrint('Error adding todo: $e');
       }
     } finally {
       if (mounted) {
@@ -311,7 +319,9 @@ class _PickedDateState extends State<_PickedDate> {
 }
 
 class _CategoryWidget extends StatefulWidget {
-  const _CategoryWidget({super.key});
+  final UserLocal user;
+  final UserPlan plan;
+  const _CategoryWidget({super.key, required this.user, required this.plan});
 
   @override
   State<_CategoryWidget> createState() => _CategoryWidgetState();
@@ -326,7 +336,8 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
     Future.microtask(() {
       if (mounted) {
         userPlanProvider = context.read<UserPlanProvider>();
-        userPlanProvider.setSelectedPlan("");
+        userPlanProvider.setSelectedPlan(widget.plan.name);
+        userPlanProvider.setIdPlan(widget.plan.planId);
       }
     });
   }
@@ -380,10 +391,10 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
       try {
         final newPlan = await service.addPlan(
           UserPlan(
-            businessId: "N9eTsVw6rtKE8eWROmGC",
-            userId: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+            businessId: widget.user.idbuz,
+            userId: widget.user.uid,
             name: category,
-            createdBy: "RJve4BfErDZNfASQl7OTbRiVAqg1",
+            createdBy: widget.user.uid,
             createdAt: DateTime.now(),
           ),
         );
@@ -407,7 +418,6 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
               icon: Icons.cancel_rounded,
             ),
           );
-          debugPrint('Error adding category: $e');
         }
       }
     }
@@ -420,14 +430,11 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<UserPlan>>(
-      create: (context) =>
-          context.read<FirebaseFirestoreService>().getPlansByUserId(
-            "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            "N9eTsVw6rtKE8eWROmGC",
-          ),
+      create: (context) => context
+          .read<FirebaseFirestoreService>()
+          .getPlansByUserId(widget.user.uid, widget.user.idbuz),
       initialData: [],
       catchError: (context, error) {
-        debugPrint('Error fetching cashflows: $error');
         return <UserPlan>[];
       },
       builder: (context, child) {

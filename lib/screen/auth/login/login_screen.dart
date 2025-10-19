@@ -1,8 +1,9 @@
+import 'package:b25_pg011_capstone_project/screen/auth/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Diperlukan untuk FirebaseAuthException
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
-import 'package:b25_pg011_capstone_project/screen/register/register_screen.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,9 +15,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthService _auth = AuthService();
+  late AuthService _auth;
   bool _isPasswordVisible = false;
   bool _isLoading = false; // State untuk loading
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = context.read<AuthService>();
+  }
 
   // Fungsi untuk menampilkan dialog peringatan
   void _showAlertDialog(String title, String message) {
@@ -58,11 +65,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (userCredential != null) {
         // Navigasi eksplisit ke MainScreen setelah login berhasil
         if (mounted) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            NavigationRoute
-                .homeRoute
-                .name, // Gunakan homeRoute yang menunjuk ke MainScreen
-            (Route<dynamic> route) => false, // Hapus semua rute sebelumnya
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            NavigationRoute.userCheck.name,
+            (route) => false,
           );
         }
       } else {
@@ -178,9 +184,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    _showAlertDialog(
-                      'Fitur Nonaktif',
-                      'Fitur Lupa Password belum diimplementasikan.',
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.forgotPswd.name,
                     );
                   },
                   child: const Text('Lupa Password?'),

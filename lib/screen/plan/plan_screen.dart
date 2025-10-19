@@ -1,7 +1,9 @@
+import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/plan_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/todo_status_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_plan_widget.dart';
@@ -16,79 +18,81 @@ class PlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlanDateProvider>(
-      builder: (context, value, child) {
-        final selectedDate = value.selectedDate;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("Task", style: Theme.of(context).textTheme.titleLarge),
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                children: [
-                  _PlanWidget(),
-                  const SizedBox(height: 39),
-                  _TotalTaskWidget(
-                    key: ValueKey("totalTask"),
-                    selectedDate: selectedDate,
-                  ),
-                  const SizedBox(height: 28),
-                  _DatePickerWidget(),
-                  const SizedBox(height: 35),
-                  _StatusTaskWidget(
-                    key: ValueKey("todoStatus"),
-                    selectedDate: selectedDate,
-                  ),
-                  const SizedBox(height: 28),
-                  _TaskWidget(
-                    key: ValueKey("todos"),
-                    selectedDate: selectedDate,
-                  ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: ButtonWidget(
-                      key: const Key('tambah_data_button'),
-                      title: "Tambah Data",
-                      textColor: AppColors.btnTextWhite.colors,
-                      foregroundColor: AppColors.bgSoftGreen.colors,
-                      backgroundColor: AppColors.btnGreen.colors,
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/addTask');
-                      },
-                    ),
-                  ),
-                ],
+    final selectedDate = context.watch<PlanDateProvider>().selectedDate;
+    final user = context.watch<UserLocalProvider>().userLocal;
+    final provider = context.read<TodoStatusProvider>();
+    provider.setStatus("on progress");
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Task", style: Theme.of(context).textTheme.titleLarge),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          children: [
+            _PlanWidget(user: user!),
+            const SizedBox(height: 39),
+            _TotalTaskWidget(selectedDate: selectedDate, user: user),
+            const SizedBox(height: 28),
+            const _DatePickerWidget(),
+            const SizedBox(height: 35),
+            _StatusTaskWidget(selectedDate: selectedDate),
+            const SizedBox(height: 28),
+            _TaskWidget(selectedDate: selectedDate, user: user),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: ButtonWidget(
+                key: const Key('tambah_data_button'),
+                title: "Tambah Data",
+                textColor: AppColors.btnTextWhite.colors,
+                foregroundColor: AppColors.bgSoftGreen.colors,
+                backgroundColor: AppColors.btnGreen.colors,
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/addTask',
+                    arguments: {
+                      'user': user,
+                      'plan': UserPlan(
+                        userId: user.uid,
+                        businessId: user.idbuz,
+                        name: '',
+                        planId: '',
+                        createdBy: user.uid,
+                        createdAt: DateTime.now(),
+                      ),
+                    },
+                  );
+                },
               ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 }
 
 class _PlanWidget extends StatelessWidget {
-  const _PlanWidget();
+  final UserLocal user;
+  const _PlanWidget({required this.user});
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<UserPlan>>(
-      create: (context) =>
-          context.read<FirebaseFirestoreService>().getPlansByUserId(
-            "RJve4BfErDZNfASQl7OTbRiVAqg1",
-            "N9eTsVw6rtKE8eWROmGC",
-          ),
+    final stream = context.read<FirebaseFirestoreService>().getPlansByUserId(
+      user.uid,
+      user.idbuz,
+    );
+
+    return StreamProvider<List<UserPlan>>.value(
+      value: stream,
       initialData: const [],
       child: Consumer<List<UserPlan>>(
         builder: (context, plans, child) {
-          if (plans.isEmpty) {
-            return _EmptyPlanWidget();
-          } else {
-            return _PlanListWidget(key: ValueKey("planning"), plans: plans);
-          }
+          if (plans.isEmpty) return _EmptyPlanWidget();
+          return _PlanListWidget(plans: plans, user: user);
         },
       ),
     );
@@ -97,26 +101,26 @@ class _PlanWidget extends StatelessWidget {
 
 class _TaskWidget extends StatelessWidget {
   final DateTime selectedDate;
-  const _TaskWidget({super.key, required this.selectedDate});
+  final UserLocal user;
+  const _TaskWidget({required this.selectedDate, required this.user});
 
   @override
   Widget build(BuildContext context) {
     final status = context.watch<TodoStatusProvider>().status;
-    final date = context.watch<PlanDateProvider>().selectedDate;
 
-    return StreamProvider<List<UserTodo>>(
-      key: ValueKey('${status}_${date.toIso8601String()}'),
-      create: (context) => context
-          .read<FirebaseFirestoreService>()
-          .getDailyTodos("N9eTsVw6rtKE8eWROmGC", status, date),
+    final stream = context.read<FirebaseFirestoreService>().getDailyTodos(
+      user.idbuz,
+      status,
+      selectedDate,
+    );
+
+    return StreamProvider<List<UserTodo>>.value(
+      value: stream,
       initialData: const [],
       child: Consumer<List<UserTodo>>(
         builder: (context, todos, _) {
-          if (todos.isEmpty) {
-            return _EmptyTaskWidget();
-          } else {
-            return _TaskListWidget(tasks: todos);
-          }
+          if (todos.isEmpty) return _EmptyTaskWidget();
+          return _TaskListWidget(tasks: todos);
         },
       ),
     );
@@ -124,51 +128,79 @@ class _TaskWidget extends StatelessWidget {
 }
 
 class _PlanListWidget extends StatelessWidget {
-  final List<UserPlan>? plans;
-  const _PlanListWidget({super.key, this.plans});
+  final List<UserPlan> plans;
+  final UserLocal user;
+  const _PlanListWidget({required this.plans, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 156,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: plans?.length ?? 0,
-        itemBuilder: (context, index) {
-          final plan = plans![index];
-          return StreamProvider<List<UserTodo>>(
-            create: (context) {
-              return context.read<FirebaseFirestoreService>().getTodosByPlanId(
-                plan.planId,
-                "N9eTsVw6rtKE8eWROmGC",
-              );
-            },
-            initialData: const [],
-            child: Consumer<List<UserTodo>>(
-              builder: (context, value, child) {
-                final todos = value;
-                final finishedTask = todos
-                    .where((todo) => todo.status == "completed")
-                    .length;
-                final allTask = todos.length;
-                return BannerPlanWidget(
-                  category: plan.name,
-                  finishedTask: finishedTask,
-                  allTask: allTask,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/planDetail',
-                      arguments: plan,
+    return plans.length <= 1
+        ? SizedBox(
+            height: 156,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: StreamBuilder(
+                stream: context
+                    .read<FirebaseFirestoreService>()
+                    .getTodosByPlanId(plans.first.planId, user.idbuz),
+                builder: (context, asyncSnapshot) {
+                  final todos = asyncSnapshot.data ?? [];
+                  final finishedTask = todos
+                      .where((t) => t.status == "completed")
+                      .length;
+                  final allTask = todos.length;
+                  return BannerPlanWidget(
+                    category: plans.first.name,
+                    finishedTask: finishedTask,
+                    allTask: allTask,
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/planDetail',
+                        arguments: {'plan': plans.first, 'user': user},
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          )
+        : SizedBox(
+            height: 156,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: plans.length,
+              itemBuilder: (context, index) {
+                final plan = plans[index];
+                return StreamBuilder<List<UserTodo>>(
+                  stream: context
+                      .read<FirebaseFirestoreService>()
+                      .getTodosByPlanId(plan.planId, user.idbuz),
+                  builder: (context, snapshot) {
+                    final todos = snapshot.data ?? [];
+                    final finishedTask = todos
+                        .where((t) => t.status == "completed")
+                        .length;
+                    final allTask = todos.length;
+
+                    return BannerPlanWidget(
+                      category: plan.name,
+                      finishedTask: finishedTask,
+                      allTask: allTask,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/planDetail',
+                          arguments: {'plan': plan, 'user': user},
+                        );
+                      },
                     );
                   },
                 );
               },
             ),
           );
-        },
-      ),
-    );
   }
 }
 
@@ -211,7 +243,8 @@ class _EmptyPlanWidget extends StatelessWidget {
 
 class _TotalTaskWidget extends StatelessWidget {
   final DateTime selectedDate;
-  const _TotalTaskWidget({super.key, required this.selectedDate});
+  final UserLocal user;
+  const _TotalTaskWidget({required this.selectedDate, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -237,15 +270,14 @@ class _TotalTaskWidget extends StatelessWidget {
               key: ValueKey(selectedDate),
               create: (context) {
                 return context.read<FirebaseFirestoreService>().countDailyTodos(
-                  "RJve4BfErDZNfASQl7OTbRiVAqg1",
-                  "N9eTsVw6rtKE8eWROmGC",
+                  user.uid,
+                  user.idbuz,
                   selectedDate,
                   "daily",
                 );
               },
               initialData: 0,
               catchError: (context, error) {
-                debugPrint('Error fetching todos: $error');
                 return 0;
               },
               builder: (context, child) {
@@ -289,7 +321,7 @@ class _DatePickerWidget extends StatelessWidget {
 class _StatusTaskWidget extends StatelessWidget {
   final DateTime selectedDate;
 
-  const _StatusTaskWidget({super.key, required this.selectedDate});
+  const _StatusTaskWidget({required this.selectedDate});
 
   @override
   Widget build(BuildContext context) {
@@ -411,6 +443,7 @@ class _TaskListWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListView.builder(
         shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           final task = tasks[index];
@@ -419,11 +452,15 @@ class _TaskListWidget extends StatelessWidget {
             category: task.plan,
             isChecked: task.status == 'completed',
             onChange: (bool? value) async {
+              final now = DateTime.now();
+              final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
               final newStatus = value == true
                   ? "completed"
-                  : task.endDate.isBefore(DateTime.now())
+                  : task.endDate.isBefore(today)
                   ? "pending"
                   : "on progress";
+
               await context.read<FirebaseFirestoreService>().updateTodoStatus(
                 task.todoId,
                 newStatus,

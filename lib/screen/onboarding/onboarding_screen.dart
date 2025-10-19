@@ -58,12 +58,15 @@ class OnboardingScreen extends StatelessWidget {
                         UserLocal(
                           statusLogin: isLogin,
                           statusFirstLaunch: false,
+                          uid: '',
+                          idbuz: '',
                         ),
                       );
                       if (context.mounted) {
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushNamedAndRemoveUntil(
                           context,
                           NavigationRoute.loginRoute.name,
+                          (route) => false
                         );
                       }
                     },
