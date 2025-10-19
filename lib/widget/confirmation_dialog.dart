@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'button_widget.dart';
 
@@ -28,9 +29,28 @@ class ConfirmationDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.cancel_outlined,
+                    color: AppColors.textGrey.colors,
+                    size: 27,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             SizedBox(

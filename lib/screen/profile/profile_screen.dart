@@ -3,8 +3,12 @@
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
+import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
+import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/confirmation_dialog.dart';
+import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
+import 'package:b25_pg011_capstone_project/widget/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/cardbutton_widget.dart';
 
@@ -44,6 +48,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> reauthenticateAndDeleteUser(String password) async {
+      final sp = context.read<UserLocalProvider>();
+      final service = context.read<AuthService>();
+      final firestoreService = context.read<FirebaseFirestoreService>();
+      final uid = sp.userLocal?.uid ?? "";
+
+      try {
+        await service.reauthenticateWithCredential(password);
+        await firestoreService.deleteUserData(uid);
+        await service.deleteAccount();
+        sp.clearDaata();
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackbarWidget(message: "Akun berhasil dihapus!", success: true),
+          );
+          Navigator.popAndPushNamed(context, NavigationRoute.loginRoute.name);
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackbarWidget(
+              message: "Gagal hapus akun: ${e.toString()}",
+              success: false,
+            ),
+          );
+        }
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: SafeArea(
@@ -138,7 +172,74 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   CardButtonWidget(
                     title: 'Hapus Akun',
                     onPressed: () {
-                      /* Logika Hapus Akun di sini */
+                      showAppConfirmationDialog(
+                        context: context,
+                        title: 'Hapus Akun',
+                        content: 'Anda yakin ingin menghapus akun ini?',
+                        confirmButtonText: 'Saya Yakin',
+                        cancelButtonText: 'Kembali ke Profile',
+                        onConfirm: () async {
+                          final controller = TextEditingController();
+                          final keyForm = GlobalKey<FormState>();
+                          final result = await showDialog<String>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                'Konfirmasi Hapus Akun',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleLarge?.copyWith(fontSize: 16),
+                              ),
+                              content: Form(
+                                key: keyForm,
+                                child: TextFormFieldWidget(
+                                  controller: controller,
+                                  label: 'Enter your password',
+                                  obscureText: true,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Password tidak boleh kosong';
+                                    }
+                                    return null;
+                                  },
+                                  onChange: (value) =>
+                                      keyForm.currentState?.validate(),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(
+                                    'Cancel',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () => {
+                                    if (keyForm.currentState!.validate())
+                                      {Navigator.pop(context, controller.text)},
+                                  },
+                                  child: Text(
+                                    'Hapus',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.textError.colors,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (result != null && result.isNotEmpty) {
+                            await reauthenticateAndDeleteUser(result);
+                          }
+                        },
+                      );
                     },
                   ),
                   const Spacer(),

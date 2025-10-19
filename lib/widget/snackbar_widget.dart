@@ -11,7 +11,7 @@ class SnackbarWidget extends SnackBar {
          content: Row(
            children: [
              Icon(
-               icon,
+               success ? Icons.check_circle_rounded : Icons.cancel_outlined,
                color: success
                    ? AppColors.snackbarSuccess.colors
                    : AppColors.snackbarFailed.colors,

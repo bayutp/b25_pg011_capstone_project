@@ -11,7 +11,9 @@ class AuthService {
   final SharedpreferencesService _prefs;
 
   AuthService(this._prefs);
-
+  /*===========================================================================
+  Fitur Login Register
+ ============================================================================ */
   // Fungsi untuk mendaftar dengan penanganan error yang terpisah
   Future<UserCredential?> registerWithEmailAndPassword(
     String email,
@@ -106,6 +108,27 @@ class AuthService {
     }
   }
 
+  Future<void> deleteAccount() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.delete();
+    }
+  }
+
+  Future<void> reauthenticateWithCredential(String password) async {
+    final email = _auth.currentUser?.email ?? "";
+    if (email.isNotEmpty) {
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      await _auth.currentUser?.reauthenticateWithCredential(credential);
+    }
+  }
+
+  /*===========================================================================
+  Fitur profile
+ ============================================================================ */
   String? get uid => _auth.currentUser?.uid;
 
   Future<List<UserBusiness>> getUserBusiness() async {
