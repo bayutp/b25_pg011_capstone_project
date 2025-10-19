@@ -121,8 +121,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       const CircleAvatar(
                         radius: 40,
-                        backgroundImage: NetworkImage(
-                          'https://i.pravatar.cc/150?u=a',
+                        backgroundImage: AssetImage(
+                          'assets/img/avatar.png',
                         ), // Placeholder image
                       ),
                       const SizedBox(width: 20),
@@ -251,7 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         title: 'Log Out',
                         content: 'Anda yakin ingin keluar dari akun?',
                         confirmButtonText: 'Ya, Keluar',
-                        cancelButtonText: 'Batal',
+                        cancelButtonText: 'Kembali ke Profile',
                         onConfirm: () async {
                           final sp = context.read<UserLocalProvider>();
                           final service = context.read<AuthService>();

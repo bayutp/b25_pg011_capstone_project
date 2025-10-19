@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BottomnavWidget extends StatelessWidget {
@@ -13,7 +14,7 @@ class BottomnavWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: AppColors.bgSoftGreen.colors,
       selectedItemColor: Theme.of(context).colorScheme.primary,
       unselectedItemColor: Theme.of(context).colorScheme.outlineVariant,
       showSelectedLabels: false,

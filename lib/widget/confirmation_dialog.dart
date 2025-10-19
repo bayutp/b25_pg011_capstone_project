@@ -30,6 +30,7 @@ class ConfirmationDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
@@ -40,19 +41,17 @@ class ConfirmationDialog extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
+                InkWell(
+                  child: Icon(
                     Icons.cancel_outlined,
                     color: AppColors.textGrey.colors,
                     size: 27,
                   ),
+                  onTap: () => Navigator.pop(context),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
               child: Text(
@@ -81,8 +80,8 @@ class ConfirmationDialog extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   cancelButtonText,
-                  style: const TextStyle(
-                    color: Colors.grey,
+                  style: TextStyle(
+                    color: AppColors.textGreen.colors,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
