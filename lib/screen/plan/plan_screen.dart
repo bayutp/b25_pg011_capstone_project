@@ -309,93 +309,144 @@ class _DatePickerWidget extends StatelessWidget {
         onDateChange: (date) {
           final provider = context.read<PlanDateProvider>();
           provider.setSelectedDate(date);
-
-          final currentStatus = context.read<TodoStatusProvider>().status;
-          context.read<TodoStatusProvider>().setStatus(currentStatus);
+          context.read<TodoStatusProvider>().setStatus("on progress");
         },
       ),
     );
   }
 }
 
-class _StatusTaskWidget extends StatelessWidget {
+class _StatusTaskWidget extends StatefulWidget {
   final DateTime selectedDate;
 
   const _StatusTaskWidget({required this.selectedDate});
 
   @override
+  State<_StatusTaskWidget> createState() => _StatusTaskWidgetState();
+}
+
+class _StatusTaskWidgetState extends State<_StatusTaskWidget> with SingleTickerProviderStateMixin {
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    tabController = TabController(length: 3, vsync: this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final status = context.read<TodoStatusProvider>().status;
+      tabController.index = _getTabIndexFromStatus(status);
+    });
+
+    tabController.addListener(() {
+      if (tabController.indexIsChanging) return;
+      final provider = context.read<TodoStatusProvider>();
+      provider.setStatus(_getStatusFromTabIndex(tabController.index));
+    });
+  }
+
+  int _getTabIndexFromStatus(String status) {
+    switch (status) {
+      case "on progress":
+        return 0;
+      case "completed":
+        return 1;
+      case "pending":
+        return 2;
+      default:
+        return 0;
+    }
+  }
+
+  String _getStatusFromTabIndex(int index) {
+    switch (index) {
+      case 0:
+        return "on progress";
+      case 1:
+        return "completed";
+      case 2:
+        return "pending";
+      default:
+        return "on progress";
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: DefaultTabController(
-        length: 3,
-        child: Container(
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: TabBar(
-            labelColor: AppColors.bgGreen.colors,
-            unselectedLabelColor: Colors.grey[400],
-            indicator: BoxDecoration(
-              color: AppColors.bgSoftGreen.colors,
+    return Consumer<TodoStatusProvider>(
+      builder: (context, value, child) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final newIndex = _getTabIndexFromStatus(value.status);
+          if (tabController.index != newIndex) {
+            tabController.animateTo(newIndex);
+          }
+        });
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Container(
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
-            indicatorSize: TabBarIndicatorSize.tab,
-            dividerColor: Colors.transparent,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 6),
-            overlayColor: WidgetStateProperty.all(Colors.transparent),
-            splashFactory: NoSplash.splashFactory,
-            tabs: [
-              Tab(
-                child: Text(
-                  "On Progress",
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+            child: TabBar(
+              controller: tabController,
+              labelColor: AppColors.bgGreen.colors,
+              unselectedLabelColor: Colors.grey[400],
+              indicator: BoxDecoration(
+                color: AppColors.bgSoftGreen.colors,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              indicatorSize: TabBarIndicatorSize.tab,
+              dividerColor: Colors.transparent,
+              labelPadding: const EdgeInsets.symmetric(horizontal: 6),
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
+              splashFactory: NoSplash.splashFactory,
+              tabs: [
+                Tab(
+                  child: Text(
+                    "On Progress",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Tab(
-                child: Text(
-                  "Completed",
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                Tab(
+                  child: Text(
+                    "Completed",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Tab(
-                child: Text(
-                  "Pending",
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                Tab(
+                  child: Text(
+                    "Pending",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-            ],
-            onTap: (value) {
-              final provider = context.read<TodoStatusProvider>();
-              switch (value) {
-                case 0:
-                  provider.setStatus("on progress");
-                case 1:
-                  provider.setStatus("completed");
-                case 2:
-                  provider.setStatus("pending");
-                default:
-                  provider.setStatus("on progress");
-              }
-            },
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    tabController.dispose();
   }
 }
 

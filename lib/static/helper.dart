@@ -32,7 +32,7 @@ class Helper {
     switch (period) {
       case 'daily':
         return {
-          'start': DateTime(date.year, date.month, date.day),
+          'start': DateTime(date.year, date.month, date.day, 00, 00, 00),
           'end': DateTime(date.year, date.month, date.day, 23, 59, 59),
         };
       case 'weekly':
