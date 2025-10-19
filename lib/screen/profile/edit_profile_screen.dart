@@ -5,6 +5,7 @@ import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
+import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 
@@ -146,9 +147,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         }
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Perubahan berhasil disimpan!"),
-              backgroundColor: Colors.green,
+            SnackbarWidget(
+              message: "Perubahan berhasil disimpan!",
+              success: true,
             ),
           );
           if (widget.newUser) {
@@ -164,9 +165,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Gagal menyimpan: $e"),
-            backgroundColor: Colors.red,
+          SnackbarWidget(
+            message: "Data gagal disimpan!",
+            success: false,
           ),
         );
       }

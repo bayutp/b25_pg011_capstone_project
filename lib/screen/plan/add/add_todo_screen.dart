@@ -416,7 +416,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackbarWidget(
-              message: "Data Berhasil disimpan",
+              message: "Kategori baru berhasil ditambahkan",
               success: true,
               icon: Icons.check_circle_rounded,
             ),

@@ -4,6 +4,7 @@ import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
 import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 
 class FirebaseFirestoreService {
   final FirebaseFirestore _firestore;
@@ -11,6 +12,9 @@ class FirebaseFirestoreService {
   FirebaseFirestoreService(FirebaseFirestore? firestoreInstance)
     : _firestore = firestoreInstance ?? FirebaseFirestore.instance;
 
+  /*===========================================================================
+  Fitur Planning
+  =========================================================================== */
   Future<String> addPlan(UserPlan plan) async {
     final name = plan.name.trim().toLowerCase();
     final querySnapshot = await _firestore
@@ -142,6 +146,51 @@ class FirebaseFirestoreService {
     );
   }
 
+  Stream<int> countDailyTodos(
+    String userId,
+    String businessId,
+    DateTime date,
+    String period,
+  ) {
+    final rangeDate = Helper().getDateRange(period, date);
+
+    final querySnapshot = _firestore
+        .collection('todos')
+        .where('userId', isEqualTo: userId)
+        .where('businessId', isEqualTo: businessId)
+        .where('startDate', isLessThanOrEqualTo: rangeDate['end'])
+        .where('endDate', isGreaterThanOrEqualTo: rangeDate['start'])
+        .snapshots();
+
+    return querySnapshot.map((snapshots) => snapshots.size);
+  }
+
+  Future<void> updateTodoStatus(String idTodo, String status) async {
+    await _firestore.collection("todos").doc(idTodo).update({'status': status});
+  }
+
+  Future<void> updateExpiredTodos(String businessId) async {
+    final now = DateTime.now();
+
+    final snapshot = await _firestore
+        .collection('todos')
+        .where('businessId', isEqualTo: businessId)
+        .where('status', isEqualTo: 'on progress')
+        .where('endDate', isLessThan: now)
+        .get();
+
+    final batch = _firestore.batch();
+
+    for (var doc in snapshot.docs) {
+      batch.update(doc.reference, {'status': 'pending'});
+    }
+
+    await batch.commit();
+  }
+
+  /*===========================================================================
+  Fitur Cashflow
+  =========================================================================== */
   Future<void> addCashflow(UserCashflow cashflowData) async {
     await _firestore.collection('cashflows').add(cashflowData.toJson());
   }
@@ -214,48 +263,9 @@ class FirebaseFirestoreService {
     return querySnapshot.map((snapshots) => snapshots.size);
   }
 
-  Stream<int> countDailyTodos(
-    String userId,
-    String businessId,
-    DateTime date,
-    String period,
-  ) {
-    final rangeDate = Helper().getDateRange(period, date);
-
-    final querySnapshot = _firestore
-        .collection('todos')
-        .where('userId', isEqualTo: userId)
-        .where('businessId', isEqualTo: businessId)
-        .where('startDate', isLessThanOrEqualTo: rangeDate['end'])
-        .where('endDate', isGreaterThanOrEqualTo: rangeDate['start'])
-        .snapshots();
-
-    return querySnapshot.map((snapshots) => snapshots.size);
-  }
-
-  Future<void> updateTodoStatus(String idTodo, String status) async {
-    await _firestore.collection("todos").doc(idTodo).update({'status': status});
-  }
-
-  Future<void> updateExpiredTodos(String businessId) async {
-    final now = DateTime.now();
-
-    final snapshot = await _firestore
-        .collection('todos')
-        .where('businessId', isEqualTo: businessId)
-        .where('status', isEqualTo: 'on progress')
-        .where('endDate', isLessThan: now)
-        .get();
-
-    final batch = _firestore.batch();
-
-    for (var doc in snapshot.docs) {
-      batch.update(doc.reference, {'status': 'pending'});
-    }
-
-    await batch.commit();
-  }
-
+  /*===========================================================================
+  Fitur Notifications
+  =========================================================================== */
   Stream<List<UserNotification>> getUserNotif(String uid) {
     return _firestore
         .collection('users')
@@ -292,4 +302,39 @@ class FirebaseFirestoreService {
       await doc.reference.update({'isRead': true});
     }
   }
+
+  Future<void> deleteUserData(String uid) async {
+    final collections = {
+      'business': 'idOwner',
+      'cashflows': 'userId',
+      'plans': 'userId',
+      'todos': 'userId',
+    };
+
+    for (final entry in collections.entries) {
+      final snap = await _firestore
+          .collection(entry.key)
+          .where(entry.value, isEqualTo: uid)
+          .get();
+
+      for (final doc in snap.docs) {
+        await doc.reference.delete();
+      }
+    }
+
+    final notifSnap = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .get();
+
+    for (final doc in notifSnap.docs) {
+      await doc.reference.delete();
+    }
+
+    await _firestore.collection('users').doc(uid).delete();
+
+    debugPrint("Semua data user $uid sudah terhapus.");
+  }
+
 }

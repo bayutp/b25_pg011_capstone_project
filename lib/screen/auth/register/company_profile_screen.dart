@@ -1,5 +1,6 @@
 // lib/screen/register/company_profile_screen.dart
 
+import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -60,18 +61,18 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
       // Tampilkan SnackBar sukses
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profil perusahaan berhasil disimpan!'),
-            backgroundColor: Colors.green,
+          SnackbarWidget(
+            message: 'Profil perusahaan berhasil disimpan!',
+            success: true,
           ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal menyimpan profil perusahaan: $e'),
-            backgroundColor: Colors.red,
+          SnackbarWidget(
+            message: 'Gagal menyimpan profil perusahaan!',
+            success: false,
           ),
         );
       }

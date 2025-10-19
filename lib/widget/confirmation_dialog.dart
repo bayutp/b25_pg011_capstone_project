@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'button_widget.dart';
 
@@ -28,11 +29,29 @@ class ConfirmationDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                InkWell(
+                  child: Icon(
+                    Icons.cancel_outlined,
+                    color: AppColors.textGrey.colors,
+                    size: 27,
+                  ),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
               child: Text(
@@ -61,8 +80,8 @@ class ConfirmationDialog extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   cancelButtonText,
-                  style: const TextStyle(
-                    color: Colors.grey,
+                  style: TextStyle(
+                    color: AppColors.textGreen.colors,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
