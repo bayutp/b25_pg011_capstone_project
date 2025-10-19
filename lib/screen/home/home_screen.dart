@@ -1,7 +1,9 @@
+import 'package:b25_pg011_capstone_project/data/model/user_notification.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
+import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
 import 'package:b25_pg011_capstone_project/widget/banner_dashboard_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
 import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
@@ -20,11 +22,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late UserLocalProvider sp;
+  late FirebaseFirestoreService _firestoreService;
 
   @override
   void initState() {
     super.initState();
     sp = context.read<UserLocalProvider>();
+    _firestoreService = context.read<FirebaseFirestoreService>();
     sp.getStatusUser();
   }
 
@@ -48,12 +52,71 @@ class _HomeScreenState extends State<HomeScreen> {
             centerTitle: false,
             automaticallyImplyLeading: false,
             actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Icon(Icons.notifications_outlined, size: 27),
-                ),
+              StreamBuilder<List<UserNotification>>(
+                stream: _firestoreService.getUserNotif(
+                  sp.userLocal?.uid ?? "",
+                ), // stream notif user
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          NavigationRoute.notification.name,
+                        );
+                      },
+                      icon: const Icon(Icons.notifications_outlined, size: 27),
+                    );
+                  }
+
+                  final notifications = snapshot.data!;
+                  final unreadCount = notifications
+                      .where((n) => n.isRead == false)
+                      .length;
+
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            NavigationRoute.notification.name,
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.notifications_outlined,
+                          size: 27,
+                        ),
+                      ),
+                      if (unreadCount > 0)
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.textError.colors,
+                              shape: BoxShape.circle,
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 18,
+                              minHeight: 18,
+                            ),
+                            child: Text(
+                              unreadCount > 99 ? "99+" : unreadCount.toString(),
+                              style: TextStyle(
+                                color: AppColors.textWhite.colors,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
             ],
           ),

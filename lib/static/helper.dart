@@ -32,7 +32,7 @@ class Helper {
     switch (period) {
       case 'daily':
         return {
-          'start': DateTime(date.year, date.month, date.day),
+          'start': DateTime(date.year, date.month, date.day, 00, 00, 00),
           'end': DateTime(date.year, date.month, date.day, 23, 59, 59),
         };
       case 'weekly':
@@ -48,6 +48,15 @@ class Helper {
       default:
         throw Exception('Invalid period');
     }
+  }
+
+  static String formatTime(DateTime t) {
+    final now = DateTime.now();
+    final diff = now.difference(t);
+    if (diff.inMinutes < 1) return 'just now';
+    if (diff.inHours < 1) return '${diff.inMinutes}m';
+    if (diff.inDays < 1) return '${diff.inHours}h';
+    return '${diff.inDays}d';
   }
 }
 

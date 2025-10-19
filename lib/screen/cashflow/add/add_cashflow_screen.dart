@@ -23,6 +23,9 @@ class AddCashflowScreen extends StatefulWidget {
 
 class _AddCashflowScreenState extends State<AddCashflowScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _expenseKey = GlobalKey<FormFieldState>();
+  final _keyNote = GlobalKey<FormFieldState>();
+  final _keyDate = GlobalKey<FormFieldState>();
 
   final _expenseController = TextEditingController();
 
@@ -79,9 +82,10 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                 SizedBox(height: 18),
                 _TransactionType(),
                 SizedBox(height: 28),
-                _PickedDate(dateController: _dateController),
+                _PickedDate(dateController: _dateController, formKey: _keyDate),
                 SizedBox(height: 28),
                 TextFormFieldWidget(
+                  key: _expenseKey,
                   controller: _expenseController,
                   label: "Total $transactionType",
                   obscureText: false,
@@ -101,9 +105,11 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                     }
                     return null;
                   },
+                  onChange: (value) => _expenseKey.currentState?.validate(),
                 ),
                 SizedBox(height: 28),
                 TextFormFieldWidget(
+                  key: _keyNote,
                   controller: _noteController,
                   label: "Keterangan",
                   obscureText: false,
@@ -113,6 +119,7 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
                     }
                     return null;
                   },
+                  onChange: (value) => _keyNote.currentState?.validate(),
                 ),
                 SizedBox(height: 50),
                 ButtonWidget(
@@ -233,6 +240,7 @@ class _TransactionType extends StatelessWidget {
                     if (value != null) {
                       context.read<TransactionTypeProvider>().setType(value);
                       formKey.didChange(value);
+                      formKey.validate();
                     }
                   },
                   child: Row(
@@ -276,8 +284,9 @@ class _TransactionType extends StatelessWidget {
 
 class _PickedDate extends StatefulWidget {
   final TextEditingController dateController;
+  final GlobalKey<FormFieldState> formKey;
 
-  const _PickedDate({required this.dateController});
+  const _PickedDate({required this.dateController, required this.formKey});
 
   @override
   State<_PickedDate> createState() => _PickedDateState();
@@ -298,12 +307,14 @@ class _PickedDateState extends State<_PickedDate> {
         widget.dateController.text =
             "${picked.day}/${picked.month}/${picked.year}";
       });
+      widget.formKey.currentState?.validate();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormFieldWidget(
+      key: widget.formKey,
       controller: widget.dateController,
       label: "Pilih Tanggal",
       obscureText: false,
