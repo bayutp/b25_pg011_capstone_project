@@ -49,6 +49,15 @@ class Helper {
         throw Exception('Invalid period');
     }
   }
+
+  static String formatTime(DateTime t) {
+    final now = DateTime.now();
+    final diff = now.difference(t);
+    if (diff.inMinutes < 1) return 'just now';
+    if (diff.inHours < 1) return '${diff.inMinutes}m';
+    if (diff.inDays < 1) return '${diff.inHours}h';
+    return '${diff.inDays}d';
+  }
 }
 
 class RupiahFormatter extends TextInputFormatter {

@@ -1,3 +1,4 @@
+import 'package:b25_pg011_capstone_project/data/model/user_notification.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_plan.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_todo.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
@@ -83,19 +84,6 @@ class FirebaseFirestoreService {
               .map((doc) => UserTodo.fromJson(doc.data()))
               .toList(),
         );
-  }
-
-  Future<List<UserTodo>> getTodosByPlanIdOnce(
-    String planId,
-    String businessId,
-  ) async {
-    final snapshot = await _firestore
-        .collection('todos')
-        .where('planId', isEqualTo: planId)
-        .where('businessId', isEqualTo: businessId)
-        .get();
-
-    return snapshot.docs.map((doc) => UserTodo.fromJson(doc.data())).toList();
   }
 
   Stream<List<UserTodo>> getDetailPlanByStatus(
@@ -266,5 +254,42 @@ class FirebaseFirestoreService {
     }
 
     await batch.commit();
+  }
+
+  Stream<List<UserNotification>> getUserNotif(String uid) {
+    return _firestore
+        .collection('users')
+        .doc(uid)
+        .collection("notifications")
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs.map((doc) {
+            final data = doc.data();
+            return UserNotification.fromJson({...data, 'id': doc.id});
+          }).toList(),
+        );
+  }
+
+  Future<void> markAsRead(String uid, notifId) async {
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .doc(notifId)
+        .update({'isRead': true});
+  }
+
+  Future<void> markAllRead(String uid) async {
+    final querySnapshot = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .where('isRead', isEqualTo: false)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      await doc.reference.update({'isRead': true});
+    }
   }
 }
