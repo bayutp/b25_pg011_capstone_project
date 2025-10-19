@@ -1,6 +1,7 @@
 // lib/screen/profile/profile_screen.dart
 
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
+import 'package:b25_pg011_capstone_project/screen/profile/delete_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
@@ -137,7 +138,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   CardButtonWidget(
                     title: 'Hapus Akun',
                     onPressed: () {
-                      /* Logika Hapus Akun di sini */
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DeleteProfileScreen(),
+                        ),
+                      );
                     },
                   ),
                   const Spacer(),

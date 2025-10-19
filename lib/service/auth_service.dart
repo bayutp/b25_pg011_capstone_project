@@ -131,6 +131,63 @@ class AuthService {
     return '${data?['firstName'] ?? ''} ${data?['lastName'] ?? ''}'.trim();
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      if (uid == null) {
+        throw Exception(
+          'Tidak ada pengguna yang terautentikasi untuk dihapus.',
+        );
+      }
+      // 1. Ambil user yang sedang login. Jika tidak ada, lempar error.
+      final User? user = _auth.currentUser;
+      if (user == null) {
+        throw Exception(
+          'Tidak ada pengguna yang terautentikasi untuk dihapus.',
+        );
+      }
+
+      // 2. Siapkan Batch Write untuk menghapus semua data di Firestore secara atomik.
+      // Batch Write memastikan semua operasi berhasil atau semua gagal. Mencegah data sampah.
+      final batch = _firestore.batch();
+
+      // 3. Cari dan tandai untuk dihapus: semua dokumen 'business' milik pengguna.
+      final businessQuery = await _firestore
+          .collection('business')
+          .where('idOwner', isEqualTo: uid)
+          .get();
+
+      for (final doc in businessQuery.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // 4. Tandai untuk dihapus: dokumen utama pengguna di collection 'users'.
+      final userDocRef = _firestore.collection('users').doc(uid);
+      batch.delete(userDocRef);
+
+      // 5. Jalankan semua operasi penghapusan data di Firestore.
+      await batch.commit();
+
+      // 6. Setelah semua data terhapus, hapus akun dari Firebase Auth.
+      await user.delete();
+
+      // 7. (Opsional tapi direkomendasikan) Bersihkan data lokal.
+      await _prefs.setStatusUser(
+        UserLocal(statusLogin: false, statusFirstLaunch: false, uid: ''),
+      );
+    } on FirebaseAuthException catch (e) {
+      debugPrint('FIREBASE AUTH ERROR (DELETE): ${e.code}');
+      if (e.code == 'requires-recent-login') {
+        throw Exception(
+          'Sesi Anda telah berakhir. Silakan login kembali untuk melanjutkan.',
+        );
+      }
+      rethrow; // Lempar kembali error asli jika bukan 'requires-recent-login'
+    } catch (e) {
+      debugPrint('GENERAL ERROR (DELETE): $e');
+      rethrow; // Lempar kembali error agar bisa ditangani di UI
+    }
+  }
+
   Future<String> addBusiness(UserBusiness business) async {
     final name = business.name.trim();
     final normalizedName = name.toLowerCase();
