@@ -50,6 +50,7 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    implementation('com.google.firebase:firebase-messaging:23.4.1')
 }
 
 flutter {

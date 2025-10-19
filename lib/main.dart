@@ -19,6 +19,7 @@ import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.da
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
+import 'package:b25_pg011_capstone_project/service/notification_service.dart';
 
 import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 
@@ -44,6 +45,8 @@ void main() async {
   final service = SharedpreferencesService(prefs);
   final user = service.getStatusUser();
   final firebaseFirestore = FirebaseFirestore.instance;
+  final notificationService = NotificationService();
+  await notificationService.init(user.uid);
 
   runApp(
     MultiProvider(
