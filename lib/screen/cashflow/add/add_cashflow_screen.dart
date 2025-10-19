@@ -187,7 +187,7 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackbarWidget(
-            message: "Data Berhasil disimpan",
+            message: "Data berhasil disimpan",
             success: true,
             icon: Icons.check_circle_rounded,
           ),

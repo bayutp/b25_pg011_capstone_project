@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackbarWidget(
-              message: "Gagal hapus akun: ${e.toString()}",
+              message: "Gagal hapus akun",
               success: false,
             ),
           );
