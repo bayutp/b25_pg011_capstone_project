@@ -2,7 +2,6 @@
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
-import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:b25_pg011_capstone_project/widget/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/cardbutton_widget.dart';

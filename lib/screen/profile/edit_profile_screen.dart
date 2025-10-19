@@ -190,36 +190,4 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
     );
   }
-
-  // --- PERUBAHAN: Tambahkan validasi ke TextFormField ---
-  Widget _buildTextField({
-    required String label,
-    required String hint,
-    required TextEditingController controller,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          // Ganti dari TextField ke TextFormField
-          controller: controller,
-          decoration: InputDecoration(
-            // ... (Dekorasimu sudah bagus) ...
-          ),
-          // --- TAMBAHAN: Validasi sederhana ---
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Field ini tidak boleh kosong';
-            }
-            return null;
-          },
-        ),
-      ],
-    );
-  }
 }
