@@ -46,12 +46,15 @@ void main() async {
   final user = service.getStatusUser();
   final firebaseFirestore = FirebaseFirestore.instance;
   final notificationService = NotificationService();
-  await notificationService.init(user.uid);
+  if (user.uid.isNotEmpty && user.statusLogin) {
+    await notificationService.init(user.uid);
+  }
 
   runApp(
     MultiProvider(
       providers: [
         Provider(create: (context) => service),
+        Provider(create: (context) => notificationService),
         Provider(create: (context) => SharedpreferencesService(prefs)),
         Provider(
           create: (context) => FirebaseFirestoreService(firebaseFirestore),

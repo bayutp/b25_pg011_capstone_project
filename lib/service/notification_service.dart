@@ -26,9 +26,11 @@ class NotificationService {
 
     // Get FCM token
     String? token = await _firebaseMessaging.getToken();
-    if (token == null) {
+    if (token != null) {
       await _firestore.collection('users').doc(uid).update({'fcmToken': token});
-      debugPrint('FCM Token updated: $token');
+      debugPrint('FCM Token updated');
+    } else {
+      debugPrint('Gagal dapat FCM Token');
     }
 
     // Listen jika token berubah
@@ -36,7 +38,6 @@ class NotificationService {
       await _firestore.collection('users').doc(uid).update({
         'fcmToken': newToken,
       });
-      debugPrint('FCM Token refreshed');
     });
 
     // Handle background messages
@@ -48,14 +49,29 @@ class NotificationService {
         title: message.notification?.title ?? "No Title",
         body: message.notification?.body ?? "No body",
         isRead: false,
-        timestamp: (FieldValue.serverTimestamp() as Timestamp).toDate(),
+        timestamp: DateTime.now(),
       );
-      await _saveToFirestore(notif, uid);
       await _showNotification(message);
+      if (uid.isNotEmpty) {
+        await _saveToFirestore(notif, uid);
+      }
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
-      debugPrint("Message clicked!");
+    FirebaseMessaging.onMessageOpenedApp.listen((
+      RemoteMessage remoteMessage,
+    ) async {
+      final notifId = remoteMessage.data['notificationId'];
+      final userId = remoteMessage.data['userId'];
+
+      if (notifId != null && userId != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('notifications')
+            .doc(notifId)
+            .update({'isRead': true});
+        debugPrint("Notifikasi $notifId ditandai sebagai read");
+      }
     });
   }
 
@@ -85,9 +101,11 @@ class NotificationService {
       android: androidDetails,
       iOS: iosDetails,
     );
-
+    final notificationId = DateTime.now().millisecondsSinceEpoch.remainder(
+      100000,
+    );
     await _localNotifications.show(
-      DateTime.now().millisecondsSinceEpoch,
+      notificationId,
       message.notification?.title ?? 'New Notification',
       message.notification?.body ?? '',
       notificationDetails,
@@ -112,14 +130,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     title: message.notification?.title ?? "No Title",
     body: message.notification?.body ?? "No body",
     isRead: false,
-    timestamp: (FieldValue.serverTimestamp() as Timestamp).toDate(),
+    timestamp: DateTime.now(),
   );
 
   final firestore = FirebaseFirestore.instance;
-  const userId = 'USER_ID_PLACEHOLDER'; // nanti ganti dinamis
-  await firestore
-      .collection('users')
-      .doc(userId)
-      .collection('notifications')
-      .add(notif.toJson());
+  const userId = '';
+  if (userId.isNotEmpty) {
+    await firestore
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .add(notif.toJson());
+  }
 }

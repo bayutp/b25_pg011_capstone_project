@@ -22,7 +22,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.onTap,
     this.keyboardType = TextInputType.text,
     this.inputFormatters = const [],
-    this.onChange
+    this.onChange,
   });
 
   @override
@@ -62,7 +62,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       ),
       onTap: widget.onTap,
       readOnly: widget.readOnly,
-      onChanged: widget.onChange
+      onChanged: widget.onChange,
     );
   }
 }

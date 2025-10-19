@@ -325,7 +325,8 @@ class _StatusTaskWidget extends StatefulWidget {
   State<_StatusTaskWidget> createState() => _StatusTaskWidgetState();
 }
 
-class _StatusTaskWidgetState extends State<_StatusTaskWidget> with SingleTickerProviderStateMixin {
+class _StatusTaskWidgetState extends State<_StatusTaskWidget>
+    with SingleTickerProviderStateMixin {
   late TabController tabController;
 
   @override

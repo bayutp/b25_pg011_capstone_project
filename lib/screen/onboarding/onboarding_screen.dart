@@ -66,7 +66,7 @@ class OnboardingScreen extends StatelessWidget {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           NavigationRoute.loginRoute.name,
-                          (route) => false
+                          (route) => false,
                         );
                       }
                     },

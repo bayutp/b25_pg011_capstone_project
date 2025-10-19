@@ -15,11 +15,14 @@ class UserNotification {
 
   // Convert from JSON
   factory UserNotification.fromJson(Map<String, dynamic> json) {
+    final timestampField = json['timestamp'];
     return UserNotification(
       title: json['title'] as String,
       body: json['body'] as String,
       isRead: json['isRead'] as bool,
-      timestamp: (json['timestamp'] as Timestamp).toDate(),
+      timestamp: timestampField is Timestamp
+          ? timestampField.toDate()
+          : DateTime.now(),
     );
   }
 
@@ -29,7 +32,7 @@ class UserNotification {
       'title': title,
       'body': body,
       'isRead': isRead,
-      'timestamp': timestamp,
+      'timestamp': FieldValue.serverTimestamp(),
     };
   }
 }

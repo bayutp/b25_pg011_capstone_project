@@ -4,6 +4,7 @@ import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
+import 'package:b25_pg011_capstone_project/service/notification_service.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +22,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   late final AuthService service;
   late final FirebaseFirestoreService firestoreService;
   late final UserLocalProvider sp;
+  late final NotificationService notifService;
 
   Future<Widget> _handleAuth(User? firebaseUser) async {
     if (firebaseUser == null) return const LoginScreen();
@@ -30,6 +32,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       sp,
       firebaseUser.uid,
       firestoreService,
+      notifService,
     );
     return hasBusiness
         ? const MainScreen()
@@ -42,6 +45,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     service = context.read<AuthService>();
     firestoreService = context.read<FirebaseFirestoreService>();
     sp = context.read<UserLocalProvider>();
+    notifService = context.read<NotificationService>();
   }
 
   @override
@@ -94,6 +98,7 @@ Future<bool> setupUser(
   UserLocalProvider sp,
   String uid,
   FirebaseFirestoreService firestoreService,
+  NotificationService notifService,
 ) async {
   final userBuzList = await service.getUserBusiness();
   final userBuz = userBuzList.where((buz) => buz.isActive == true).toList();
@@ -113,6 +118,7 @@ Future<bool> setupUser(
         fullname: fullname,
       ),
     );
+    await notifService.init(uid);
   }
 
   final today = DateTime.now();
