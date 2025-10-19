@@ -45,5 +45,22 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+
+	<key>NSPushNotificationsUsageDescription</key>
+	<string>This app sends you notifications to keep you updated.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses notifications to keep you updated.</string>
+	<key>UNUserNotificationCenterDelegate</key>
+	<string>YES</string>
+
 </dict>
 </plist>

@@ -10,7 +10,8 @@ enum NavigationRoute {
   editProfil("/editProfil"),
   addCashflow("/addCashflow"),
   userCheck("/userCheck"),
-  forgotPswd("/forgotPswd");
+  forgotPswd("/forgotPswd"),
+  notification("/notification");
 
   const NavigationRoute(this.name);
   final String name;

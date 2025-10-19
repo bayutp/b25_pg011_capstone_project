@@ -22,7 +22,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.onTap,
     this.keyboardType = TextInputType.text,
     this.inputFormatters = const [],
-    this.onChange
+    this.onChange,
   });
 
   @override
@@ -41,6 +41,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: super.widget.key,
       controller: widget.controller,
       validator: widget.validator,
       obscureText: _obscure,
@@ -62,7 +63,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       ),
       onTap: widget.onTap,
       readOnly: widget.readOnly,
-      onChanged: widget.onChange
+      onChanged: widget.onChange,
     );
   }
 }
