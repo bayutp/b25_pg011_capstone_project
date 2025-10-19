@@ -3,7 +3,6 @@ import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dar
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/static/helper.dart';
 import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
-import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +67,7 @@ class _NotifScreenState extends State<NotifScreen> {
           }
           return ListView.separated(
             itemCount: notifications.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final n = notifications[index];
               return ListTile(

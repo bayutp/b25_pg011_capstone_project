@@ -41,6 +41,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: super.widget.key,
       controller: widget.controller,
       validator: widget.validator,
       obscureText: _obscure,

@@ -22,6 +22,9 @@ class AddTodoScreen extends StatefulWidget {
 
 class _AddTodoScreenState extends State<AddTodoScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _keyTodo = GlobalKey<FormFieldState>();
+  final _keyStart = GlobalKey<FormFieldState>();
+  final _keyEnd = GlobalKey<FormFieldState>();
 
   late UserPlanProvider? userPlanProvider;
   late UserLocalProvider sp;
@@ -67,6 +70,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                       child: _PickedDate(
                         dateController: _startDateController,
                         label: "Mulai",
+                        formKey: _keyStart,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -74,12 +78,14 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                       child: _PickedDate(
                         dateController: _endDateController,
                         label: "Selesai",
+                        formKey: _keyEnd,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 28),
                 TextFormFieldWidget(
+                  key: _keyTodo,
                   controller: _taksNameController,
                   label: "Nama Task",
                   obscureText: false,
@@ -89,6 +95,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     }
                     return null;
                   },
+                  onChange: (value) => _keyTodo.currentState?.validate(),
                 ),
                 const SizedBox(height: 28),
                 Text(
@@ -276,7 +283,12 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
 class _PickedDate extends StatefulWidget {
   final TextEditingController dateController;
   final String label;
-  const _PickedDate({required this.dateController, required this.label});
+  final GlobalKey<FormFieldState> formKey;
+  const _PickedDate({
+    required this.dateController,
+    required this.label,
+    required this.formKey,
+  });
 
   @override
   State<_PickedDate> createState() => _PickedDateState();
@@ -297,12 +309,14 @@ class _PickedDateState extends State<_PickedDate> {
         widget.dateController.text =
             "${picked.day}/${picked.month}/${picked.year}";
       });
+      widget.formKey.currentState?.validate();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormFieldWidget(
+      key: widget.formKey,
       controller: widget.dateController,
       label: "Tanggal ${widget.label}",
       obscureText: false,
@@ -364,6 +378,7 @@ class _CategoryWidgetState extends State<_CategoryWidget> {
               }
               return null;
             },
+            onChange: (value) => keyForm.currentState?.validate(),
           ),
         ),
         actions: [
