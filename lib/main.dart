@@ -6,6 +6,7 @@ import 'package:b25_pg011_capstone_project/provider/plan/detail_status_provider.
 import 'package:b25_pg011_capstone_project/provider/plan/plan_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/todo_status_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/user_plan_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_image_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/auth/forgotpswd/forgot_pswd_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/auth/register/register_screen.dart';
@@ -81,6 +82,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (context) => TransactionTypeProvider()),
         ChangeNotifierProvider(create: (context) => CashflowDateProvider()),
+        ChangeNotifierProvider(create: (context) => UserImageProvider()),
       ],
       child: MyApp(user: user),
     ),

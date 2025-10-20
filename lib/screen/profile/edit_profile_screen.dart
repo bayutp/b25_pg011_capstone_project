@@ -5,6 +5,7 @@ import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
+import 'package:b25_pg011_capstone_project/widget/editable_avatar.dart';
 import 'package:b25_pg011_capstone_project/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:b25_pg011_capstone_project/widget/button_widget.dart';
@@ -165,10 +166,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackbarWidget(
-            message: "Data gagal disimpan!",
-            success: false,
-          ),
+          SnackbarWidget(message: "Data gagal disimpan!", success: false),
         );
       }
     } finally {
@@ -202,6 +200,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      EditableAvatar(imageUrl: null, size: 100),
+                      SizedBox(height: 24),
                       Row(
                         children: [
                           Expanded(

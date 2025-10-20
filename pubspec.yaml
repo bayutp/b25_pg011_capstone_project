@@ -54,6 +54,9 @@ dependencies:
   cloud_firestore: ^6.0.2
   firebase_messaging: ^16.0.3
   mockito: ^5.5.1
+  image_picker: ^1.2.0
+  camera: ^0.11.2
+  image_cropper: ^11.0.0
 
 dev_dependencies:
   flutter_test:
