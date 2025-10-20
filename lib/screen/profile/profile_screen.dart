@@ -27,7 +27,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // --- TAMBAHAN: Variabel untuk menampung future dari data user ---
-  late Future<DocumentSnapshot<Map<String, dynamic>>> _userDataFuture;
+  late Stream<DocumentSnapshot<Map<String, dynamic>>> _userDataFuture;
 
   @override
   void initState() {
@@ -37,13 +37,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // --- TAMBAHAN: Fungsi untuk mengambil data dari Firestore ---
-  Future<DocumentSnapshot<Map<String, dynamic>>> _fetchUserData() {
+  Stream<DocumentSnapshot<Map<String, dynamic>>> _fetchUserData() {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      return FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots();
     }
     // Jika tidak ada user, kembalikan future yang error
-    return Future.error("User not logged in");
+    return Stream.error("User not logged in");
   }
 
   @override
@@ -69,10 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackbarWidget(
-              message: "Gagal hapus akun",
-              success: false,
-            ),
+            SnackbarWidget(message: "Gagal hapus akun", success: false),
           );
         }
       }
@@ -82,8 +82,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.grey[50],
       body: SafeArea(
         // --- PERUBAHAN: Bungkus dengan FutureBuilder ---
-        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          future: _userDataFuture,
+        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: _userDataFuture,
           builder: (context, snapshot) {
             // --- KONDISI 1: Saat data sedang dimuat ---
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -102,6 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             final fullName =
                 "${userData['firstName'] ?? ''} ${userData['lastName'] ?? ''}";
             final position = userData['position'] ?? 'Posisi belum diatur';
+            final photoUrl = userData["profileUrl"];
 
             // Tampilkan UI utama dengan data dari Firebase
             return Padding(
@@ -119,11 +120,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 30),
                   Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 40,
-                        backgroundImage: AssetImage(
-                          'assets/img/avatar.png',
-                        ), // Placeholder image
+                        child: ClipOval(
+                          child: SizedBox.expand(
+                            child: photoUrl.toString().isNotEmpty
+                                ? Image.network(photoUrl, fit: BoxFit.cover)
+                                : Image.asset(
+                                    "assets/img/avatar.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 20),
                       Column(

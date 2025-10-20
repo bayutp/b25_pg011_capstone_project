@@ -32,26 +32,16 @@ class _EditableAvatarState extends State<EditableAvatar> {
             return CircleAvatar(
               radius: size / 2,
               child: ClipOval(
-                child: value.imageBytes != null
-                    ? Image.memory(
-                        value.imageBytes!,
-                        fit: BoxFit.cover,
-                        width: size,
-                        height: size,
-                      )
-                    : (imgUri.isNotEmpty
-                          ? Image.network(
-                              imgUri,
-                              fit: BoxFit.cover,
-                              width: size,
-                              height: size,
-                            )
-                          : Image.asset(
-                              'assets/img/avatar.png',
-                              fit: BoxFit.cover,
-                              width: size,
-                              height: size,
-                            )),
+                child: SizedBox.expand(
+                  child: value.imageBytes != null
+                      ? Image.memory(value.imageBytes!, fit: BoxFit.cover)
+                      : (imgUri.isNotEmpty
+                            ? Image.network(imgUri, fit: BoxFit.cover)
+                            : Image.asset(
+                                'assets/img/avatar.png',
+                                fit: BoxFit.cover,
+                              )),
+                ),
               ),
             );
           },

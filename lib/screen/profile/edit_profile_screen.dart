@@ -1,7 +1,11 @@
 // lib/screen/profile/edit_profile_screen.dart
 
+import 'dart:io';
+
+import 'package:b25_pg011_capstone_project/data/api/api_service.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_business.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:b25_pg011_capstone_project/provider/user/user_image_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
@@ -32,10 +36,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _positionController = TextEditingController();
   late AuthService service;
   late UserLocalProvider sp;
+  late ApiService apiService;
+  late UserImageProvider imgProvider;
 
   // --- TAMBAHAN: State untuk loading ---
   bool _isLoading = false;
   bool _isDataLoaded = false;
+  String _imgUrl = '';
 
   @override
   void initState() {
@@ -43,6 +50,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     // --- TAMBAHAN: Panggil fungsi untuk memuat data pengguna ---
     service = context.read<AuthService>();
     sp = context.read<UserLocalProvider>();
+    apiService = context.read<ApiService>();
+    imgProvider = context.read<UserImageProvider>();
     _loadUserData();
   }
 
@@ -67,6 +76,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           .collection('users')
           .doc(user.uid)
           .get();
+
       final isHasBuz = await service.hasBusiness();
       final userBuzList = await service.getUserBusiness();
       String buzName = '';
@@ -80,6 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _lastNameController.text = data['lastName'] ?? '';
         _businessNameController.text = buzName;
         _positionController.text = data['position'] ?? '';
+        _imgUrl = data['profileUrl'];
         setState(() => _isDataLoaded = true);
       }
     } catch (e) {
@@ -103,6 +114,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             .where((buz) => buz.isActive == true)
             .toList();
 
+        final fullname =
+            "${_firstNameController.text} ${_lastNameController.text}";
+
+        final path = imgProvider.imagePath ?? "";
+        if (path.isNotEmpty) {
+          _imgUrl = await apiService.uploadImage(File(path)) ?? "";
+        }
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
@@ -110,9 +129,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               'firstName': _firstNameController.text.trim(),
               'lastName': _lastNameController.text.trim(),
               'position': _positionController.text.trim(),
+              'profileUrl': _imgUrl,
             });
-        final fullname =
-            "${_firstNameController.text} ${_lastNameController.text}";
+
         if (userBuz.isNotEmpty) {
           await service.updateBuzName(
             userBuz.first.idBusiness,
@@ -126,6 +145,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               uid: user.uid,
               idbuz: userBuz.first.idBusiness,
               fullname: fullname,
+              imgUrl: _imgUrl,
             ),
           );
         } else {
@@ -143,6 +163,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               uid: user.uid,
               idbuz: idbuz,
               fullname: fullname,
+              imgUrl: _imgUrl,
             ),
           );
         }
@@ -168,6 +189,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackbarWidget(message: "Data gagal disimpan!", success: false),
         );
+        debugPrint("error edit profile >> ${e.toString()}");
       }
     } finally {
       if (mounted) {
@@ -200,7 +222,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      EditableAvatar(imageUrl: null, size: 100),
+                      EditableAvatar(imageUrl: _imgUrl, size: 100),
                       SizedBox(height: 24),
                       Row(
                         children: [
