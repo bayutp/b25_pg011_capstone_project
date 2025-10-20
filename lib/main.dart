@@ -13,6 +13,7 @@ import 'package:b25_pg011_capstone_project/screen/auth/forgotpswd/forgot_pswd_sc
 import 'package:b25_pg011_capstone_project/screen/auth/register/register_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/cashflow/add/add_cashflow_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/auth/login/login_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/cashflow/history/cashflow_history_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/notification/notif_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.dart';
@@ -101,7 +102,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Capstone Project',
       theme: AppTheme.lightTheme,
@@ -141,7 +141,9 @@ class MyApp extends StatelessWidget {
         NavigationRoute.userCheck.name: (context) => AuthWrapper(),
         NavigationRoute.forgotPswd.name: (context) => ForgotPasswordScreen(),
         NavigationRoute.notification.name: (context) => NotifScreen(),
-        NavigationRoute.splashRoute.name: (context) => SplashScreen()
+        NavigationRoute.splashRoute.name: (context) => SplashScreen(),
+        NavigationRoute.casflowHistoryRoute.name: (context) =>
+            CashflowHistoryScreen(),
       },
 
       localizationsDelegates: [

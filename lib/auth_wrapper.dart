@@ -106,7 +106,6 @@ Future<bool> setupUser(
   FirebaseFirestoreService firestoreService,
   NotificationService notifService,
 ) async {
-
   final userBuzList = await service.getUserBusiness();
   final userBuz = userBuzList.where((buz) => buz.isActive == true).toList();
   final fullname = await service.getFullname();
