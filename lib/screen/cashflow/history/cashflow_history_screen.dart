@@ -60,25 +60,33 @@ class CashflowHistoryScreen extends StatelessWidget {
 
           return ListView.separated(
             itemCount: cashflows.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, __) =>
+                Divider(height: 1, color: AppColors.bgGrey.colors),
             itemBuilder: (context, index) {
               final n = cashflows[index];
               return ListTile(
+                contentPadding: EdgeInsets.all(8),
                 leading: CircleAvatar(
+                  radius: 25,
                   backgroundColor: n.type == "income"
                       ? AppColors.bgBlue.colors
                       : AppColors.bgCream.colors,
-                  child: Image.asset(
-                    n.type == "income"
-                        ? "assets/img/ic_in.png"
-                        : "assets/img/ic_out.png",
+                  child: Padding(
+                    padding: EdgeInsets.all(6),
+                    child: Image.asset(
+                      n.type == "income"
+                          ? "assets/img/ic_in.png"
+                          : "assets/img/ic_out.png",
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
                 title: Text(
                   n.type == "income" ? "Pemasukan" : "Pengeluaran",
                   style: const TextStyle(
                     fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 12,
                   ),
                 ),
                 subtitle: Column(
@@ -94,6 +102,7 @@ class CashflowHistoryScreen extends StatelessWidget {
                         fontSize: 16,
                       ),
                     ),
+                    SizedBox(height: 6),
                     Text(
                       n.note,
                       maxLines: 2,
@@ -102,12 +111,15 @@ class CashflowHistoryScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                trailing: Text(
-                  Helper.formatTime(n.date),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontFamily: 'Inter',
+                trailing: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    Helper.formatTime(n.date),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Inter',
+                    ),
                   ),
                 ),
                 onTap: () {

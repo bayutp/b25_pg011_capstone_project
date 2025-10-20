@@ -53,7 +53,7 @@ class _CashflowScreenState extends State<CashflowScreen> {
                     NavigationRoute.casflowHistoryRoute.name,
                   );
                 },
-                icon: Icon(Icons.history_rounded),
+                icon: Icon(Icons.history_rounded, size: 27),
               ),
             ],
           ),
