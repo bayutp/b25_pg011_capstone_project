@@ -19,6 +19,7 @@ import 'package:b25_pg011_capstone_project/screen/onboarding/onboarding_screen.d
 import 'package:b25_pg011_capstone_project/screen/plan/add/add_todo_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/plan/detail/plan_detail_screen.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/edit_profile_screen.dart';
+import 'package:b25_pg011_capstone_project/screen/splash/splash_screen.dart';
 import 'package:b25_pg011_capstone_project/service/auth_service.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/screen/profile/profile_screen.dart';
@@ -100,14 +101,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isFirstLaunch = user.statusFirstLaunch;
-    final Widget startWidget;
-
-    if (isFirstLaunch) {
-      startWidget = OnboardingScreen();
-    } else {
-      startWidget = const AuthWrapper();
-    }
 
     return MaterialApp(
       title: 'Capstone Project',
@@ -116,7 +109,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
 
-      home: startWidget,
+      initialRoute: NavigationRoute.splashRoute.name,
 
       routes: {
         NavigationRoute.onboardingRoute.name: (context) => OnboardingScreen(),
@@ -148,6 +141,7 @@ class MyApp extends StatelessWidget {
         NavigationRoute.userCheck.name: (context) => AuthWrapper(),
         NavigationRoute.forgotPswd.name: (context) => ForgotPasswordScreen(),
         NavigationRoute.notification.name: (context) => NotifScreen(),
+        NavigationRoute.splashRoute.name: (context) => SplashScreen()
       },
 
       localizationsDelegates: [
