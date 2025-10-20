@@ -336,5 +336,4 @@ class FirebaseFirestoreService {
 
     debugPrint("Semua data user $uid sudah terhapus.");
   }
-
 }

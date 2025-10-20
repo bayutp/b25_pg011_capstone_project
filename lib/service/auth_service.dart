@@ -230,10 +230,4 @@ class AuthService {
 
     return snapshot.docs.isNotEmpty;
   }
-
-  Future<void> saveUserPhoto(String imgUrl) async {
-    await _firestore.collection("users").doc(uid).update({
-      'profileUrl': imgUrl,
-    });
-  }
 }

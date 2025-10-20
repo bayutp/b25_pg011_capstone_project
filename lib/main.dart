@@ -32,8 +32,8 @@ import 'package:b25_pg011_capstone_project/style/theme/app_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
-import 'package:dotenv/dotenv.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,15 +53,15 @@ void main() async {
   if (user.uid.isNotEmpty && user.statusLogin) {
     await notificationService.init(user.uid);
   }
-  final env = DotEnv(includePlatformEnvironment: true);
-  env.load();
+
+  await dotenv.load(fileName: '.env');
 
   runApp(
     MultiProvider(
       providers: [
         Provider(create: (context) => service),
         Provider(create: (context) => notificationService),
-        Provider(create: (context) => ApiService(env: env)),
+        Provider(create: (context) => ApiService()),
         Provider(create: (context) => SharedpreferencesService(prefs)),
         Provider(
           create: (context) => FirebaseFirestoreService(firebaseFirestore),

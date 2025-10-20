@@ -5,6 +5,7 @@ class UserLocal {
   final String idbuz;
   final String fullname;
   final String lastUpdate;
+  final String imgUrl;
 
   UserLocal({
     required this.statusLogin,
@@ -13,6 +14,7 @@ class UserLocal {
     this.idbuz = '',
     this.fullname = '',
     this.lastUpdate = '',
+    this.imgUrl = '',
   });
 
   UserLocal copyWith({

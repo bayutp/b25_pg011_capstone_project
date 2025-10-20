@@ -11,6 +11,7 @@ class SharedpreferencesService {
   static const String _keyUid = "USER_KEY_UID";
   static const String _keyIdbuz = "USER_KEY_IDBUZ";
   static const String _keyName = "USER_KEY_NAME";
+  static const String _keyPhoto = "USER_KEY_PHOTO";
 
   Future<void> setStatusUser(UserLocal user) async {
     try {
@@ -19,6 +20,7 @@ class SharedpreferencesService {
       await _preferences.setString(_keyUid, user.uid);
       await _preferences.setString(_keyIdbuz, user.idbuz);
       await _preferences.setString(_keyName, user.fullname);
+      await _preferences.setString(_keyPhoto, user.imgUrl);
     } catch (e) {
       throw Exception("Shared preferences cannot set data user");
     }
@@ -31,6 +33,7 @@ class SharedpreferencesService {
       uid: _preferences.getString(_keyUid) ?? '',
       idbuz: _preferences.getString(_keyIdbuz) ?? '',
       fullname: _preferences.getString(_keyName) ?? '',
+      imgUrl: _preferences.getString(_keyPhoto) ?? "",
     );
   }
 }
