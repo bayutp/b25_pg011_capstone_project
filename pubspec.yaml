@@ -58,12 +58,40 @@ dependencies:
   camera: ^0.11.2
   image_cropper: ^11.0.0
   flutter_dotenv: ^6.0.0
+  flutter_lints: ^6.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+  launcher_name: ^1.0.2
+
+launcher_name:
+  default: "RencanaKu"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/app_icons.png"
+  min_sdk_android: 21 # default 21
+
+  web:
+    generate: true
+    image_path: "assets/icon/app_icons.png"
+    background_color: "#ffffff"
+    theme_color: "#ffffff"
+
+  windows:
+    generate: true
+    image_path: "assets/icon/app_icons.png"
+    icon_size: 48
+
+  macos:
+    generate: true
+    image_path: "assets/icon/app_icons.png"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
