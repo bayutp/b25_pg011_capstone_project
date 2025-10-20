@@ -109,10 +109,12 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+
               const SizedBox(
-                height: 100,
-              ), // Jarak dari atas agar tidak terlalu mepet
-              // Header
+                height: 50,
+              ),
+              Image.asset("assets/img/ic_logo.png", width: 200),
+              SizedBox.square(dimension: 50),
               const Text(
                 'Login',
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),

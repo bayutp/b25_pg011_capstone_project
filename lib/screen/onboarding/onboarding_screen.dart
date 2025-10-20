@@ -26,6 +26,8 @@ class OnboardingScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Image.asset("assets/img/ic_logo_white.png", width: 200),
+                  SizedBox.square(dimension: 60),
                   Image.asset("assets/img/ic_onboarding.png", height: 288),
                   SizedBox.square(dimension: 50),
                   Text(
