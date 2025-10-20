@@ -28,6 +28,7 @@ class _CashflowScreenState extends State<CashflowScreen> {
     super.initState();
 
     user = context.read<UserLocalProvider>().userLocal;
+    context.read<CashflowDateProvider>().setSelectedDate(DateTime.now());
   }
 
   @override
