@@ -11,27 +11,39 @@ import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PlanDetailScreen extends StatelessWidget {
+class PlanDetailScreen extends StatefulWidget {
   final UserPlan plan;
   final UserLocal user;
   const PlanDetailScreen({super.key, required this.plan, required this.user});
 
   @override
+  State<PlanDetailScreen> createState() => _PlanDetailScreenState();
+}
+
+class _PlanDetailScreenState extends State<PlanDetailScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<DetailStatusProvider>().setStatus("on progress");
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(plan.name, style: Theme.of(context).textTheme.titleLarge),
+        title: Text(widget.plan.name, style: Theme.of(context).textTheme.titleLarge),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           child: Column(
             children: [
-              _PlanListWidget(plan: plan, idBusiness: user.idbuz),
+              _PlanListWidget(plan: widget.plan, idBusiness: widget.user.idbuz),
               const SizedBox(height: 60),
               _StatusTaskWidget(),
               const SizedBox(height: 35),
-              _TaskWidget(plan: plan, idBusiness: user.idbuz),
+              _TaskWidget(plan: widget.plan, idBusiness: widget.user.idbuz),
               const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -45,7 +57,7 @@ class PlanDetailScreen extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       NavigationRoute.addTaskRoute.name,
-                      arguments: {'user': user, 'plan': plan},
+                      arguments: {'user': widget.user, 'plan': widget.plan},
                     );
                   },
                 ),
