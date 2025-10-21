@@ -288,7 +288,7 @@ class _CashflowList extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Tanggal :',
+                  'Tanggal',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -303,7 +303,7 @@ class _CashflowList extends StatelessWidget {
 
                 // Keterangan
                 Text(
-                  'Keterangan :',
+                  'Keterangan',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
