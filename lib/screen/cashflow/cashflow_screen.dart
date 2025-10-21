@@ -219,12 +219,7 @@ class _CashflowList extends StatelessWidget {
             money: cashflow.amount,
             title: cashflow.type == "income" ? "Pemasukan" : "Pengeluaran",
             onTap: () {
-              showCashflowDetailDialog(
-                context,
-                cashflow.type == "income" ? "Pemasukan" : "Pengeluaran",
-                cashflow.amount,
-                cashflow.note,
-              );
+              showCashflowDetailDialog(context, cashflow);
             },
           );
         },
@@ -232,12 +227,7 @@ class _CashflowList extends StatelessWidget {
     );
   }
 
-  void showCashflowDetailDialog(
-    BuildContext context,
-    String title,
-    num expense,
-    String notes,
-  ) {
+  void showCashflowDetailDialog(BuildContext context, UserCashflow cashflow) {
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -280,7 +270,7 @@ class _CashflowList extends StatelessWidget {
                     ),
                     SizedBox(width: 6),
                     Text(
-                      title,
+                      cashflow.type == "income" ? "Pemasukan" : "Pengeluaran",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w400,
                       ),
@@ -291,11 +281,24 @@ class _CashflowList extends StatelessWidget {
 
                 // Nominal
                 Text(
-                  Helper.formatCurrency(expense),
+                  Helper.formatCurrency(cashflow.amount),
                   style: Theme.of(
                     context,
                   ).textTheme.titleLarge?.copyWith(fontSize: 16),
                 ),
+                SizedBox(height: 16),
+                Text(
+                  'Tanggal :',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  Helper.formatDate(cashflow.date, withTime: true),
+                  style: TextStyle(fontSize: 14),
+                ),
+
                 SizedBox(height: 16),
 
                 // Keterangan
@@ -306,7 +309,7 @@ class _CashflowList extends StatelessWidget {
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 SizedBox(height: 4),
-                Text(notes, style: TextStyle(fontSize: 14)),
+                Text(cashflow.note, style: TextStyle(fontSize: 14)),
               ],
             ),
           ),

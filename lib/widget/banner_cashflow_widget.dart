@@ -36,7 +36,7 @@ class BannerCashflowWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Image.asset(imgAssets, width: 35, height: 35,),
+                      Image.asset(imgAssets, width: 35, height: 35),
                       SizedBox(width: 18),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -44,17 +44,17 @@ class BannerCashflowWidget extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: AppColors.textGrey.colors,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: AppColors.textGrey.colors),
                           ),
                           SizedBox(height: 8),
                           Text(
                             Helper.formatCurrency(money),
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontSize: 18,
-                              color: AppColors.textTaskBlack.colors,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontSize: 18,
+                                  color: AppColors.textTaskBlack.colors,
+                                ),
                           ),
                         ],
                       ),

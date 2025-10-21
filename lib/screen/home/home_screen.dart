@@ -341,7 +341,7 @@ class _TaskListWidget extends StatelessWidget {
               );
             },
           );
-          return isCompleted ? Opacity(opacity: 0.5, child: item,) : item;
+          return isCompleted ? Opacity(opacity: 0.5, child: item) : item;
         },
       ),
     );

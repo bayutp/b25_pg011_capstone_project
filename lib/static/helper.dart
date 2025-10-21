@@ -25,7 +25,7 @@ class Helper {
   }
 
   static String formatDate(DateTime date, {bool withTime = false}) {
-    final formatDate = withTime ? 'dd MMMM yyyy, HH:mm:ss' : 'dd MMMM yyyy';
+    final formatDate = withTime ? 'dd MMMM yyyy, HH:mm' : 'dd MMMM yyyy';
     return DateFormat(formatDate).format(date);
   }
 

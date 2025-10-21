@@ -8,7 +8,6 @@ class UserIncomeProvider extends ChangeNotifier {
   final String _uid;
   final String _idbuz;
 
-
   num _userIncome = 0;
   num _userExpense = 0;
 
@@ -29,17 +28,31 @@ class UserIncomeProvider extends ChangeNotifier {
     _incomeSubscription?.cancel();
     _expenseSubscription?.cancel();
 
-    _incomeSubscription = _firestoreService.getTotalCashflowByType(
-        _uid, _idbuz, DateTime.now(), "monthly", "income").listen((income) {
-      _userIncome = income;
-      notifyListeners();
-    });
+    _incomeSubscription = _firestoreService
+        .getTotalCashflowByType(
+          _uid,
+          _idbuz,
+          DateTime.now(),
+          "monthly",
+          "income",
+        )
+        .listen((income) {
+          _userIncome = income;
+          notifyListeners();
+        });
 
-    _expenseSubscription = _firestoreService.getTotalCashflowByType(
-        _uid, _idbuz, DateTime.now(), "monthly", "expense").listen((expense) {
-      _userExpense = expense;
-      notifyListeners();
-    });
+    _expenseSubscription = _firestoreService
+        .getTotalCashflowByType(
+          _uid,
+          _idbuz,
+          DateTime.now(),
+          "monthly",
+          "expense",
+        )
+        .listen((expense) {
+          _userExpense = expense;
+          notifyListeners();
+        });
   }
 
   void updateDate(DateTime newDate) {

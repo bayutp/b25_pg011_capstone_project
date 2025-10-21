@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'capstone-project-prod.firebasestorage.app',
     measurementId: 'G-8CRCGHQF3T',
   );
-
 }
