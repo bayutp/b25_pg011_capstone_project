@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CashflowHistoryScreen extends StatelessWidget {
+  const CashflowHistoryScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final service = context.read<FirebaseFirestoreService>();
@@ -60,7 +62,7 @@ class CashflowHistoryScreen extends StatelessWidget {
 
           return ListView.separated(
             itemCount: cashflows.length,
-            separatorBuilder: (_, __) =>
+            separatorBuilder: (_, _) =>
                 Divider(height: 1, color: AppColors.bgGrey.colors),
             itemBuilder: (context, index) {
               final n = cashflows[index];

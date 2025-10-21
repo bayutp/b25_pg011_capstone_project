@@ -42,18 +42,22 @@ class _SplashScreenState extends State<SplashScreen>
     // Setelah 3 detik pindah ke halaman utama
     Future.delayed(Duration(seconds: 3), () {
       if (isFirstLaunch) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          NavigationRoute.onboardingRoute.name,
-          (route) => false,
-        );
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            NavigationRoute.onboardingRoute.name,
+            (route) => false,
+          );
+        }
         return;
       }
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        NavigationRoute.userCheck.name,
-        (route) => false,
-      );
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          NavigationRoute.userCheck.name,
+          (route) => false,
+        );
+      }
     });
   }
 

@@ -71,7 +71,7 @@ class ConfirmationDialog extends StatelessWidget {
                 onConfirm();
               },
               backgroundColor: const Color(0xFF546E41),
-              foregroundColor: Colors.white.withOpacity(0.8),
+              foregroundColor: Colors.white.withAlpha((0.8 * 255).toInt()),
               textColor: Colors.white,
             ),
             const SizedBox(height: 12),

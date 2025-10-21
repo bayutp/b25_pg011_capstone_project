@@ -262,7 +262,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onPressed: () => _saveChanges(),
                         isLoading: _isLoading, // Gunakan fungsi _saveChanges
                         backgroundColor: const Color(0xFF546E41),
-                        foregroundColor: Colors.white.withOpacity(0.8),
+                        foregroundColor: Colors.white.withAlpha(
+                          (0.8 * 255).toInt(),
+                        ),
                         textColor: Colors.white,
                         // --- TAMBAHAN: Tampilkan loading di tombol ---
                       ),
