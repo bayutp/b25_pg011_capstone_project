@@ -1,6 +1,7 @@
 import 'package:b25_pg011_capstone_project/data/model/user_cashflow.dart';
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/cashflow/user_income_providers.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/service/firebase_firestore_service.dart';
 import 'package:b25_pg011_capstone_project/static/navigation_route.dart';
@@ -23,6 +24,7 @@ class CashflowScreen extends StatefulWidget {
 
 class _CashflowScreenState extends State<CashflowScreen> {
   late UserLocal? user;
+
   @override
   void initState() {
     super.initState();
@@ -114,6 +116,7 @@ class _CashflowScreenState extends State<CashflowScreen> {
 class _TotalCashflowWidget extends StatelessWidget {
   final DateTime selectedDate;
   final UserLocal user;
+
   const _TotalCashflowWidget({
     super.key,
     required this.selectedDate,
@@ -169,6 +172,7 @@ class _TotalCashflowWidget extends StatelessWidget {
 class _CashflowWidget extends StatelessWidget {
   final DateTime selectedDate;
   final UserLocal user;
+
   const _CashflowWidget({
     super.key,
     required this.selectedDate,
@@ -328,6 +332,7 @@ class _DatePicker extends StatelessWidget {
 class _BannerCashflow extends StatelessWidget {
   final DateTime selectedDate;
   final UserLocal user;
+
   const _BannerCashflow({
     super.key,
     required this.selectedDate,
@@ -336,58 +341,36 @@ class _BannerCashflow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    final incomeProvider = context.watch<UserIncomeProvider>();
+    return Column(
       children: [
-        Expanded(
-          child: StreamProvider<num>(
-            create: (context) =>
-                context.read<FirebaseFirestoreService>().getTotalCashflowByType(
-                  user.uid,
-                  user.idbuz,
-                  selectedDate,
-                  "daily",
-                  "income",
-                ),
-            initialData: 0,
-            catchError: (context, error) {
-              return 0;
-            },
-            builder: (context, child) {
-              final totalIncome = Provider.of<num>(context);
-              return BannerCashflowWidget(
+        BannerCashflowWidget(
+          title: "Omset Bulan ini",
+          money: incomeProvider.userBalance.toInt(),
+          color: AppColors.bgPink.colors,
+          imgAssets: "assets/img/ic_omset.png",
+          isIncome: true,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: BannerCashflowWidget(
                 title: "Pemasukan",
-                money: totalIncome.toInt(),
+                money: incomeProvider.userIncome.toInt(),
                 color: AppColors.bgSoftGreen.colors,
                 imgAssets: "assets/img/ic_in.png",
-              );
-            },
-          ),
-        ),
-        Expanded(
-          child: StreamProvider<num>(
-            create: (context) =>
-                context.read<FirebaseFirestoreService>().getTotalCashflowByType(
-                  user.uid,
-                  user.idbuz,
-                  selectedDate,
-                  "daily",
-                  "expense",
-                ),
-            initialData: 0,
-            catchError: (context, error) {
-              return 0;
-            },
-            builder: (context, child) {
-              final totalExpense = Provider.of<num>(context);
-              return BannerCashflowWidget(
+              ),
+            ),
+            Expanded(
+              child: BannerCashflowWidget(
                 title: "Pengeluaran",
-                money: totalExpense.toInt(),
+                money: incomeProvider.userExpense.toInt(),
                 color: AppColors.bgCream.colors,
                 imgAssets: "assets/img/ic_out.png",
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       ],
     );

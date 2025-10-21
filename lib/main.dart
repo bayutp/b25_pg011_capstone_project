@@ -4,6 +4,7 @@ import 'package:b25_pg011_capstone_project/auth_wrapper.dart';
 import 'package:b25_pg011_capstone_project/data/api/api_service.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/cashflow/user_income_providers.dart';
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/detail_status_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/plan/plan_date_provider.dart';
@@ -100,6 +101,13 @@ void main() async {
         ChangeNotifierProvider(create: (context) => TransactionTypeProvider()),
         ChangeNotifierProvider(create: (context) => CashflowDateProvider()),
         ChangeNotifierProvider(create: (context) => UserImageProvider()),
+        ChangeNotifierProvider(
+          create: (context) => UserIncomeProvider(
+            context.read<FirebaseFirestoreService>(),
+            context.read<UserLocalProvider>().userLocal!.uid,
+            context.read<UserLocalProvider>().userLocal!.idbuz,
+          ),
+        ),
       ],
       child: MyApp(user: user),
     ),
@@ -108,6 +116,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final UserLocal user;
+
   const MyApp({super.key, required this.user});
 
   @override
