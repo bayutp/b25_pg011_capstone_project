@@ -322,7 +322,8 @@ class _TaskListWidget extends StatelessWidget {
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           final task = tasks[index];
-          return ItemPlanWidget(
+          final isCompleted = task.status == "completed";
+          final item = ItemPlanWidget(
             task: task.todo,
             category: task.plan,
             isChecked: task.status == "completed",
@@ -340,6 +341,7 @@ class _TaskListWidget extends StatelessWidget {
               );
             },
           );
+          return isCompleted ? Opacity(opacity: 0.5, child: item,) : item;
         },
       ),
     );
