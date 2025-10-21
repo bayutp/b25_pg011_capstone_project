@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyC0jhqQjPi8COidPXiMI5lpDl5B9TW7qxg',
-    appId: '1:439975735447:android:23d8d6df6395c1f67b39d2',
+    appId: '1:439975735447:android:b3a6037b4fc847077b39d2',
     messagingSenderId: '439975735447',
     projectId: 'capstone-project-c0f48',
     storageBucket: 'capstone-project-c0f48.firebasestorage.app',
@@ -60,11 +60,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBXhWSWfAYBzCb4nQvf923V85Yr4qVhdCU',
-    appId: '1:439975735447:ios:8474040f690131337b39d2',
+    appId: '1:439975735447:ios:b62190bed813279d7b39d2',
     messagingSenderId: '439975735447',
     projectId: 'capstone-project-c0f48',
     storageBucket: 'capstone-project-c0f48.firebasestorage.app',
-    iosBundleId: 'com.example.b25Pg011CapstoneProject',
+    iosBundleId: 'com.example.rencanaku',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'capstone-project-c0f48.firebasestorage.app',
     measurementId: 'G-63Q9VF1BST',
   );
+
 }

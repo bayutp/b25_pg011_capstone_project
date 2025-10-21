@@ -1,4 +1,4 @@
-package com.example.b25_pg011_capstone_project
+package com.example.rencanaku
 
 import io.flutter.embedding.android.FlutterActivity
 
