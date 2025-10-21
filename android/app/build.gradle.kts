@@ -37,6 +37,23 @@ android {
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "default"
+
+    productFlavors {
+        create("prod") {
+            dimension = "default"
+            resValue("string", "app_name", "RencanaKu")
+        }
+
+        create("dev") {
+            dimension = "default"
+            resValue("string", "app_name", "RencanaKu-dev")
+            applicationIdSuffix = ".dev"
+        }
+
+    }
+
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
