@@ -72,7 +72,7 @@ class _NotifScreenState extends State<NotifScreen> {
             itemBuilder: (context, index) {
               final n = notifications[index];
               return ListTile(
-                contentPadding: EdgeInsets.symmetric(vertical: 8),
+                contentPadding: EdgeInsets.all(8),
                 leading: CircleAvatar(
                   radius: 30,
                   backgroundColor: n.isRead

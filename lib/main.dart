@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:b25_pg011_capstone_project/auth_wrapper.dart';
 import 'package:b25_pg011_capstone_project/data/api/api_service.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
@@ -34,6 +36,7 @@ import 'package:b25_pg011_capstone_project/style/theme/app_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -57,6 +60,13 @@ void main() async {
   }
 
   await dotenv.load(fileName: '.env');
+
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
   runApp(
     MultiProvider(

@@ -8,6 +8,9 @@ class SnackbarWidget extends SnackBar {
     required bool success,
     IconData icon = Icons.check_circle_rounded,
   }) : super(
+         backgroundColor: success
+             ? AppColors.bgSoftGreen.colors
+             : AppColors.bgPink.colors,
          content: Row(
            children: [
              Icon(
@@ -22,7 +25,7 @@ class SnackbarWidget extends SnackBar {
                  message,
                  style: TextStyle(
                    fontFamily: "Inter",
-                   fontWeight: FontWeight.w400,
+                   fontWeight: FontWeight.w600,
                    color: success
                        ? AppColors.snackbarSuccess.colors
                        : AppColors.snackbarFailed.colors,
