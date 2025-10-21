@@ -217,7 +217,7 @@ class CashflowHistoryScreen extends StatelessWidget {
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 SizedBox(height: 4),
-                Text(Helper.formatDate(date), style: TextStyle(fontSize: 14)),
+                Text(Helper.formatDate(date, withTime: true), style: TextStyle(fontSize: 14)),
 
                 SizedBox(height: 16),
                 // Keterangan

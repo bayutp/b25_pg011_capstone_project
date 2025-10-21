@@ -314,7 +314,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
                         : const Text(
                             'Daftar',
                             style: TextStyle(color: Colors.white, fontSize: 18),
