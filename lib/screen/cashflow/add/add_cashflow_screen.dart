@@ -149,6 +149,7 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
     _dateController.dispose();
     _expenseController.dispose();
     _noteController.dispose();
+    context.read<TransactionTypeProvider>().setType(null);
   }
 
   Future<void> _saveCashflow() async {

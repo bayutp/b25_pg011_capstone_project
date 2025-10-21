@@ -67,17 +67,22 @@ class _NotifScreenState extends State<NotifScreen> {
           }
           return ListView.separated(
             itemCount: notifications.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
+            separatorBuilder: (_, _) =>
+                Divider(height: 1, color: AppColors.bgGrey.colors),
             itemBuilder: (context, index) {
               final n = notifications[index];
               return ListTile(
+                contentPadding: EdgeInsets.all(8),
                 leading: CircleAvatar(
+                  radius: 30,
                   backgroundColor: n.isRead
-                      ? Colors.grey.shade300
-                      : Theme.of(context).colorScheme.primary,
+                      ? AppColors.bgGrey.colors
+                      : AppColors.bgCream.colors,
                   child: Icon(
-                    n.isRead ? Icons.notifications_none : Icons.notifications,
-                    color: n.isRead ? Colors.black54 : Colors.white,
+                    n.isRead ? Icons.campaign_outlined : Icons.campaign,
+                    color: n.isRead
+                        ? Colors.black54
+                        : const Color.fromARGB(255, 209, 147, 3),
                   ),
                 ),
                 title: Text(

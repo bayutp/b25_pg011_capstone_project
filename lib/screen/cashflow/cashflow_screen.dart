@@ -45,6 +45,17 @@ class _CashflowScreenState extends State<CashflowScreen> {
               "Cash Flow",
               style: Theme.of(context).textTheme.titleLarge,
             ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    NavigationRoute.casflowHistoryRoute.name,
+                  );
+                },
+                icon: Icon(Icons.history_rounded, size: 27),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Padding(

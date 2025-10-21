@@ -11,7 +11,9 @@ enum NavigationRoute {
   addCashflow("/addCashflow"),
   userCheck("/userCheck"),
   forgotPswd("/forgotPswd"),
-  notification("/notification");
+  notification("/notification"),
+  splashRoute("/splashscreen"),
+  casflowHistoryRoute("/historyCashflow");
 
   const NavigationRoute(this.name);
   final String name;

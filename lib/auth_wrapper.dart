@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/user/user_local_provider.dart';
 import 'package:b25_pg011_capstone_project/screen/main/main_screen.dart';
@@ -27,16 +29,12 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Future<Widget> _handleAuth(User? firebaseUser) async {
     if (firebaseUser == null) return const LoginScreen();
 
-    final hasBusiness = await setupUser(
-      service,
-      sp,
-      firebaseUser.uid,
-      firestoreService,
-      notifService,
-    );
-    return hasBusiness
-        ? const MainScreen()
-        : const EditProfileScreen(newUser: true);
+    final hasBusiness = await service.hasBusiness();
+    if (!hasBusiness) return const EditProfileScreen(newUser: true);
+
+    unawaited(setupUserBackground(firebaseUser.uid));
+
+    return const MainScreen();
   }
 
   @override
@@ -90,6 +88,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
         );
       },
     );
+  }
+
+  Future<void> setupUserBackground(String uid) async {
+    try {
+      await setupUser(service, sp, uid, firestoreService, notifService);
+    } catch (e) {
+      debugPrint("setupUser error: $e");
+    }
   }
 }
 
