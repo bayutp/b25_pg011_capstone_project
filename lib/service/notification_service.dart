@@ -129,7 +129,7 @@ class NotificationService {
 
       final notifId = docRef.id;
       await docRef.set({...notif.toJson(), 'id': notifId});
-    } catch (e, st) {
+    } catch (e) {
       debugPrint('Notif >> Error save notif: $e');
     }
   }

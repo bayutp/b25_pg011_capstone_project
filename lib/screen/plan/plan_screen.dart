@@ -26,6 +26,7 @@ class _PlanScreenState extends State<PlanScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TodoStatusProvider>().setStatus("on progress");
+      context.read<PlanDateProvider>().setSelectedDate(DateTime.now());
     });
   }
 
