@@ -211,18 +211,21 @@ class CashflowHistoryScreen extends StatelessWidget {
 
                 // Keterangan
                 Text(
-                  'Tanggal :',
+                  'Tanggal',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 SizedBox(height: 4),
-                Text(Helper.formatDate(date), style: TextStyle(fontSize: 14)),
+                Text(
+                  Helper.formatDate(date, withTime: true),
+                  style: TextStyle(fontSize: 14),
+                ),
 
                 SizedBox(height: 16),
                 // Keterangan
                 Text(
-                  'Keterangan :',
+                  'Keterangan',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),

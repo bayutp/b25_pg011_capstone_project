@@ -6,6 +6,8 @@ import 'package:b25_pg011_capstone_project/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/notification_service.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -22,10 +24,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    final provider = context.read<UserLocalProvider>();
-    provider.getStatusUser();
-    final user = provider.userLocal;
-    final isFirstLaunch = user?.statusFirstLaunch ?? true;
+    _initializeApp();
 
     _controller = AnimationController(
       vsync: this,
@@ -38,27 +37,36 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     _controller.forward();
+  }
 
-    // Setelah 3 detik pindah ke halaman utama
-    Future.delayed(Duration(seconds: 3), () {
-      if (isFirstLaunch) {
-        if (mounted) {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            NavigationRoute.onboardingRoute.name,
-            (route) => false,
-          );
-        }
-        return;
-      }
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          NavigationRoute.userCheck.name,
-          (route) => false,
-        );
-      }
-    });
+  Future<void> _initializeApp() async {
+    final provider = context.read<UserLocalProvider>();
+    provider.getStatusUser();
+    final user = provider.userLocal;
+    final isFirstLaunch = user?.statusFirstLaunch ?? true;
+
+    final notificationService = NotificationService();
+    if (user != null && user.uid.isNotEmpty && user.statusLogin) {
+      await notificationService.init(user.uid);
+    }
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
+    if (isFirstLaunch) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        NavigationRoute.onboardingRoute.name,
+        (route) => false,
+      );
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        NavigationRoute.userCheck.name,
+        (route) => false,
+      );
+    }
   }
 
   @override

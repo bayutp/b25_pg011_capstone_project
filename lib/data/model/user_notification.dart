@@ -32,7 +32,6 @@ class UserNotification {
   // Convert to JSON
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
       'body': body,
       'isRead': isRead,

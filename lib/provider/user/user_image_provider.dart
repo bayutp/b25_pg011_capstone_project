@@ -1,6 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserImageProvider extends ChangeNotifier {
@@ -33,31 +31,6 @@ class UserImageProvider extends ChangeNotifier {
       await _setImage(picked);
     } catch (e) {
       debugPrint('openCamera error: $e');
-    }
-  }
-
-  Future<void> cropImage(BuildContext context) async {
-    if (imagePath == null) return;
-
-    final cropped = await ImageCropper().cropImage(
-      sourcePath: imagePath!,
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop Photo',
-          toolbarColor: Theme.of(context).primaryColor,
-          toolbarWidgetColor: Colors.white,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-          ],
-        ),
-        IOSUiSettings(title: 'Crop Photo'),
-        WebUiSettings(context: context),
-      ],
-    );
-
-    if (cropped != null) {
-      await _setImage(XFile(cropped.path));
     }
   }
 

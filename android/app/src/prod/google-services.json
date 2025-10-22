@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1088024434191",
+    "project_id": "capstone-project-prod",
+    "storage_bucket": "capstone-project-prod.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088024434191:android:e28c9a501648a33189357a",
+        "android_client_info": {
+          "package_name": "com.example.rencanaku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvDeB3nXcdrip6V8GauM3cW1_atFj06YA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -24,8 +24,9 @@ class Helper {
     return "$finishedTask/$allTask Tasks - ${percent.toStringAsFixed(0)}%";
   }
 
-  static String formatDate(DateTime date) {
-    return DateFormat('dd MMMM yyyy').format(date);
+  static String formatDate(DateTime date, {bool withTime = false}) {
+    final formatDate = withTime ? 'dd MMMM yyyy, HH:mm' : 'dd MMMM yyyy';
+    return DateFormat(formatDate).format(date);
   }
 
   Map<String, DateTime> getDateRange(String period, DateTime date) {

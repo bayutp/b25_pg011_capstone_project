@@ -7,6 +7,7 @@ class BannerCashflowWidget extends StatelessWidget {
   final int money;
   final Color color;
   final String imgAssets;
+  final bool isIncome;
 
   const BannerCashflowWidget({
     super.key,
@@ -14,6 +15,7 @@ class BannerCashflowWidget extends StatelessWidget {
     required this.money,
     required this.color,
     required this.imgAssets,
+    this.isIncome = false,
   });
 
   @override
@@ -28,28 +30,57 @@ class BannerCashflowWidget extends StatelessWidget {
         elevation: 0,
         child: IntrinsicHeight(
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(imgAssets, width: 35, height: 35),
-                SizedBox(height: 8),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textGrey.colors,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 35),
+            child: isIncome
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset(imgAssets, width: 35, height: 35),
+                      SizedBox(width: 18),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: AppColors.textGrey.colors),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            Helper.formatCurrency(money),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontSize: 18,
+                                  color: AppColors.textTaskBlack.colors,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(imgAssets, width: 35, height: 35),
+                      SizedBox(height: 8),
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: AppColors.textGrey.colors,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        Helper.formatCurrency(money),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontSize: 18,
+                          color: AppColors.textTaskBlack.colors,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  Helper.formatCurrency(money),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontSize: 18,
-                    color: AppColors.textTaskBlack.colors,
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
       ),

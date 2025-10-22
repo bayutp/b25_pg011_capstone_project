@@ -7,13 +7,24 @@ import 'package:b25_pg011_capstone_project/widget/bottomnav_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BottomnavProvider>().setIndex = 0;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final provider = context.read<BottomnavProvider>();
-    provider.setIndex = 0;
     return Scaffold(
       body: Consumer<BottomnavProvider>(
         builder: (context, value, child) {
