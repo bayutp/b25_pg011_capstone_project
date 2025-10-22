@@ -49,7 +49,7 @@ Future<void> mainCommon(
   SharedPreferences prefs,
 ) async {
   final firebaseFirestore = FirebaseFirestore.instance;
-
+  final notificationService = NotificationService();
   await dotenv.load(fileName: '.env');
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -63,7 +63,7 @@ Future<void> mainCommon(
     MultiProvider(
       providers: [
         Provider(create: (context) => prefs),
-        Provider(create: (context) => context.read<NotificationService>()),
+        Provider(create: (context) => notificationService),
         Provider(create: (context) => ApiService()),
         Provider(create: (context) => SharedpreferencesService(prefs)),
         Provider(

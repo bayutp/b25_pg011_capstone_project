@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen>
     final user = provider.userLocal;
     final isFirstLaunch = user?.statusFirstLaunch ?? true;
 
-    final notificationService = context.read<NotificationService>();
+    final notificationService = NotificationService();
     if (user != null && user.uid.isNotEmpty && user.statusLogin) {
       await notificationService.init(user.uid);
     }
