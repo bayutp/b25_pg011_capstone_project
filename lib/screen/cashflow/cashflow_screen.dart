@@ -125,8 +125,9 @@ class _TotalCashflowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<int>(
-      create: (context) => context
+    return StreamProvider<int>.value(
+      key: key,
+      value: context
           .read<FirebaseFirestoreService>()
           .getCountCashflow(user.uid, user.idbuz, selectedDate, "daily"),
       initialData: 0,
