@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:b25_pg011_capstone_project/data/model/user_local.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_date_provider.dart';
+import 'package:b25_pg011_capstone_project/provider/cashflow/cashflow_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/transaction_type_provider.dart';
 import 'package:b25_pg011_capstone_project/provider/cashflow/user_income_providers.dart';
 import 'package:b25_pg011_capstone_project/provider/main/bottomnav_provider.dart';
@@ -91,6 +92,13 @@ Future<void> mainCommon(
         ChangeNotifierProvider(create: (context) => UserImageProvider()),
         ChangeNotifierProvider(
           create: (context) => UserIncomeProvider(
+            context.read<FirebaseFirestoreService>(),
+            context.read<UserLocalProvider>().userLocal!.uid,
+            context.read<UserLocalProvider>().userLocal!.idbuz,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CashflowProvider(
             context.read<FirebaseFirestoreService>(),
             context.read<UserLocalProvider>().userLocal!.uid,
             context.read<UserLocalProvider>().userLocal!.idbuz,

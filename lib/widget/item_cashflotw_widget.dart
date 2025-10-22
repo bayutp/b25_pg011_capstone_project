@@ -22,7 +22,7 @@ class ItemCashflotwWidget extends StatelessWidget {
         width: double.infinity,
         child: Card(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(20),
+            borderRadius: BorderRadius.circular(20),
           ),
           elevation: 0,
           child: InkWell(
