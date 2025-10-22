@@ -71,7 +71,7 @@ launcher_name:
   default: "RencanaKu"
 
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: "ic_launcher"
   ios: true
   image_path: "assets/icon/app_icons.png"
   min_sdk_android: 21 # default 21

@@ -21,7 +21,6 @@ class PlanDetailScreen extends StatefulWidget {
 }
 
 class _PlanDetailScreenState extends State<PlanDetailScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -32,7 +31,10 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.plan.name, style: Theme.of(context).textTheme.titleLarge),
+        title: Text(
+          widget.plan.name,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

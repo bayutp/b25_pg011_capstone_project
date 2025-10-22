@@ -49,10 +49,6 @@ Future<void> mainCommon(
   SharedPreferences prefs,
 ) async {
   final firebaseFirestore = FirebaseFirestore.instance;
-  final notificationService = NotificationService();
-  if (user.uid.isNotEmpty && user.statusLogin) {
-    await notificationService.init(user.uid);
-  }
 
   await dotenv.load(fileName: '.env');
 
@@ -67,7 +63,7 @@ Future<void> mainCommon(
     MultiProvider(
       providers: [
         Provider(create: (context) => prefs),
-        Provider(create: (context) => notificationService),
+        Provider(create: (context) => context.read<NotificationService>()),
         Provider(create: (context) => ApiService()),
         Provider(create: (context) => SharedpreferencesService(prefs)),
         Provider(
