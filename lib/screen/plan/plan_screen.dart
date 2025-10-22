@@ -13,16 +13,26 @@ import 'package:b25_pg011_capstone_project/widget/item_plan_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PlanScreen extends StatelessWidget {
+class PlanScreen extends StatefulWidget {
   const PlanScreen({super.key});
+
+  @override
+  State<PlanScreen> createState() => _PlanScreenState();
+}
+
+class _PlanScreenState extends State<PlanScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TodoStatusProvider>().setStatus("on progress");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final selectedDate = context.watch<PlanDateProvider>().selectedDate;
     final user = context.watch<UserLocalProvider>().userLocal;
-    final provider = context.read<TodoStatusProvider>();
-    provider.setStatus("on progress");
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Task", style: Theme.of(context).textTheme.titleLarge),
@@ -77,6 +87,7 @@ class PlanScreen extends StatelessWidget {
 
 class _PlanWidget extends StatelessWidget {
   final UserLocal user;
+
   const _PlanWidget({required this.user});
 
   @override
@@ -102,6 +113,7 @@ class _PlanWidget extends StatelessWidget {
 class _TaskWidget extends StatelessWidget {
   final DateTime selectedDate;
   final UserLocal user;
+
   const _TaskWidget({required this.selectedDate, required this.user});
 
   @override
@@ -130,6 +142,7 @@ class _TaskWidget extends StatelessWidget {
 class _PlanListWidget extends StatelessWidget {
   final List<UserPlan> plans;
   final UserLocal user;
+
   const _PlanListWidget({required this.plans, required this.user});
 
   @override
@@ -244,6 +257,7 @@ class _EmptyPlanWidget extends StatelessWidget {
 class _TotalTaskWidget extends StatelessWidget {
   final DateTime selectedDate;
   final UserLocal user;
+
   const _TotalTaskWidget({required this.selectedDate, required this.user});
 
   @override
@@ -487,6 +501,7 @@ class _EmptyTaskWidget extends StatelessWidget {
 
 class _TaskListWidget extends StatelessWidget {
   final List<UserTodo> tasks;
+
   const _TaskListWidget({required this.tasks});
 
   @override
