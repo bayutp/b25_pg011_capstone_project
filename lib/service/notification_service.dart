@@ -1,9 +1,11 @@
 import 'package:b25_pg011_capstone_project/data/model/user_notification.dart';
+import 'package:b25_pg011_capstone_project/service/sharedpreferences_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -11,7 +13,12 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  bool _initialized = false;
+
   Future<void> init(String uid) async {
+    if (_initialized) return;
+    _initialized = true;
+
     await _initLocalNotification();
     await _initFCM(uid);
   }
@@ -113,33 +120,50 @@ class NotificationService {
   }
 
   Future<void> _saveToFirestore(UserNotification notif, String userId) async {
-    await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('notifications')
-        .add(notif.toJson());
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('notifications')
+          .doc();
+
+      final notifId = docRef.id;
+      await docRef.set({...notif.toJson(), 'id': notifId});
+    } catch (e, st) {
+      debugPrint('Notif >> Error save notif: $e');
+    }
   }
 }
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  debugPrint('Background message: ${message.notification?.title}');
-
-  final notif = UserNotification(
-    title: message.notification?.title ?? "No Title",
-    body: message.notification?.body ?? "No body",
-    isRead: false,
-    timestamp: DateTime.now(),
-  );
-
   final firestore = FirebaseFirestore.instance;
-  const userId = '';
+  final prefs = await SharedPreferences.getInstance();
+  final sp = SharedpreferencesService(prefs);
+  final userId = sp.getStatusUser().uid;
+
   if (userId.isNotEmpty) {
-    await firestore
-        .collection('users')
-        .doc(userId)
-        .collection('notifications')
-        .add(notif.toJson());
+    try {
+      final docRef = firestore
+          .collection('users')
+          .doc(userId)
+          .collection('notifications')
+          .doc();
+
+      debugPrint('Notif >> saved with ID: ${docRef.id}');
+
+      final notif = UserNotification(
+        id: docRef.id,
+        title: message.notification?.title ?? "No Title",
+        body: message.notification?.body ?? "No body",
+        isRead: false,
+        timestamp: DateTime.now(),
+      );
+
+      await docRef.set({...notif.toJson(), 'id': notif.id});
+    } catch (e, st) {
+      debugPrint('Notif >> Stacktrace: $st');
+    }
   }
 }
