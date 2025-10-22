@@ -127,9 +127,12 @@ class _TotalCashflowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamProvider<int>.value(
       key: key,
-      value: context
-          .read<FirebaseFirestoreService>()
-          .getCountCashflow(user.uid, user.idbuz, selectedDate, "daily"),
+      value: context.read<FirebaseFirestoreService>().getCountCashflow(
+        user.uid,
+        user.idbuz,
+        selectedDate,
+        "daily",
+      ),
       initialData: 0,
       catchError: (context, error) {
         return 0;
