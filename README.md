@@ -141,8 +141,8 @@ Program Bootcamp BEKUP Create: Upskilling Skills 2025
 
    - Sudah menghubungkan proyek dengan Firebase
    - File konfigurasi Firebase (`google-services.json` untuk Android atau `GoogleService-Info.plist` untuk iOS) sudah ditempatkan di folder yang sesuai:
-     - Development: `android/app/dev/`
-     - Production: `android/app/prod/`
+     - Development: `android/app/src/dev/`
+     - Production: `android/app/src/prod/`
    - File `firebase_options.dart` sudah dibuat untuk masing-masing flavor
    - File `.env` pada root project untuk menyimpan key **Cloudinary** agar fitur upload photo
 

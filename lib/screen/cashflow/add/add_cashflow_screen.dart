@@ -45,6 +45,12 @@ class _AddCashflowScreenState extends State<AddCashflowScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.read<TransactionTypeProvider>().setType(null);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final transactionType =
         context.watch<TransactionTypeProvider>().transactionType ==
@@ -224,6 +230,7 @@ class _TransactionType extends StatelessWidget {
     return Consumer<TransactionTypeProvider>(
       builder: (context, value, child) {
         return FormField<TransactionType>(
+          initialValue: null,
           validator: (value) {
             if (value == null) {
               return 'Jenis transaksi harus dipilih';
