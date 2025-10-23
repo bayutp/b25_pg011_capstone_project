@@ -32,7 +32,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final hasBusiness = await service.hasBusiness();
     if (!hasBusiness) return const EditProfileScreen(newUser: true);
 
-    unawaited(setupUserBackground(firebaseUser.uid));
+    await setupUserBackground(firebaseUser.uid);
 
     return const MainScreen();
   }
