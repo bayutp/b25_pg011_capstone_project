@@ -1,4 +1,4 @@
-p# RencanaKu Apps
+# RencanaKu Apps
 
 ## Capstone Project - B25-PG011
 
