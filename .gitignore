@@ -17,6 +17,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+.env
 
 #vscode
 .vscode/
@@ -57,3 +58,12 @@ ios/Runner.xcworkspace/
 
 *.lock
 !pubspec.lock
+.packages
+
+#Firebase
+# Firebase config files
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+macos/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
+.firebase/
