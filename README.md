@@ -31,7 +31,7 @@ Proyek ini dikembangkan sebagai bagian dari Capstone Project pada program Bootca
 
 ## Packages yang Digunakan  
 
-- [`http`](https://pub.dev/packages/http) → Mengambil data dari Dicoding Restaurant API.  
+- [`http`](https://pub.dev/packages/http) → Mengupload file photo ke cloudinary.  
 - [`provider`](https://pub.dev/packages/provider) → State management untuk mengatur data & UI.  
 - [`shared_preferences`](https://pub.dev/packages/shared_preferences) → Berguna untuk caching data personal pengguna. 
 - [`flutter_timezone`](https://pub.dev/packages/flutter_timezone) → Menentukan setup zona waktu untuk notifikasi agar sesuai dengan perangkat pengguna. 
