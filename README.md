@@ -149,20 +149,20 @@ Program Bootcamp BEKUP Create: Upskilling Skills 2025
      ```bash
      CLOUDINARY_CLOUD_NAME=<nama project cloudinary>
      CLOUDINARY_UPLOAD_PRESET=<nama preset cloudinary>
-     Cara menjalankan aplikasi:
-
      ```
 
-   - Mode Development:
+   - Buka Terminal dan jalankan perintah berikut:
 
-     ```bash
-     flutter run -t lib/main_dev.dart --flavor dev
-     ```
+     - Mode Development:
 
-   - Mode Production:
-     ```bash
-     flutter run -t lib/main_prod.dart --flavor prod
-     ```
+       ```bash
+       flutter run -t lib/main_dev.dart --flavor dev
+       ```
+
+     - Mode Production:
+       ```bash
+       flutter run -t lib/main_prod.dart --flavor prod
+       ```
 
 ## Lisensi
 
